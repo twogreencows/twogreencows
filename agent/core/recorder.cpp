@@ -1,2 +1,3 @@
+#import <string>
 
-using namespace:std;
+using namespace std;

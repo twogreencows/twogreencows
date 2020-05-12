@@ -2,15 +2,32 @@
 CC=g++
 CFLAGS=-c -Wall
 
+BASE_DIR = $(strip $(CURDIR)) 
+
+#Compile ddirectories
+BUILD_DIR = $(addsuffix /build/ , $(BASE_DIR))
+OBJ_DIR = $(addsuffix /obj/, $(BUILD_DIR))
+BIN_DIR = $(addsuffix /bin/, $(BUILD_DIR))
+
+MODULEDIR = $(addsuffix /modules/ ,$(BASE_DIR))
+COREDIR = $(addsuffix /core/ ,$(BASE_DIR))
+SRC:= $(wildcard *.cpp ./core/*.cpp ./modules/*.cpp)
+OBJ_FILES = $(patsubst %cpp, %o,$(SRC))
+
 #this target will create the software
 
 all:compile
-	$(CC) main.o -o twogreencows_agent
+	$(CC)  -v *.o  -o twogreencows_agent
 
 #this target will compile only
-compile:
-	$(CC) $(CFLAGS) main.cpp
+compile:buildstructure
+
+	$(CC) $(CFLAGS) -I$(COREDIR) $(SRC)
+
+buildstructure:
+	mkdir -p $(OBJ_DIR)
+	mkdir -p $(BIN_DIR)
 
 #this target will clean everything
 clean:
-	rm -rf *.o twogreencows_agent
+	rm -rf *.o twogreencows_agent $(BUILD_DIR)
