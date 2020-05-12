@@ -8,8 +8,8 @@ namespace twogreencows_core
 
         string name;
     public:
-        virtual string getPrefix() const;
-        string getName();
+        virtual string GetPrefix() const;
+        string GetName();
 
         timeline(string name);
 

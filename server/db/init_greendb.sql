@@ -6,7 +6,7 @@ CREATE TABLE IF NOT EXISTS users (
     display_name VARCHAR(256) NOT NULL,
     password VARCHAR(256) NOT NULL,
     country CHAR(3) NOT NULL,
-    phone VARCHAR(32),
+    phone VARCHAR(32)
 );
 
 CREATE TABLE IF NOT EXISTS sessions (
@@ -18,7 +18,7 @@ CREATE TABLE IF NOT EXISTS sessions (
     user_uuid CHAR(34),
     device_uuid CHAR(34),
     is_new_user BOOLEAN NOT NULL,
-    is_new_device BOOLEAN NOT NULL,
+    is_new_device BOOLEAN NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS devices (
@@ -30,7 +30,7 @@ CREATE TABLE IF NOT EXISTS devices (
     vendor_uuid CHAR(34),
     platform VARCHAR(8),
     os_version VARCHAR(12),
-    last_connection_date TIMETAMP,
+    last_connection_date TIMESTAMP
 );
 
 CREATE TABLE IF NOT EXISTS greenhouses (
@@ -41,7 +41,7 @@ CREATE TABLE IF NOT EXISTS greenhouses (
     latitude DOUBLE PRECISION,
     longitude DOUBLE PRECISION,
     display_name VARCHAR(256),
-    description TEXT,
+    description TEXT
 );
 
 
@@ -54,11 +54,11 @@ CREATE TABLE IF NOT EXISTS plants (
     scientific_name VARCHAR(256),
     common_name VARCHAR(256),
     flavor_name VARCHAR(256),
-    family VARCHAR(256),
+    family VARCHAR(256)
 );
 
  
-CREATE TABLE IF NOT EXISTS recordpoints
+CREATE TABLE IF NOT EXISTS recordpoints(
     uuid CHAR(34)  UNIQUE NOT NULL PRIMARY KEY,
     object_version SMALLINT,
     data_version SMALLINT,
@@ -66,24 +66,24 @@ CREATE TABLE IF NOT EXISTS recordpoints
     unit VARCHAR(24),
     value VARCHAR(36), 
     description TEXT,
-    sensor_uuid CHAR(34).
-    media_uuid CHAR(34),
+    sensor_uuid CHAR(34),
+    media_uuid CHAR(34)
 );
  
-CREATE TABLE IF NOT EXISTS media
+CREATE TABLE IF NOT EXISTS media(
     uuid CHAR(34)  UNIQUE NOT NULL PRIMARY KEY,
     object_version SMALLINT,
     data_version SMALLINT,
     path  VARCHAR(512),
-    hash_name VARCHAR(256),
+    hash_name VARCHAR(256)
 );
 
-CREATE TABLE IF NOT EXISTS sensors 
+CREATE TABLE IF NOT EXISTS sensors(
     uuid CHAR(34)  UNIQUE NOT NULL PRIMARY KEY,
     object_version SMALLINT,
     data_version SMALLINT,
     precision DOUBLE PRECISION,
-    sensor_type VARCHAR(24)
+    sensor_type VARCHAR(24),
     unit VARCHAR(24),
-    model VARCHAR(256),
+    model VARCHAR(256)
 );

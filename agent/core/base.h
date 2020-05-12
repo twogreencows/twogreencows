@@ -9,12 +9,13 @@ namespace twogreencows_core
 {
     class base{
             string identifier;
-            static unordered_map<string, base> umap;        
+            static unordered_map<string, base> AllObjects;        
         public:
 
-        virtual string  getPrefix() const = 0 ; 
-        string getIdentifier() const;
+        virtual string  GetPrefix() const = 0 ; 
+        string GetIdentifier() const;
         void SetUpIdentifier();
+        static void DumpObjects();
         base();
     };
 }

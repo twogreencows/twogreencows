@@ -19,13 +19,13 @@ int main() {
 
     cout << "Create environment\n";
     environment env = environment("greenhouse 1");
-    cout << "Create environment:" << env.getName()+"(" << env.getIdentifier() << ")\n";
+    cout << "Create environment:" << env.GetName()+"(" << env.GetIdentifier() << ")\n";
     timeline lightTimeline = timeline("light");
-    environment->addTimelin(lightTimeline)
-    cout << "Create timeline:" << lightTimeline.getName()+"(" << lightTimeline.getIdentifier() << ")\n";
+    //environment.AddTimeline(lightTimeline)
+    cout << "Create timeline:" << lightTimeline.GetName()+"(" << lightTimeline.GetIdentifier() << ")\n";
     timeline airTimeline  = timeline("air");
-    environment>-addTimelin(airmeline)
-    environment.start();
-    cout << "Create timeline:" << airTimeline.getName()+"(" << airTimeline.getIdentifier() << ")\n";
+    //environment.AddTimeline(airTimeline)
+    environment.Start();
+    cout << "Create timeline:" << airTimeline.GetName()+"(" << airTimeline.GetIdentifier() << ")\n";
     return(0);
 }

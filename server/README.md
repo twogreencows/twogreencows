@@ -14,3 +14,7 @@ uuid - deviceUUID - locale - type (mobile/web/desktop) - OSVersion
 
 session
 Time started - Device - 
+
+Launch DB Locally
+- docker-compose up 
+- psql -h localhost -p 5432 -d twogreencows -U onebigcow -W

@@ -11,7 +11,7 @@ using namespace std;
 namespace twogreencows_core
 {
 
-        string timeline::getPrefix() const
+        string timeline::GetPrefix() const
         {
             return "timeline";
         }
@@ -25,7 +25,7 @@ namespace twogreencows_core
             this->name = name;
         }
        
-       string timeline::getName()
+       string timeline::GetName()
         {
             return this->name;
         }

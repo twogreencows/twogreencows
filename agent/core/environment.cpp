@@ -11,7 +11,7 @@ using namespace std;
 namespace twogreencows_core
 {
 
-        string environment::getPrefix() const
+        string environment::GetPrefix() const
         {
             return "environment";
         }
@@ -24,8 +24,16 @@ namespace twogreencows_core
             this->name = name;
         }
         
-        string environment::getName()
+        string environment::GetName()
         {
             return(this->name);
+        }
+
+        void environment::AddTimeline(timeline tl)
+        {
+        }
+        
+        void environment::Start()
+        {
         }
 }

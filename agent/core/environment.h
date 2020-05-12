@@ -15,10 +15,11 @@ namespace twogreencows_core
 
     public:
       environment(string name);
-      virtual string getPrefix() const;
-      string getName();
+      virtual string GetPrefix() const;
+      string GetName();
 
-      void AddTimeLine(timeline *tl);
+      void AddTimeline(timeline tl);
+      void Start();
 
     };
 }

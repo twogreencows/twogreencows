@@ -4,7 +4,9 @@ services:
         build: 
             context: ./db/
             dockerfile: DockerfileDB
-    api:
-        build:
-            context: ./api
-            dockerfile: DockerfileServer
+        ports:
+            - "5432:5432"
+            #  api:
+            #build:
+            #context: ./api
+            #dockerfile: DockerfileServer
