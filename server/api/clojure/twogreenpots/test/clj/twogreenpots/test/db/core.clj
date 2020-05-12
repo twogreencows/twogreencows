@@ -21,17 +21,22 @@
     (jdbc/db-set-rollback-only! t-conn)
     (is (= 1 (db/create-user!
                t-conn
-               {:id         "1"
-                :first_name "Sam"
-                :last_name  "Smith"
-                :email      "sam.smith@example.com"
-                :pass       "pass"})))
-    (is (= {:id         "1"
-            :first_name "Sam"
-            :last_name  "Smith"
-            :email      "sam.smith@example.com"
-            :pass       "pass"
-            :admin      nil
-            :last_login nil
-            :is_active  nil}
-           (db/get-user t-conn {:id "1"})))))
+               {:uuid         (str "u-" (clojure.string/replace (.toString (java.util.UUID/randomUUID)) #"-" ""))
+                :object_version 1
+                :data_version   1
+                :display_name  "laurent"
+                :creation_date  (java.time.LocalDateTime/now)
+                :password      "toto"
+                :phone         "+33687853131"
+                :country       "FRA"})))
+    ;;(is (= {
+    ;;        :first_name "Sam"
+    ;;       :last_name  "Smith"
+    ;;        :email      "sam.smith@example.com"
+    ;;        :pass       "pass"
+    ;;        :admin      nil
+    ;;        :last_login nil
+    ;;        :is_active  nil}
+    ;;       (db/get-user t-conn {:phone "+33687853131"})))
+    
+    ))

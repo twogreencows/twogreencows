@@ -1,8 +1,8 @@
 FROM postgres:latest
 
 ENV POSTGRES_USER onebigcow
-ENV POSTGRES_PASSWORD Vosges434_spirited 
-ENV POSTGRES_DB twogreencows
+ENV POSTGRES_PASSWORD acikiwabybocfyviycy
+ENV POSTGRES_DB twogreencows-test
 
 EXPOSE 5432
 

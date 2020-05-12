@@ -18,3 +18,9 @@ Time started - Device -
 Launch DB Locally
 - docker-compose up 
 - psql -h localhost -p 5432 -d twogreencows -U onebigcow -W
+
+
+Launch and run test DB
+- docker image build -t server_db_test - < DockerfileDB-Test
+- docker run -p 5433:5432 server_db_test
+- psql -h localhost -p 5433 -d twogreencows-test -U onebigcow -W

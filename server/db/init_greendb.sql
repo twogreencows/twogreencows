@@ -8,6 +8,7 @@ CREATE TABLE IF NOT EXISTS users (
     country CHAR(3) NOT NULL,
     phone VARCHAR(32)
 );
+CREATE INDEX IF NOT EXISTS idx_users_uuid ON users(uuid);
 
 CREATE TABLE IF NOT EXISTS sessions (
     uuid CHAR(34)  UNIQUE NOT NULL PRIMARY KEY,
@@ -20,6 +21,7 @@ CREATE TABLE IF NOT EXISTS sessions (
     is_new_user BOOLEAN NOT NULL,
     is_new_device BOOLEAN NOT NULL
 );
+CREATE INDEX IF NOT EXISTS idx_sessions_uuid ON sessions(uuid);
 
 CREATE TABLE IF NOT EXISTS devices (
     uuid CHAR(34)  UNIQUE NOT NULL PRIMARY KEY,
@@ -32,6 +34,7 @@ CREATE TABLE IF NOT EXISTS devices (
     os_version VARCHAR(12),
     last_connection_date TIMESTAMP
 );
+CREATE INDEX IF NOT EXISTS idx_devices_uuid ON devices(uuid);
 
 CREATE TABLE IF NOT EXISTS greenhouses (
     uuid CHAR(34)  UNIQUE NOT NULL PRIMARY KEY,
@@ -43,7 +46,7 @@ CREATE TABLE IF NOT EXISTS greenhouses (
     display_name VARCHAR(256),
     description TEXT
 );
-
+CREATE INDEX IF NOT EXISTS idx_greenhouses_uuid ON greenhouses(uuid);
 
 CREATE TABLE IF NOT EXISTS plants (
     uuid CHAR(34)  UNIQUE NOT NULL PRIMARY KEY,
@@ -55,9 +58,9 @@ CREATE TABLE IF NOT EXISTS plants (
     common_name VARCHAR(256),
     flavor_name VARCHAR(256),
     family VARCHAR(256)
-);
+); 
+CREATE INDEX IF NOT EXISTS idx_plants_uuid ON plants(uuid);
 
- 
 CREATE TABLE IF NOT EXISTS recordpoints(
     uuid CHAR(34)  UNIQUE NOT NULL PRIMARY KEY,
     object_version SMALLINT,
@@ -69,7 +72,9 @@ CREATE TABLE IF NOT EXISTS recordpoints(
     sensor_uuid CHAR(34),
     media_uuid CHAR(34)
 );
+CREATE INDEX IF NOT EXISTS idx_recordpoints_uuid ON recordpoints(uuid);
  
+
 CREATE TABLE IF NOT EXISTS media(
     uuid CHAR(34)  UNIQUE NOT NULL PRIMARY KEY,
     object_version SMALLINT,
@@ -77,6 +82,7 @@ CREATE TABLE IF NOT EXISTS media(
     path  VARCHAR(512),
     hash_name VARCHAR(256)
 );
+CREATE INDEX IF NOT EXISTS idx_media_uuid ON media(uuid);
 
 CREATE TABLE IF NOT EXISTS sensors(
     uuid CHAR(34)  UNIQUE NOT NULL PRIMARY KEY,
@@ -87,3 +93,4 @@ CREATE TABLE IF NOT EXISTS sensors(
     unit VARCHAR(24),
     model VARCHAR(256)
 );
+CREATE INDEX IF NOT EXISTS idx_sensors_uuid ON sensors(uuid);
