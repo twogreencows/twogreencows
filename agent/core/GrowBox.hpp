@@ -1,7 +1,9 @@
 #pragma once
 
 #include "Base.hpp"
-#include "timeline.h"
+#include "Timeline.hpp"
+#include "Hardware.hpp"
+#include "Recorder.hpp"
 #include <ctime>
 #include <vector>
 
@@ -15,12 +17,15 @@ namespace twogreencows_core
 {
     class GrowBox: public Base {
         string name;
+        string dataFolderPath;
         time_t start_date;
         time_t stop_date;
 
         int kq;
         bool isRunning;
-        vector<timeline *> *timelines;
+        vector<Timeline *> *timelines;
+        vector<Recorder*> *recorders;
+        Hardware *device;
 
     public:
       GrowBox(string name);
@@ -28,7 +33,7 @@ namespace twogreencows_core
       string GetName();
 
       static void signalHandler(int signum);
-      void AddTimeline(timeline *tl);
+      void AddTimeline(Timeline *tl);
       void Start();
       void Stop();
 

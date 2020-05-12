@@ -13,6 +13,7 @@ namespace twogreencows_core
     public:
         
         Action();
+        ~Action();
         void Execute(string triggerUUID);
         virtual string GetPrefix() const;
     };
