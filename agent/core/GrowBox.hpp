@@ -13,7 +13,7 @@ using namespace std;
 
 namespace twogreencows_core
 {
-    class environment: public base {
+    class GrowBox: public base {
         string name;
         time_t start_date;
         time_t stop_date;
@@ -23,7 +23,7 @@ namespace twogreencows_core
         vector<timeline *> *timelines;
 
     public:
-      environment(string name);
+      GrowBox(string name);
       virtual string GetPrefix() const;
       string GetName();
 

@@ -2,7 +2,7 @@
 
 #include <string>
 #include <iostream>
-#include "environment.h" 
+#include "GrowBox.hpp" 
 #include "base.h"
 
 #include <csignal>
@@ -13,40 +13,40 @@ using namespace std;
 namespace twogreencows_core
 {
 
-        string environment::GetPrefix() const
+        string GrowBox::GetPrefix() const
         {
-            return "environment";
+            return "GrowBox";
         }
 
 
-        environment::environment(string name)
+        GrowBox::GrowBox(string name)
         {
             this->SetUpIdentifier();
             this->name = name;
             this->timelines = new vector<timeline *>();
 
-            signal(SIGINT, environment::signalHandler); 
-            signal(SIGILL, environment::signalHandler); 
-            signal(SIGTERM, environment::signalHandler); 
+            signal(SIGINT, GrowBox::signalHandler); 
+            signal(SIGILL, GrowBox::signalHandler); 
+            signal(SIGTERM, GrowBox::signalHandler); 
     
         }
         
-        void environment::signalHandler(int signum)
+        void GrowBox::signalHandler(int signum)
         {
             cout << "signal" << signum <<endl;
         }
         
-        string environment::GetName()
+        string GrowBox::GetName()
         {
             return(this->name);
         }
 
-        void environment::AddTimeline(timeline *tl)
+        void GrowBox::AddTimeline(timeline *tl)
         {
             timelines->push_back(tl);
         }
         
-        void environment::Start()
+        void GrowBox::Start()
         {
             start_date = std::time(0);
             stop_date = 0;
@@ -67,7 +67,7 @@ namespace twogreencows_core
             }
         }
 
-        void environment::Stop()
+        void GrowBox::Stop()
         {
             this->stop_date = std::time(0);
             //close(kq)
