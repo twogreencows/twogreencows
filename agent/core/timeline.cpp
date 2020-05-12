@@ -2,8 +2,9 @@
 
 #include <string>
 #include <iostream>
-#include "timeline.h" 
 #include "base.h"
+#include "timeline.h" 
+#include "trigger.h"
 
 using namespace std;
 
@@ -19,15 +20,24 @@ namespace twogreencows_core
 
        timeline::timeline(string name)
         {
-            cout << "timeline creator\n";
-
             this->SetUpIdentifier();
             this->name = name;
+            this->AllTriggers = new vector<trigger*>();
         }
        
        string timeline::GetName()
         {
             return this->name;
+        }
+        
+        void timeline::ScheduleTrigger(trigger *trigger)
+        {
+
+        }
+
+        void timeline::StartTriggers(int kq)
+        {
+        
         }
 }
 

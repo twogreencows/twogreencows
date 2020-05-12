@@ -1,4 +1,6 @@
-include "base.h"
+#pragma once
+
+#include "base.h"
 
 namespace twogreencows_core
 {

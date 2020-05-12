@@ -17,12 +17,13 @@ OBJ_FILES = $(patsubst %cpp, %o,$(SRC))
 #this target will create the software
 
 all:compile
-	$(CC)  -v *.o  -o twogreencows_agent
+	$(CC)  -v $(OBJ_DIR)/*.o  -o twogreencows_agent
 
 #this target will compile only
-compile:buildstructure
 
+compile:buildstructure
 	$(CC) $(CFLAGS) -I$(COREDIR) $(SRC)
+	mv *.o $(OBJ_DIR)
 
 buildstructure:
 	mkdir -p $(OBJ_DIR)

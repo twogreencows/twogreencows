@@ -9,7 +9,7 @@ namespace twogreencows_core
 {
     class base{
             string identifier;
-            static unordered_map<string, base> AllObjects;        
+            static unordered_map<string, base*> *AllObjects;     
         public:
 
         virtual string  GetPrefix() const = 0 ; 

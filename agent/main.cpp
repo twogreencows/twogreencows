@@ -9,7 +9,7 @@ using namespace twogreencows_core;
 
 int main() {
     cout << "Create environnement: it starts at a date. It has debug accelerated mode to test!\n";
-    cout << " --> Create timeline for light\n";
+    cout << " --> Create timeline for light" << endl;
     cout << "       Adding a life cycle 14/8 for a general light starting at 8PMi then switch to 12/12\n";
     cout << "       Adding a life cycle 12/12 for a blooming light starting at 8PM\n";
     cout << "       Adding a life cycle 14/8 for a growing light starting at 8PM\n";
@@ -21,11 +21,21 @@ int main() {
     environment env = environment("greenhouse 1");
     cout << "Create environment:" << env.GetName()+"(" << env.GetIdentifier() << ")\n";
     timeline lightTimeline = timeline("light");
-    //environment.AddTimeline(lightTimeline)
+    env.AddTimeline(&lightTimeline);
     cout << "Create timeline:" << lightTimeline.GetName()+"(" << lightTimeline.GetIdentifier() << ")\n";
     timeline airTimeline  = timeline("air");
-    //environment.AddTimeline(airTimeline)
-    environment.Start();
+    env.AddTimeline(&airTimeline);
     cout << "Create timeline:" << airTimeline.GetName()+"(" << airTimeline.GetIdentifier() << ")\n";
+    trigger generalLightTrigger = trigger("led");
+    trigger growLightTrigger = trigger("grow CFL");
+    lightTimeline.ScheduleTrigger(&generalLightTrigger);
+    lightTimeline.ScheduleTrigger(&growLightTrigger);   
+ 
+    trigger bloomLightTrigger = trigger("bloom CFL");
+
+    lightTimeline.ScheduleTrigger(&bloomLightTrigger);   
+    
+    //base::DumpObjects(); 
+    env.Start();
     return(0);
 }
