@@ -5,7 +5,6 @@
 
   :dependencies [[cheshire "5.8.1"]
                  [clojure.java-time "0.3.2"]
-                 [com.h2database/h2 "1.4.197"]
                  [conman "0.8.3"]
                  [cprop "0.1.13"]
                  [funcool/struct "1.3.0"]
@@ -22,6 +21,7 @@
                  [org.clojure/clojure "1.10.0"]
                  [org.clojure/tools.cli "0.4.1"]
                  [org.clojure/tools.logging "0.4.1"]
+                 [org.postgresql/postgresql "42.2.5"]
                  [org.webjars.npm/bulma "0.7.4"]
                  [org.webjars.npm/material-icons "0.3.0"]
                  [org.webjars/webjars-locator "0.36"]
