@@ -1,0 +1,16 @@
+Catfish server
+==============
+
+Build API
+docker build -t greenhouse .
+docker run --publish 6060:8080 -name test rm outyet
+
+build with docker stack
+A user has a session. He also has  greenhouses
+
+
+device
+uuid - deviceUUID - locale - type (mobile/web/desktop) - OSVersion 
+
+session
+Time started - Device - 

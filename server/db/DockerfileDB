@@ -1,0 +1,7 @@
+FROM postgres:latest
+
+ENV POSTGRES_USER onebigcow
+ENV POSTGRES_PASSWORD Vosges434_spirited 
+ENV POSTGRES_DB twogreencows
+
+COPY init_greendb.sql /docker-entrypoint-initdb.d/

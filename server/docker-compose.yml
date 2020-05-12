@@ -1,0 +1,10 @@
+version: '3'
+services:
+    db:
+        build: 
+            context: ./db/
+            dockerfile: DockerfileDB
+    api:
+        build:
+            context: ./api
+            dockerfile: DockerfileServer
