@@ -14,15 +14,21 @@ using namespace std;
 namespace twogreencows_core
 {
 
-    string Event::GetPrefix() const
+    string Event::GetClassPrefix() const
     {
         return "event";
+    }
+
+    int Event::GetClassVersion() const
+    {
+        return 1;
     }
 
 
     Event::Event(long SecondsInDay, long Duration, string triggerIdentifier, string timelineIdentifier, Base::State state)
     {
         this->SetUpIdentifier();
+        this->ObjectVersion = 1;
         this->duration = Duration;
         this->secondsInDay = SecondsInDay;
         this->triggerIdentifier = triggerIdentifier;

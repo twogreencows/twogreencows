@@ -23,7 +23,7 @@ namespace twogreencows_core
         Event *sibling; 
 
     public:
-        virtual string GetPrefix() const;
+        virtual string GetClassPrefix() const;
         long GetSecondsInDay() const;
         long GetDuration() const;
         long GetRelativeSecondsToNext() const;
@@ -37,6 +37,7 @@ namespace twogreencows_core
         void SetRelativeSecondsToNext(long relativeSecondsToNext);
         void SetSibling(Event *sibling);
 
+        virtual int GetClassVersion() const;
         Event(long timeInDay=-1, long duration = -1, string triggerIdentifier="", string timelineIdentifier="", Base::State state=Base::ON );
         
         Event(const Event &initialEvent);

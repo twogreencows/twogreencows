@@ -1,9 +1,10 @@
 #pragma once
 
 #include "Base.hpp"
-#include "Action.h"
+#include "Action.hpp"
 #include "Event.hpp"
 #include <climits>
+#include <sqlite3.h>
 
 using namespace std;
 
@@ -34,12 +35,13 @@ namespace twogreencows_core
 
     public:
             //Life cycle
-        Trigger(string name, Action *action = 0, vector<pair<time_t, Base::State> > sequence = { {86400, Base::ON} }, bool transient=false);
+        Trigger(string name, Action *action = 0, vector<pair<time_t, Base::State> > sequence = { {86400, Base::ON} }, bool transient=false, std::string identifier="");
         ~Trigger();
         
-        virtual string GetPrefix() const;
+        virtual string GetClassPrefix() const;
         string GetName();
         bool GetTransient();
+        virtual int GetClassVersion() const;
         Base::State GetState() const;
         string GetOwnerIdentifier();
         void SetState(Base::State newState);
@@ -49,6 +51,7 @@ namespace twogreencows_core
         Event *GetNextEventForSecondsInDay(long SecondsInDay);
         Event *GetLastEventForSecondsInDay(long SecondsInDay);
         void Fire(Event *event, int currentTime);
+        bool PersistToStorage(sqlite3 *db);
     };
 }
 

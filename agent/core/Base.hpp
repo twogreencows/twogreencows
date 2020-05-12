@@ -1,26 +1,30 @@
 #pragma once
 
-
-using namespace std;
-
 #include <unordered_map>
 #include <vector>
+#include <string>
+
+using namespace std;
 
 namespace twogreencows_core
 {
     class Base{
             string identifier;
             static unordered_map<string, Base*> *AllObjects;     
+        protected:
+            int ObjectVersion;
         public:
-
         enum State{
             OFF,
             ON
         };
 
-        virtual string  GetPrefix() const = 0 ; 
+        virtual string  GetClassPrefix() const = 0; 
+        virtual int GetClassVersion() const = 0; 
+        
         string GetIdentifier(bool shortPrint=false) const;
-        void SetUpIdentifier();
+        void SetUpIdentifier(std::string idenfitier="");
+        
         static void DumpObjects();
         static Base *ObjectWithIdentifier(string identifier);
         static void DumpSequence(vector<pair<time_t, Base::State>> sequence, bool transient = false);

@@ -13,7 +13,8 @@ namespace twogreencows_core
 
     public:
       Device(string name = "");
-      virtual string GetPrefix() const;
+      virtual string GetClassPrefix() const;
+      virtual int GetClassVersion() const;
       string GetName();
     };
 }

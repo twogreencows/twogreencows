@@ -1,0 +1,190 @@
+{
+ "author":"twogreencows",
+ "version":1,
+ "objects":[
+    {
+        "type":"growbox",
+        "tgc_fileref":"growbox_1",
+        "name":"Simple Growbox",
+        "server_ipv4":"10.0.0.1",
+        "timelines":[
+            "timeline_1",
+            "timeline_2",
+            "timeline_3"
+        ]
+    },
+    {
+        "type":"timeline",
+        "name":"light",
+        "tgc_fileref":"timeline_1",
+        "triggers":[
+            "trigger_light_1",
+            "trigger_light_2",
+            "trigger_light_3"
+        ]
+    },
+    {
+        "type":"timeline",
+        "name":"air",
+        "tgc_fileref":"timeline_2",
+        "triggers":[
+            "trigger_air_1",
+            "trigger_air_2"
+        ]
+    },
+    {
+        "type":"timeline",
+        "name":"sensor",
+        "tgc_fileref":"timeline_3",
+        "triggers":[
+            "trigger_sensor_1",
+            "trigger_sensor_2"
+        ]
+    },
+    {
+        "type":"trigger",
+        "name":"led",
+        "tgc_fileref":"trigger_light_1",
+        "transient":false,
+        "action_type":"relay",
+        "sequence":[
+            {"duration":14400, "value":"ON"},
+            {"duration":43200, "value":"OFF"},
+            {"duration":28800, "value":"ON"}
+        ]
+    },
+    {
+        "type":"trigger",
+        "name":"grow CFL",
+        "tgc_fileref":"trigger_light_2",
+        "transient":false,
+        "action_type":"relay",
+        "sequence":[
+            {"duration":14400, "value":"ON"},
+            {"duration":43200, "value":"OFF"},
+            {"duration":28800, "value":"ON"}
+        ]
+    },
+    {
+        "type":"trigger",
+        "name":"bloom CFL",
+        "tgc_fileref":"trigger_light_3",
+        "transient":false,
+        "action_type":"relay",
+        "sequence":[
+            {"duration":18000, "value":"ON"},
+            {"duration":50400, "value":"OFF"},
+            {"duration":18000, "value":"ON"}
+        ]
+    },
+    {
+        "type":"trigger",
+        "name":"air-in",
+        "tgc_fileref":"trigger_air_1",
+        "transient":false,
+        "action_type":"relay",
+        "sequence":[
+            {"duration":14400,"value":"ON"},
+            {"duration":2700, "value":"OFF"},
+            {"duration":900, "value":"ON"},
+            {"duration":2700, "value":"OFF"},
+            {"duration":900, "value":"ON"},
+            {"duration":2700, "value":"OFF"},
+            {"duration":900, "value":"ON"},
+            {"duration":2700, "value":"OFF"},
+            {"duration":900, "value":"ON"},
+            {"duration":2700, "value":"OFF"},
+            {"duration":900, "value":"ON"},
+            {"duration":2700, "value":"OFF"},
+            {"duration":900, "value":"ON"},
+            {"duration":2700, "value":"OFF"},
+            {"duration":900, "value":"ON"},
+            {"duration":2700, "value":"OFF"},
+            {"duration":900, "value":"ON"},
+            {"duration":2700, "value":"OFF"},
+            {"duration":900, "value":"ON"},
+            {"duration":2700, "value":"OFF"},
+            {"duration":900, "value":"ON"},
+            {"duration":2700, "value":"OFF"},
+            {"duration":900, "value":"ON"},
+            {"duration":2700, "value":"OFF"},
+            {"duration":900, "value":"ON"},
+            {"duration":2700, "value":"OFF"},
+            {"duration":900, "value":"ON"},
+            {"duration":2700, "value":"OFF"},
+            {"duration":900, "value":"ON"},
+            {"duration":2700, "value":"OFF"},
+            {"duration":900, "value":"ON"},
+            {"duration":2700, "value":"OFF"},
+            {"duration":900, "value":"ON"},
+            {"duration":14400, "value":"ON"}
+        ]
+    },
+    {
+        "type":"trigger",
+        "name":"air-out",
+        "tgc_fileref":"trigger_air_2",
+        "transient":false,
+        "action_type":"relay",
+        "sequence":[
+            {"duration":14400,"value":"ON"},
+            {"duration":2700, "value":"OFF"},
+            {"duration":900, "value":"ON"},
+            {"duration":2700, "value":"OFF"},
+            {"duration":900, "value":"ON"},
+            {"duration":2700, "value":"OFF"},
+            {"duration":900, "value":"ON"},
+            {"duration":2700, "value":"OFF"},
+            {"duration":900, "value":"ON"},
+            {"duration":2700, "value":"OFF"},
+            {"duration":900, "value":"ON"},
+            {"duration":2700, "value":"OFF"},
+            {"duration":900, "value":"ON"},
+            {"duration":2700, "value":"OFF"},
+            {"duration":900, "value":"ON"},
+            {"duration":2700, "value":"OFF"},
+            {"duration":900, "value":"ON"},
+            {"duration":2700, "value":"OFF"},
+            {"duration":900, "value":"ON"},
+            {"duration":2700, "value":"OFF"},
+            {"duration":900, "value":"ON"},
+            {"duration":2700, "value":"OFF"},
+            {"duration":900, "value":"ON"},
+            {"duration":2700, "value":"OFF"},
+            {"duration":900, "value":"ON"},
+            {"duration":2700, "value":"OFF"},
+            {"duration":900, "value":"ON"},
+            {"duration":2700, "value":"OFF"},
+            {"duration":900, "value":"ON"},
+            {"duration":2700, "value":"OFF"},
+            {"duration":900, "value":"ON"},
+            {"duration":2700, "value":"OFF"},
+            {"duration":900, "value":"ON"},
+            {"duration":14400, "value":"ON"}
+        ]
+    },
+    {
+        "type":"trigger",
+        "name":"camera",
+        "tgc_fileref":"trigger_sensor_1",
+        "transient":true,
+        "action_type":"camera",
+        "sequence":[
+            {"duration":79200, "value":"OFF"},
+            {"duration":7200, "value":"ON"}
+        ]
+    },
+    {
+        "type":"trigger",
+        "name":"temperature",
+        "tgc_fileref":"trigger_sensor_2",
+        "transient":true,
+        "action_type":"temperature",
+        "sequence":[
+            {"duration":79200, "value":"OFF"},
+            {"duration":7200, "value":"ON"}
+        ]
+    }
+]
+}
+

@@ -13,7 +13,7 @@ using namespace std;
 namespace twogreencows_core
 {
 
-    unordered_map<string, Base*> *(Base::AllObjects) = new unordered_map<string, Base *>();   
+    unordered_map<string, Base*> *Base::AllObjects = new unordered_map<string, Base *>();   
 
     //constructor is not used really but we keep provision
     Base::Base()
@@ -31,16 +31,20 @@ namespace twogreencows_core
     }
 
     //To be called from children 
-    void Base::SetUpIdentifier()        
+    void Base::SetUpIdentifier(std::string identifier)        
     {
-        uuid_t binuuid;
-        char *uuid =  new char[37]; 
+        if (!identifier.empty()) {
+            this->identifier = identifier;
+        } else {
+            uuid_t binuuid;
+            char *uuid =  new char[37]; 
 
-        uuid_generate_random(binuuid);
-        uuid_unparse_lower(binuuid, uuid);
-        this->identifier = this->GetPrefix()+"."+ uuid;
+            uuid_generate_random(binuuid);
+            uuid_unparse_lower(binuuid, uuid);
+            this->identifier = this->GetClassPrefix()+"."+ string(uuid);
+            delete [] uuid;
+        }
         AllObjects->insert(make_pair(this->identifier, this)); 
-        delete [] uuid;
     }
 
 
@@ -57,7 +61,7 @@ namespace twogreencows_core
     Base * Base::ObjectWithIdentifier(string identifier)
     {
         if (AllObjects->find(identifier) == AllObjects->end()) {
-            return NULL;
+            return nullptr;
         }
         return Base::AllObjects->at(identifier);
     }
