@@ -1,4 +1,4 @@
-
+#include <climits>
 #include <string>
 #include <iostream>
 #include "Trigger.hpp"
@@ -99,27 +99,19 @@ namespace twogreencows_core
     {
         //cout << "     == GetNextEvent for " << this->GetName() << "(" << this->GetIdentifier(true) << ")" <<endl;
 
-        //for(std::vector<Event*>::iterator it = this->sequence->begin(); it != this->sequence->end(); ++it) {
-        //        cout << (*(*it)) << endl;
-        //}
-
         for(std::vector<Event*>::iterator it = this->sequence->begin(); it != this->sequence->end(); ++it) {
             if ((*it)->GetSecondsInDay() >= SecondsInDay) {
                 (*it)->SetRelativeSecondsToNext((*it)->GetSecondsInDay() - SecondsInDay);
                 return (*it);
             }
         }
-        this->sequence->at(0)->SetRelativeSecondsToNext(86400 - this->sequence->at(0)->GetSecondsInDay());
+        this->sequence->at(0)->SetRelativeSecondsToNext(86400 - SecondsInDay);
         return this->sequence->at(0);
     }
 
     Event* Trigger::GetLastEventForSecondsInDay(long SecondsInDay)
     {
         //        cout << "     == GetLastEvent for " << this->GetName() << "(" << this->GetIdentifier(true) << ")" <<endl;
-        //            for(std::vector<Event*>::reverse_iterator it = this->sequence->rbegin(); it != this->sequence->rend(); ++it) {
-        //                cout <<"lala" << endl;
-        //                    cout << (*(*it)) << endl;
-        //            }
 
         for(std::vector<Event*>::reverse_iterator it = this->sequence->rbegin(); it != this->sequence->rend(); ++it) {
             if ((*it)->GetSecondsInDay() < SecondsInDay) {
@@ -147,8 +139,12 @@ namespace twogreencows_core
 
     void Trigger::Fire(Event *event, int currentTime)
     {
-
-        if (this->activeStartDate != ULLONG_MAX) {
+#ifdef __MACH__	    
+	time_t maxValue = ULLONG_MAX;
+#else 
+	time_t maxValue = LONG_MAX;
+#endif
+        if (this->activeStartDate != maxValue) {
 
         }
 

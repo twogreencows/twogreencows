@@ -1,6 +1,14 @@
 #declare variables
 CC=g++
 CFLAGS=-c -Wall -std=c++11
+LDFLAGS= $(libuuid) -luv
+
+
+ifeq ($(shell uname -s), Darwin)
+    libuuid = 
+else
+    libuuid = -luuid
+endif
 
 BASE_DIR = $(strip $(CURDIR)) 
 
@@ -17,7 +25,7 @@ OBJ_FILES = $(patsubst %cpp, %o,$(SRC))
 #this target will create the software
 
 all:compile
-	$(CC)  -v $(OBJ_DIR)/*.o  -o twogreencows_agent
+	$(CC)  $(LDFLAGS) -v $(OBJ_DIR)/*.o  -o twogreencows_agent
 
 #this target will compile only
 
@@ -30,5 +38,6 @@ buildstructure:
 	mkdir -p $(BIN_DIR)
 
 #this target will clean everything
+.PHONY:clean
 clean:
 	rm -rf *.o twogreencows_agent $(BUILD_DIR)

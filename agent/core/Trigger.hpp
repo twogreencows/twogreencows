@@ -3,6 +3,7 @@
 #include "Base.hpp"
 #include "Action.h"
 #include "Event.hpp"
+#include <climits>
 
 using namespace std;
 
@@ -21,8 +22,13 @@ namespace twogreencows_core
         Action *action;
         string ownerIdentifier="";
         bool transient; //means that after each action it will default to OFF. 
+#ifdef __MACH__
         time_t activeStartDate = ULLONG_MAX;
         time_t activeEndDate = ULLONG_MAX;
+#else 
+        time_t activeStartDate = LONG_MAX;
+        time_t activeEndDate = LONG_MAX;
+#endif
         int dayPeriod = 1;
         vector<Event*> *sequence = NULL;
 
