@@ -1,18 +1,19 @@
 #pragma once
 
-#include "base.h"
+#include "Base.hpp"
 
 using namespace std;
 
 
 namespace twogreencows_core
 {
-    class Action:base{
+    class Action:Base{
             string identifier;
-        public:
+    
+    public:
         
-        //Action();
-        virtual void Execute();
+        Action();
+        void Execute(string triggerUUID);
         virtual string GetPrefix() const;
     };
 }

@@ -1,10 +1,10 @@
 #pragma once
 
-#include "base.h"
+#include "Base.hpp"
 
 namespace twogreencows_core
 {
-    class recorder;public base {
+    class recorder;public Base {
 
     }
 }

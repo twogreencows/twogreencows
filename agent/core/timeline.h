@@ -1,12 +1,12 @@
 #pragma once 
 
 #include <vector>
-#include "base.h"
+#include "Base.hpp"
 #include "trigger.h"
 
 namespace twogreencows_core
 {
-    class timeline:public base {
+    class timeline:public Base {
         vector<trigger *> *AllTriggers; 
         string name;
     public:

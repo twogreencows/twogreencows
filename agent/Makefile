@@ -1,6 +1,6 @@
 #declare variables
 CC=g++
-CFLAGS=-c -Wall
+CFLAGS=-c -Wall -std=c++11
 
 BASE_DIR = $(strip $(CURDIR)) 
 

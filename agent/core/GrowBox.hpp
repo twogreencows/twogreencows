@@ -1,6 +1,6 @@
 #pragma once
 
-#include "base.h"
+#include "Base.hpp"
 #include "timeline.h"
 #include <ctime>
 #include <vector>
@@ -13,13 +13,13 @@ using namespace std;
 
 namespace twogreencows_core
 {
-    class GrowBox: public base {
+    class GrowBox: public Base {
         string name;
         time_t start_date;
         time_t stop_date;
 
         int kq;
-
+        bool isRunning;
         vector<timeline *> *timelines;
 
     public:

@@ -7,15 +7,16 @@ using namespace std;
 
 namespace twogreencows_core
 {
-    class base{
+    class Base{
             string identifier;
-            static unordered_map<string, base*> *AllObjects;     
+            static unordered_map<string, Base*> *AllObjects;     
         public:
 
         virtual string  GetPrefix() const = 0 ; 
         string GetIdentifier() const;
         void SetUpIdentifier();
         static void DumpObjects();
-        base();
+        Base *ObjectWithIdentifier(string identifier);
+        Base();
     };
 }

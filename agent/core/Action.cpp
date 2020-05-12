@@ -16,9 +16,13 @@ namespace twogreencows_core
         }
 
 
-//        Action::Action()
-  //      {
-    //        this->SetUpIdentifier();
-      //  }
+        Action::Action()
+        {
+            this->SetUpIdentifier();
+        }
         
+        void Action::Execute(string TriggerUUID)
+        {
+            cout << "Execute Action for" + TriggerUUID;
+        }
 }

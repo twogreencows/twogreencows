@@ -2,7 +2,7 @@
 
 #include <string>
 #include <iostream>
-#include "base.h"
+#include "Base.hpp"
 #include "timeline.h" 
 #include "trigger.h"
 
@@ -32,12 +32,19 @@ namespace twogreencows_core
         
         void timeline::ScheduleTrigger(trigger *trigger)
         {
-
+            AllTriggers.push(trigger);
         }
 
-        void timeline::StartTriggers(int kq)
+        void timeline::StartTriggers(int timeInSeconds)
         {
-        
+            //Build Events for day
+
+            //set trigger to the state they should havee if not transient
+        }
+
+        void timeline::GetNextEventForTriggers()
+        {
+
         }
 }
 
