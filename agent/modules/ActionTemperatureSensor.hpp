@@ -11,7 +11,7 @@ namespace twogreencows_core
     
     public:
         
-        ActionTemperatureSensor();
+        ActionTemperatureSensor(string growboxIdentifier);
         ~ActionTemperatureSensor();
         unordered_map<DataPoint::DataPointKey, std::any> Execute(string TriggerUUID);
         virtual string GetType() const;

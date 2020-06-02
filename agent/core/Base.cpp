@@ -1,4 +1,15 @@
-// The base class defines the default types
+//
+//  Project: Twogreencows Agent
+//  File: Base.hpp
+//
+//  Description: Implementationfile for Base. This class is the Base class: it is 
+//  responsible for the management of object identification, versioning and general 
+//  access. Some non persistent objects like DataPoint may not derive from the 
+//  base class.
+//
+//  Copyright TwoGreenCows 2020
+//
+
 
 #include <string>
 #include <iostream>
@@ -15,7 +26,7 @@ namespace twogreencows_core
 
     unordered_map<string, Base*> *Base::AllObjects = new unordered_map<string, Base *>();   
 
-    //constructor is not used really but we keep provision
+    //Constructor is not used really but we keep provision
     Base::Base()
     {
     }
@@ -57,7 +68,7 @@ namespace twogreencows_core
         }
     }
 
-    //Static universal access to objects
+    //Universal access to objects (static)
     Base * Base::ObjectWithIdentifier(string identifier)
     {
         if (AllObjects->find(identifier) == AllObjects->end()) {

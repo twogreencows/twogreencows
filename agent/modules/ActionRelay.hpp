@@ -11,7 +11,7 @@ namespace twogreencows_core
     
     public:
         
-        ActionRelay();
+        ActionRelay(string growboxIdentifier);
         ~ActionRelay();
         unordered_map<DataPoint::DataPointKey, std::any> Execute(string triggerUUID);
         virtual string GetType() const;

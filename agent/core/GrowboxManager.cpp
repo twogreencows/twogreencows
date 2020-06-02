@@ -2,9 +2,13 @@
 //  Project: Twogreencows Agent
 //  File: GrowboxManager.cpp
 //
+//  Description: Implementation file for GrowboxManager. This component is responsible
+//  for the management of growboxes. It also handles communication with persistent
+//  storage.In version 1 only one growbox can beb active at a time.
 //
-//  Copyright Two Green Cows 2020
+//  Copyright TwoGreenCows 2020
 //
+
 
 #include <sys/stat.h>
 #include <sys/types.h>
@@ -30,6 +34,7 @@ namespace twogreencows_core
 
     GrowboxManager *GrowboxManager::SharedManager=nullptr;
 
+        //Creator: ensure all folder hierarchy is here
     GrowboxManager::GrowboxManager()
     {
         //Ensure top level folder is here
@@ -51,6 +56,7 @@ namespace twogreencows_core
         this->OpenedIdentifier = "";
     }
 
+        //Singleton access
     GrowboxManager* GrowboxManager::GetSharedManager()
     {
         if (nullptr == SharedManager) {
@@ -59,6 +65,7 @@ namespace twogreencows_core
         return SharedManager;
     }
 
+        //Get storage path for a growboz designed by its identifier
     std::string GrowboxManager::GetTopFolderPathForGrowboxIdentifier(std::string GrowboxIdentifier)
     {      
         string prefix = "growbox";
@@ -68,6 +75,7 @@ namespace twogreencows_core
         }
         return this->TwoGreenCowsMainFolderPath +GrowboxIdentifier + "/";
     }
+
         //If a Growbox has been run already it should have an identifier
     std::string GrowboxManager::GetLastActiveGrowboxIdentifier()
     {        
@@ -113,7 +121,7 @@ namespace twogreencows_core
         return result;
     }
 
-
+        //Save the identifier of the last run growbox
     void GrowboxManager::SetLastActiveGrowboxIdentifier(std::string GrowboxIdentifier)
     {
         std::string fullfilepath = this->TwoGreenCowsMainFolderPath + "tgc_runtime.json";
@@ -135,6 +143,7 @@ namespace twogreencows_core
         }
     }
 
+        
     void GrowboxManager::BuildDataBaseForIdentifier(string GrowboxIdentifier)
     {
         sqlite3 *db;
@@ -362,7 +371,7 @@ namespace twogreencows_core
                         if (objects[i].HasMember("transient") && objects[i]["transient"].IsBool()) {
                             transient = objects[i]["transient"].GetBool();
                         }
-                        Action *action = Action::CreateActionForType(action_type);
+                        Action *action = Action::CreateActionForType(action_type, result->GetIdentifier());
 
                         vector< pair<time_t, Base::State> > sequence;
                         if (objects[i].HasMember("sequence") && objects[i]["sequence"].IsArray()) {
@@ -535,7 +544,7 @@ namespace twogreencows_core
                     bool transient = (sqlite3_column_int(res, 1) == 1) ? true : false;
     
                     string TRActionType =  string(reinterpret_cast<const char*>(sqlite3_column_text(res, 5)));
-                    Action *action = Action::CreateActionForType(TRActionType);
+                    Action *action = Action::CreateActionForType(TRActionType, box->GetIdentifier());
                     Trigger *tr = new Trigger(TRName, action, sequence, transient, (*itt));
                     tl->ScheduleTrigger(tr);
                 }

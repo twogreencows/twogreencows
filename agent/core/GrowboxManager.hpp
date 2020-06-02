@@ -1,3 +1,17 @@
+//
+//  Project: Twogreencows Agent
+//  File: GrowboxManager.hpp
+//
+//  Description: Declaration file for GrowboxManager. This component is responsible
+//  for the management of growboxes. It also handles communication with persistent
+//  storage.In version 1 only one growbox can beb active at a time.
+//
+//  Copyright TwoGreenCows 2020
+//
+
+
+
+
 #pragma once
 
 #include <string>

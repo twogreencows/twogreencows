@@ -1,4 +1,5 @@
 #include "Base.hpp"
+#include "Growbox.hpp"
 #include "Action.hpp"
 #include "ActionRelay.hpp"
 #include "DataPoint.hpp"
@@ -9,7 +10,7 @@
 
 namespace twogreencows_core
 {
-    ActionRelay::ActionRelay()
+    ActionRelay::ActionRelay(string growboxIdentifier) : Action(growboxIdentifier)
     {
     }
     

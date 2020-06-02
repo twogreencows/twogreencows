@@ -1,5 +1,6 @@
 
 #include "Base.hpp"
+#include "Growbox.hpp"
 #include "Action.hpp"
 #include "ActionTemperatureSensor.hpp"
 #include "DataPoint.hpp"
@@ -8,7 +9,7 @@
 
 namespace twogreencows_core
 {
-    ActionTemperatureSensor::ActionTemperatureSensor()
+    ActionTemperatureSensor::ActionTemperatureSensor(string growboxIdentifier) : Action(growboxIdentifier)
     {
     }
     

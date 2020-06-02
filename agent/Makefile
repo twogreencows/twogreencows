@@ -14,15 +14,14 @@ else
 endif
 
 
-$(info    VAR is $(libsposts))
-$(info    VAR is $(libsposts))
+$(info  = COMPILING TWOGREENCOWS AGENT =  )
 
 BASE_DIR = $(strip $(CURDIR)) 
 
 #Compile ddirectories
 BUILD_DIR = $(addsuffix /build/ , $(BASE_DIR))
-OBJ_DIR = $(addsuffix /obj/, $(BUILD_DIR))
-BIN_DIR = $(addsuffix /bin/, $(BUILD_DIR))
+OBJ_DIR = $(addsuffix obj/, $(BUILD_DIR))
+BIN_DIR = $(addsuffix bin/, $(BUILD_DIR))
 
 MODULEDIR = $(addsuffix /modules/ ,$(BASE_DIR))
 COREDIR = $(addsuffix /core/ ,$(BASE_DIR))

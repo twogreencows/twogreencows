@@ -1,3 +1,15 @@
+//
+//  Project: Twogreencows Agent
+//  File: Base.hpp
+//
+//  Description: Interface file for Base. This class is the Base class: it is responsible
+//  for the management of object identification, versioning and general access. 
+//  Some non persistent objects like DataPoint may not derive from the base class
+//
+//  Copyright TwoGreenCows 2020
+//
+
+
 #pragma once
 
 #include <unordered_map>

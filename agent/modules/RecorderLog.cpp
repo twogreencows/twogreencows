@@ -38,7 +38,6 @@ namespace twogreencows_core
             Growbox *owningGrowBox = static_cast<twogreencows_core::Growbox*>(Base::ObjectWithIdentifier(this->GetGrowBoxIdentifier()));
             struct stat st = {0};
             string logPath = owningGrowBox->GetDataFolderPath()+"Logs/";
-            cerr << logPath << endl;;
             if (stat(logPath.c_str(), &st) == -1) {
                 mkdir(logPath.c_str(), 0744);
             }
@@ -47,7 +46,9 @@ namespace twogreencows_core
 
         void RecorderLog::LogDataPoint(DataPoint dp)            
         {
-            cerr << "Log DP" << endl;
+            if (false == this->IsOpened)
+                return;
+            
             Growbox *owningGrowBox = static_cast<twogreencows_core::Growbox*>(Base::ObjectWithIdentifier(this->GetGrowBoxIdentifier()));
             string logFolderPath = owningGrowBox->GetDataFolderPath()+"Logs/";
 

@@ -28,10 +28,11 @@ namespace twogreencows_core
             return 1;
         }
 
-        Action::Action()
+        Action::Action(string GrowboxIdentifier)
         {
             this->SetUpIdentifier();
             this->ObjectVersion = 1; 
+            this->OwnerIdentifier = GrowboxIdentifier;
         }
         
         Action::~Action()
@@ -39,7 +40,12 @@ namespace twogreencows_core
             cout << "Destructor Action" << endl;
         }
 
-        
+       
+        string Action::GetOwnerIdentifier()
+        {
+            return this->OwnerIdentifier;
+        }
+
         unordered_map<DataPoint::DataPointKey, std::any> Action::Execute(string TriggerUUID)
         {
             Trigger *tmpTrigger = static_cast<Trigger *> (Base::ObjectWithIdentifier(TriggerUUID));
@@ -62,15 +68,15 @@ namespace twogreencows_core
                  return result;
         }
 
-        Action * Action::CreateActionForType(string actionType) {
+        Action * Action::CreateActionForType(string actionType, string growboxIdentifier) {
             cout << actionType << endl;
             Action *result = NULL;
             if (0 == actionType.compare("relay")) {
-                result = new ActionRelay();
+                result = new ActionRelay(growboxIdentifier);
             } else  if (0 == actionType.compare("camera")) {
-                result = new ActionCamera();
+                result = new ActionCamera(growboxIdentifier);
             } else  if (0 == actionType.compare("temperature")) {
-                result = new ActionTemperatureSensor();
+                result = new ActionTemperatureSensor(growboxIdentifier);
             } else {
                 cerr << "NO action found " << actionType << endl;
                 result = nullptr;
