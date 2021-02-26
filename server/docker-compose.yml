@@ -1,9 +1,9 @@
 version: '3'
 services:
-    db:
+    db_pg:
         build: 
             context: ./db/
-            dockerfile: DockerfileDB
+            dockerfile: DockerfileDB_PG
         ports:
             - "5432:5432"
             #  api:
