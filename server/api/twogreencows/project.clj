@@ -5,6 +5,7 @@
 
   :dependencies [[cheshire "5.8.1"]
                  [clojure.java-time "0.3.2"]
+                 [cljs-ajax "0.8.0"]
                  [conman "0.8.3"]
                  [cprop "0.1.13"]
                  [funcool/struct "1.3.0"]
@@ -19,12 +20,15 @@
                  [mount "0.1.16"]
                  [nrepl "0.6.0"]
                  [org.clojure/clojure "1.10.0"]
+                 [org.clojure/clojurescript "1.10.238" :scope "provided"]
                  [org.clojure/tools.cli "0.4.1"]
                  [org.clojure/tools.logging "0.4.1"]
                  [org.postgresql/postgresql "42.2.5"]
                  [org.webjars.npm/bulma "0.7.4"]
                  [org.webjars.npm/material-icons "0.3.0"]
                  [org.webjars/webjars-locator "0.36"]
+                 [reagent "0.10.0"]
+                 [re-frame "1.0.0"]
                  [ring-webjars "0.2.0"]
                  [ring/ring-core "1.7.1"]
                  [ring/ring-defaults "0.3.2"]
@@ -32,13 +36,30 @@
 
   :min-lein-version "2.0.0"
   
-  :source-paths ["src/clj"]
+  :source-paths ["src/clj" "src/cljc"]
   :test-paths ["test/clj"]
-  :resource-paths ["resources"]
+  :resource-paths ["resources" "target/cljsbuild"]
   :target-path "target/%s/"
   :main ^:skip-aot twogreenpots.core
 
-  :plugins [[lein-immutant "2.1.0"]]
+  :plugins [[lein-immutant "2.1.0"] [lein-cljsbuild "1.1.7"]]
+
+  :cljsbuild
+  {:builds
+   {:app {:source-paths ["src/cljs" "src/cljc"]
+          :compiler {:output-to "target/cljsbuild/public/js/app.js"
+                     :output-dir "target/cljsbuild/public/js/out"
+                     :main "twogreenpots/core"
+                     :asset-path "/js/out"
+                     :optimizations :none
+                     :source-map true
+                     :pretty-print true}}}}
+  :clean-targets
+  ^{:protect false}
+  [:target-path 
+   [:cljs-build :builds :app :compiler :out-ut-dir]
+   [:cljs-build :builds :app :compiler :out-ut-to]]
+
 
   :profiles
   {:uberjar {:omit-source true

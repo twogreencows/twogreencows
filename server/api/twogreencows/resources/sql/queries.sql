@@ -10,13 +10,13 @@ UPDATE users
 SET object_version = :object_version, data_version = :data_version, display_name = :display_name, password = :password, country = :country, phone = :phone 
 WHERE uuid = :uuid
 
--- :name get-user :? :1
--- :doc retrieves a user record given the id
+-- :name get-user-by-uuid :? :1
+-- :doc retrieves a user record given the uuid
 SELECT * FROM users
-WHERE uuid = :uuid
+WHERE uuid LIKE :uuid
 
 -- :name delete-user! :! :n
--- :doc deletes a user record given the id
+-- :doc deletes a user record given the uuid
 DELETE FROM users
 WHERE uuid = :uuid
 

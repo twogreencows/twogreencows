@@ -1,8 +1,0 @@
-FROM golang
-
-ADD . /go/src/com.mmyneta/twogreencows
-RUN go install com.mmyneta/twogreencows
-ENTRYPOINT /go/bin/twogreencows
-
-EXPOSE 8081
-
