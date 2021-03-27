@@ -42,9 +42,9 @@ int main(int argc, char *argv[]) {
     //In such case older ones are not discarded/removed as a future version may handle multi all.
 
     if (argc == 1) {
-        cerr << " == No path to TGC file descriptor found. Will use last one stored or bail out if not" << endl;
+        cerr << "== No path to TGC file descriptor found. Will use last one stored or bail out if not" << endl;
         LastActiveGrowboxIdentifier = GrowboxManager::GetSharedManager()->GetLastActiveGrowboxIdentifier();
-        cout << " last identifier is " << LastActiveGrowboxIdentifier << endl;
+        cout << "> Last identifier is " << LastActiveGrowboxIdentifier << endl;
         if (LastActiveGrowboxIdentifier.empty()) {
             cerr << "No descriptor file found" << endl;
             return 0;
@@ -53,7 +53,7 @@ int main(int argc, char *argv[]) {
     } else {
         for (int i = 1; i < argc; ++i) {
             if (std::string(argv[i]) == "--help") {
-                cerr << "The twogreencows agent can run only one growbbox at a time." << endl;
+                cerr <<"The twogreencows agent can run only one growbbox at a time." << endl;
                 cerr << "- If no argument is given the agent is looking if there was a previously running growbox and launches it." << endl;
                 cerr << "- If there is a --tgcfile argument,a new growbox is created and launched." << endl;
                 cerr << "In this last case previously created growboxes are not discarded/deleted as a future version" <<endl; 

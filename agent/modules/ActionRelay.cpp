@@ -26,7 +26,6 @@ namespace twogreencows_core
 
     unordered_map<DataPoint::DataPointKey, std::any> ActionRelay::Execute(string TriggerUUID)
     {
-        cerr << "From relay senspr" << endl;
         Trigger *tmpTrigger = static_cast<Trigger *> (Base::ObjectWithIdentifier(TriggerUUID));
         int value = 0.0;
         if (tmpTrigger->GetState() == Base::ON) {

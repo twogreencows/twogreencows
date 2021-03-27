@@ -33,7 +33,7 @@ namespace twogreencows_core
         this->sequence = new vector<Event* >();
         this->action = action;
 
-        cerr << " = Create trigger: " << this->GetIdentifier() + "(" + this->GetName() + ")"<< endl;
+        cerr << "== CREATE     Trigger: " << this->GetIdentifier() + "(" + this->GetName() + ")"<< endl;
         //validate sequence: it has to cover 24 hours in case of
         long tmpLong = 0;
         bool hasOFFState = false;
@@ -50,7 +50,7 @@ namespace twogreencows_core
             }
         } else {
             if (hasOFFState) {
-                cerr << "WARNING: for transient trigger, OFF part will be ignored. A sequence should be a suite of ON state" << endl;
+                cerr << "== WARNING     For transient trigger, OFF part will be ignored. A sequence should be a suite of ON state" << endl;
             }
         }
 

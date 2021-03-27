@@ -85,7 +85,7 @@ namespace twogreencows_core
             (*itt)->Open();
         }
 
-        cerr << " = Creating GrowBox " + this->GetIdentifier() + "(" + this->GetName() + ")"<< endl;
+        cerr << "== CREATE GrowBox: " + this->GetIdentifier() + " (" + this->GetName() + ")"<< endl;
         unordered_map<DataPoint::DataPointKey, std::any> data = unordered_map<DataPoint::DataPointKey, std::any>({
                 {DataPoint::SUBJECT_NAME, this->GetName()}
                 });
@@ -126,7 +126,7 @@ namespace twogreencows_core
         timeinfo = std::localtime(&start_date);
         long SecondsInDay = timeinfo->tm_hour * 3600 + timeinfo->tm_min *60 + timeinfo->tm_sec;
 
-        cout << "Starting growbox \" " << this->name << "\"("<< this->GetIdentifier(true) <<")" << ctime(&start_date);
+        cout << "== START Growbox: " << this->name << " ("<< this->GetIdentifier(true) <<")" << ctime(&start_date);
         long start = SecondsInDay;
         long start_m_s = start % 3600;
         long start_h = (start - start_m_s) /3600;
@@ -139,14 +139,14 @@ namespace twogreencows_core
         DataPoint dp = DataPoint(DataPoint::GROWBOX_START, this->GetIdentifier(), data);
         this->LogDataPoint(dp);
         
-        cout << "  + Time is at " << std::dec <<SecondsInDay << " in day " 
+        cout << "> Time is at " << std::dec <<SecondsInDay << " in day " 
             <<  std::setfill('0') << std::setw(2)<< start_h <<"H:"
             << std::setfill('0') << std::setw(2)<< start_m << "m:" 
             <<std::setfill('0') << std::setw(2)<< start_s << "s " <<endl;
 
         this->nextEvents = new vector<Event*>();
 
-        cout << "Start Timeline triggers " << endl;
+        //cout << "= Start Timeline triggers " << endl;
 
         for(std::vector<Timeline *>::iterator itt = this->timelines->begin(); itt != this->timelines->end(); ++itt) {
             std::vector<Event *> triggerEvents =  (*itt)->StartTriggers(0, SecondsInDay);
@@ -158,15 +158,15 @@ namespace twogreencows_core
         std::sort(this->nextEvents->begin(), this->nextEvents->end(), [](Event* a, Event * b) {
                 return a->GetRelativeSecondsToNext() < b->GetRelativeSecondsToNext(); });
 
-        cout << " == Dumping next events " << endl;
+        cout << "== INFO Dumping next events " << endl;
         for(std::vector<Event *>::iterator it = this->nextEvents->begin(); it != this->nextEvents->end(); ++it) {
-            cout << *(*it) <<endl;
+            cout << "> " << *(*it) <<endl;
         }
 
         this->waitsForEvent = true;
         this->waitTime =  nextEvents->at(0)->GetRelativeSecondsToNext();
 
-        cout << " == Will wake up in " << this->waitTime << endl;
+        cout << "== INFO Will wake up in " << this->waitTime << endl;
 
         this->loop = uv_default_loop();
         uv_timer_init(loop, &(this->timer_req));
@@ -188,29 +188,29 @@ namespace twogreencows_core
         currentTimeInfo = std::localtime(&currentTime);
         long SecondsInDay = currentTimeInfo->tm_hour * 3600 + currentTimeInfo->tm_min *60 + currentTimeInfo->tm_sec;
 
-        cout << " == Received timer " << " at " << SecondsInDay <<endl;
+        cout << "== INFO Received timer " << " at " << SecondsInDay <<endl;
         if (true == this->waitsForEvent ) {
 
-            cout << " == Fire ot triggers " <<  endl;
+            cout << "== INFO Fire ot triggers " <<  endl;
             //trigger the Fire
 
             for(std::vector<Event *>::iterator it = nextEvents->begin(); it != nextEvents->end(); ++it) {
                 if ((*it)->GetRelativeSecondsToNext() == this->waitTime) {
                     Trigger *tr = static_cast<Trigger *>(Base::ObjectWithIdentifier((*it)->GetTriggerIdentifier()));
-                    cout << tr->GetName();
+                    cout << "== INFO      " << tr->GetName() << endl;
                     tr->Fire(*it, SecondsInDay);
                 } 
                 (*it)->SetRelativeSecondsToNext(0);
             }
             //wait for one second to avoid looping on the action
             this->waitsForEvent = false;
-            cout << " == Schedule for 2 second " <<  endl;
+            //cout << " == Schedule for 2 second " <<  endl;
             uv_timer_stop(&(this->timer_req));
             uv_timer_start(&(this->timer_req), TimelinesMainCallBack, 2000, 0);
 
         }  else {
 
-            cout << " == Schedule next events" <<  endl;
+            //cout << " == Schedule next events" <<  endl;
             this->waitsForEvent = true ;
 
             this->nextEvents->clear();
@@ -225,9 +225,9 @@ namespace twogreencows_core
 
             std::sort(nextEvents->begin(), nextEvents->end(), [](Event* a, Event * b) {
                     return a->GetRelativeSecondsToNext() < b->GetRelativeSecondsToNext(); });
-            cout << " == Dumping next events " << endl;
+            cout << "== INFO Dumping next events " << endl;
             for(std::vector<Event *>::iterator it = nextEvents->begin(); it != nextEvents->end(); ++it) {
-                cout << *(*it) <<endl;
+                cout << "> " << *(*it) <<endl;
             }
 
 

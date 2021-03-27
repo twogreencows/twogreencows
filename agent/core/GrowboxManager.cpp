@@ -409,7 +409,7 @@ namespace twogreencows_core
         Growbox *box = nullptr;
         std::vector<std::string> TimelinesUUID;
 
-        cout << "reading from DB " <<endl;
+        //cout << "reading from DB " <<endl;
         this->OpenDataBaseForIdentifier(GrowboxIdentifier);
         sqlite3 *db = this->GetOpenedDataBase();    
         if (nullptr == db) {
@@ -431,7 +431,7 @@ namespace twogreencows_core
 
 
         string GBUUID =  string(reinterpret_cast<const char*>(sqlite3_column_text(res, 0)));
-        cout << GBUUID << " read" <<endl;
+        //cout << GBUUID << " read" <<endl;
         string GBName =  string(reinterpret_cast<const char*>(sqlite3_column_text(res, 1)));
         string GBServerIPV4 =  string(reinterpret_cast<const char*>(sqlite3_column_text(res, 2)));
         
@@ -442,7 +442,7 @@ namespace twogreencows_core
         box = new Growbox(parameters);
         sqlite3_finalize(res); 
 
-        cout << "done " <<endl;
+        //cout << "done " <<endl;
         sql = "SELECT tl_uuid from growboxes_timelines WHERE gb_uuid = @gb_uuid";
         rc = sqlite3_prepare_v2(db, sql.c_str(), -1, &res, 0);
         if (rc != SQLITE_OK && rc!=SQLITE_DONE) {  cerr <<  "Failed to execute statement (" << sql << ")" <<  sqlite3_errmsg(db) << endl; 
@@ -457,9 +457,9 @@ namespace twogreencows_core
             if (step == SQLITE_DONE) { break;}
             if (step != SQLITE_ROW) { cerr <<  "Failed to execute statement (" << sql << ")" <<  sqlite3_errmsg(db) << endl; 
                this->CloseDataBaseForIdentifier(GrowboxIdentifier); return result;}
-            cout << "one timeline" << endl;
+            //cout << "one timeline" << endl;
             string TLUUID =  string(reinterpret_cast<const char*>(sqlite3_column_text(res, 0)));
-            cout << TLUUID <<endl;
+            //cout << TLUUID <<endl;
             TimelinesUUID.push_back(TLUUID);
         }
         sqlite3_finalize(res);
@@ -500,7 +500,7 @@ namespace twogreencows_core
                     this->CloseDataBaseForIdentifier(GrowboxIdentifier); return result;}
 
                 string TRUUID =  string(reinterpret_cast<const char*>(sqlite3_column_text(res, 0)));
-                cout <<TRUUID << endl;
+                //cout <<TRUUID << endl;
                 TriggersUUID.push_back(TRUUID);
             }
             sqlite3_finalize(res);

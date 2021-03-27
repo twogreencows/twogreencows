@@ -28,12 +28,11 @@ namespace twogreencows_core
         this->ObjectVersion = 1; 
         this->name = name;
         this->AllTriggers = new vector<Trigger*>();
-        cerr << " = Create Timeline" + this->GetIdentifier()+ "("+this->GetName()+")" << endl;
+        cerr << "== CREATE   Timeline: " + this->GetIdentifier()+ " ("+this->GetName()+")" << endl;
     }
 
     Timeline::~Timeline()
     {
-        cout << "timeline destructor";
     }
 
     string Timeline::GetName()
@@ -63,7 +62,7 @@ namespace twogreencows_core
     std::vector<Event*> Timeline::StartTriggers(int kq, long timeInSeconds)
     {
         //Build Events for day
-        cout << "  + Starting timeline " << this->GetName() << "(" << this->GetIdentifier(true) << ")" << endl;
+        cout << "== START   Timeline: " << this->GetName() << " (" << this->GetIdentifier(true) << ")" << endl;
         std::vector<Event *> result ; 
         //set trigger to the state they should havee if not transient
         for(std::vector<Trigger *>::iterator it = this->AllTriggers->begin(); it != this->AllTriggers->end(); ++it) {

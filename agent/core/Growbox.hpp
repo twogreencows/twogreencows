@@ -6,7 +6,6 @@
 #include "Device.hpp"
 #include "Recorder.hpp"
 #include <ctime>
-#include <sqlite3.h>
 #include <vector>
 #include <unordered_map>
 #include <uv.h>
@@ -27,7 +26,6 @@ namespace twogreencows_core
         time_t start_date;
         time_t stop_date;
 
-        sqlite3 *persistentStorage;
         bool isRunning;
         vector<Timeline *> *timelines;
         vector<Recorder*> *recorders;

@@ -37,7 +37,6 @@ namespace twogreencows_core
         
         Action::~Action()
         {
-            cout << "Destructor Action" << endl;
         }
 
        
@@ -69,7 +68,6 @@ namespace twogreencows_core
         }
 
         Action * Action::CreateActionForType(string actionType, string growboxIdentifier) {
-            cout << actionType << endl;
             Action *result = NULL;
             if (0 == actionType.compare("relay")) {
                 result = new ActionRelay(growboxIdentifier);
