@@ -10,6 +10,15 @@ using namespace std;
 #include "Recorder.hpp"
 #include "RecorderNetwork.hpp"
 
+
+#include <sys/types.h>
+#include <sys/socket.h>
+#include <unistd.h>
+#include <netinet/in.h>
+#include <ifaddrs.h>
+#include "mdns.h"
+
+
 namespace twogreencows_core
 {
 
@@ -23,12 +32,13 @@ namespace twogreencows_core
         }
 
 
-       void RecorderNetwork::Open()
+       void RecorderNetwork::Open()          
         {
         }
 
         void RecorderNetwork::LogDataPoint(DataPoint dp)
         {
+            //for each record send to the server
         }
 
         void RecorderNetwork::Close()

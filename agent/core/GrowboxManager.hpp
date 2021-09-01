@@ -17,6 +17,7 @@
 #include <string>
 #include "Growbox.hpp"
 #include <sqlite3.h>
+#include <dirent.h>
 
 namespace twogreencows_core
 {
@@ -32,6 +33,8 @@ namespace twogreencows_core
 
         public:
             static GrowboxManager *GetSharedManager();
+
+            std::vector<std::string> GetAllGrowboxIdentifiers();
             std::string GetLastActiveGrowboxIdentifier();
             std::string GetTopFolderPathForGrowboxIdentifier(std::string GrowboxIdentifier);
             void SetLastActiveGrowboxIdentifier(std::string GrowboxIdentifier);

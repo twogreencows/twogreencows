@@ -1,0 +1,626 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 50;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		2A55A28826D2BC7F0027CD33 /* BaseObject.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2A55A28726D2BC7F0027CD33 /* BaseObject.swift */; };
+		2A62E93C26D90ACE00B4EE77 /* NetworkBonjourListener.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2A62E93B26D90ACE00B4EE77 /* NetworkBonjourListener.swift */; };
+		2A72271226CDB47300EEA8FC /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2A72271126CDB47300EEA8FC /* AppDelegate.swift */; };
+		2A72271426CDB47300EEA8FC /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2A72271326CDB47300EEA8FC /* SceneDelegate.swift */; };
+		2A72271626CDB47300EEA8FC /* ServersViewControllerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2A72271526CDB47300EEA8FC /* ServersViewControllerViewController.swift */; };
+		2A72271926CDB47300EEA8FC /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 2A72271726CDB47300EEA8FC /* Main.storyboard */; };
+		2A72271B26CDB47A00EEA8FC /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 2A72271A26CDB47A00EEA8FC /* Assets.xcassets */; };
+		2A72271E26CDB47A00EEA8FC /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 2A72271C26CDB47A00EEA8FC /* LaunchScreen.storyboard */; };
+		2A72272926CDB47B00EEA8FC /* TwogreencowsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2A72272826CDB47B00EEA8FC /* TwogreencowsTests.swift */; };
+		2A72273426CDB47B00EEA8FC /* TwogreencowsUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2A72273326CDB47B00EEA8FC /* TwogreencowsUITests.swift */; };
+		2AEE271926D5A3B50091AE52 /* DataProviderManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2AEE271826D5A3B50091AE52 /* DataProviderManager.swift */; };
+		2AEE271B26D5A4210091AE52 /* DataProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2AEE271A26D5A4210091AE52 /* DataProvider.swift */; };
+		2AEE271D26D5ABB20091AE52 /* LocalViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2AEE271C26D5ABB20091AE52 /* LocalViewController.swift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		2A72272526CDB47B00EEA8FC /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 2A72270626CDB47200EEA8FC /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 2A72270D26CDB47200EEA8FC;
+			remoteInfo = Twogreencows;
+		};
+		2A72273026CDB47B00EEA8FC /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 2A72270626CDB47200EEA8FC /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 2A72270D26CDB47200EEA8FC;
+			remoteInfo = Twogreencows;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXFileReference section */
+		2A55A28726D2BC7F0027CD33 /* BaseObject.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseObject.swift; sourceTree = "<group>"; };
+		2A62E93B26D90ACE00B4EE77 /* NetworkBonjourListener.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkBonjourListener.swift; sourceTree = "<group>"; };
+		2A72270E26CDB47300EEA8FC /* Twogreencows.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Twogreencows.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		2A72271126CDB47300EEA8FC /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
+		2A72271326CDB47300EEA8FC /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
+		2A72271526CDB47300EEA8FC /* ServersViewControllerViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServersViewControllerViewController.swift; sourceTree = "<group>"; };
+		2A72271826CDB47300EEA8FC /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
+		2A72271A26CDB47A00EEA8FC /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		2A72271D26CDB47A00EEA8FC /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
+		2A72271F26CDB47A00EEA8FC /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		2A72272426CDB47B00EEA8FC /* TwogreencowsTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = TwogreencowsTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		2A72272826CDB47B00EEA8FC /* TwogreencowsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TwogreencowsTests.swift; sourceTree = "<group>"; };
+		2A72272A26CDB47B00EEA8FC /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		2A72272F26CDB47B00EEA8FC /* TwogreencowsUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = TwogreencowsUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		2A72273326CDB47B00EEA8FC /* TwogreencowsUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TwogreencowsUITests.swift; sourceTree = "<group>"; };
+		2A72273526CDB47B00EEA8FC /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		2AEE271826D5A3B50091AE52 /* DataProviderManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataProviderManager.swift; sourceTree = "<group>"; };
+		2AEE271A26D5A4210091AE52 /* DataProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataProvider.swift; sourceTree = "<group>"; };
+		2AEE271C26D5ABB20091AE52 /* LocalViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalViewController.swift; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		2A72270B26CDB47200EEA8FC /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		2A72272126CDB47B00EEA8FC /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		2A72272C26CDB47B00EEA8FC /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		2A55A28926D2BC940027CD33 /* Backend */ = {
+			isa = PBXGroup;
+			children = (
+				2A55A28726D2BC7F0027CD33 /* BaseObject.swift */,
+				2AEE271826D5A3B50091AE52 /* DataProviderManager.swift */,
+				2A62E93B26D90ACE00B4EE77 /* NetworkBonjourListener.swift */,
+				2AEE271A26D5A4210091AE52 /* DataProvider.swift */,
+			);
+			path = Backend;
+			sourceTree = "<group>";
+		};
+		2A72270526CDB47200EEA8FC = {
+			isa = PBXGroup;
+			children = (
+				2A72271026CDB47300EEA8FC /* Twogreencows */,
+				2A72272726CDB47B00EEA8FC /* TwogreencowsTests */,
+				2A72273226CDB47B00EEA8FC /* TwogreencowsUITests */,
+				2A72270F26CDB47300EEA8FC /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		2A72270F26CDB47300EEA8FC /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				2A72270E26CDB47300EEA8FC /* Twogreencows.app */,
+				2A72272426CDB47B00EEA8FC /* TwogreencowsTests.xctest */,
+				2A72272F26CDB47B00EEA8FC /* TwogreencowsUITests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		2A72271026CDB47300EEA8FC /* Twogreencows */ = {
+			isa = PBXGroup;
+			children = (
+				2A72271126CDB47300EEA8FC /* AppDelegate.swift */,
+				2A72271326CDB47300EEA8FC /* SceneDelegate.swift */,
+				2A72271526CDB47300EEA8FC /* ServersViewControllerViewController.swift */,
+				2AEE271C26D5ABB20091AE52 /* LocalViewController.swift */,
+				2A72271726CDB47300EEA8FC /* Main.storyboard */,
+				2A55A28926D2BC940027CD33 /* Backend */,
+				2A72271A26CDB47A00EEA8FC /* Assets.xcassets */,
+				2A72271C26CDB47A00EEA8FC /* LaunchScreen.storyboard */,
+				2A72271F26CDB47A00EEA8FC /* Info.plist */,
+			);
+			path = Twogreencows;
+			sourceTree = "<group>";
+		};
+		2A72272726CDB47B00EEA8FC /* TwogreencowsTests */ = {
+			isa = PBXGroup;
+			children = (
+				2A72272826CDB47B00EEA8FC /* TwogreencowsTests.swift */,
+				2A72272A26CDB47B00EEA8FC /* Info.plist */,
+			);
+			path = TwogreencowsTests;
+			sourceTree = "<group>";
+		};
+		2A72273226CDB47B00EEA8FC /* TwogreencowsUITests */ = {
+			isa = PBXGroup;
+			children = (
+				2A72273326CDB47B00EEA8FC /* TwogreencowsUITests.swift */,
+				2A72273526CDB47B00EEA8FC /* Info.plist */,
+			);
+			path = TwogreencowsUITests;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		2A72270D26CDB47200EEA8FC /* Twogreencows */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 2A72273826CDB47B00EEA8FC /* Build configuration list for PBXNativeTarget "Twogreencows" */;
+			buildPhases = (
+				2A72270A26CDB47200EEA8FC /* Sources */,
+				2A72270B26CDB47200EEA8FC /* Frameworks */,
+				2A72270C26CDB47200EEA8FC /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = Twogreencows;
+			productName = Twogreencows;
+			productReference = 2A72270E26CDB47300EEA8FC /* Twogreencows.app */;
+			productType = "com.apple.product-type.application";
+		};
+		2A72272326CDB47B00EEA8FC /* TwogreencowsTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 2A72273B26CDB47B00EEA8FC /* Build configuration list for PBXNativeTarget "TwogreencowsTests" */;
+			buildPhases = (
+				2A72272026CDB47B00EEA8FC /* Sources */,
+				2A72272126CDB47B00EEA8FC /* Frameworks */,
+				2A72272226CDB47B00EEA8FC /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				2A72272626CDB47B00EEA8FC /* PBXTargetDependency */,
+			);
+			name = TwogreencowsTests;
+			productName = TwogreencowsTests;
+			productReference = 2A72272426CDB47B00EEA8FC /* TwogreencowsTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+		2A72272E26CDB47B00EEA8FC /* TwogreencowsUITests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 2A72273E26CDB47B00EEA8FC /* Build configuration list for PBXNativeTarget "TwogreencowsUITests" */;
+			buildPhases = (
+				2A72272B26CDB47B00EEA8FC /* Sources */,
+				2A72272C26CDB47B00EEA8FC /* Frameworks */,
+				2A72272D26CDB47B00EEA8FC /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				2A72273126CDB47B00EEA8FC /* PBXTargetDependency */,
+			);
+			name = TwogreencowsUITests;
+			productName = TwogreencowsUITests;
+			productReference = 2A72272F26CDB47B00EEA8FC /* TwogreencowsUITests.xctest */;
+			productType = "com.apple.product-type.bundle.ui-testing";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		2A72270626CDB47200EEA8FC /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastSwiftUpdateCheck = 1250;
+				LastUpgradeCheck = 1250;
+				TargetAttributes = {
+					2A72270D26CDB47200EEA8FC = {
+						CreatedOnToolsVersion = 12.5.1;
+					};
+					2A72272326CDB47B00EEA8FC = {
+						CreatedOnToolsVersion = 12.5.1;
+						TestTargetID = 2A72270D26CDB47200EEA8FC;
+					};
+					2A72272E26CDB47B00EEA8FC = {
+						CreatedOnToolsVersion = 12.5.1;
+						TestTargetID = 2A72270D26CDB47200EEA8FC;
+					};
+				};
+			};
+			buildConfigurationList = 2A72270926CDB47200EEA8FC /* Build configuration list for PBXProject "Twogreencows" */;
+			compatibilityVersion = "Xcode 9.3";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = 2A72270526CDB47200EEA8FC;
+			productRefGroup = 2A72270F26CDB47300EEA8FC /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				2A72270D26CDB47200EEA8FC /* Twogreencows */,
+				2A72272326CDB47B00EEA8FC /* TwogreencowsTests */,
+				2A72272E26CDB47B00EEA8FC /* TwogreencowsUITests */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		2A72270C26CDB47200EEA8FC /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				2A72271E26CDB47A00EEA8FC /* LaunchScreen.storyboard in Resources */,
+				2A72271B26CDB47A00EEA8FC /* Assets.xcassets in Resources */,
+				2A72271926CDB47300EEA8FC /* Main.storyboard in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		2A72272226CDB47B00EEA8FC /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		2A72272D26CDB47B00EEA8FC /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		2A72270A26CDB47200EEA8FC /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				2AEE271B26D5A4210091AE52 /* DataProvider.swift in Sources */,
+				2A72271626CDB47300EEA8FC /* ServersViewControllerViewController.swift in Sources */,
+				2A55A28826D2BC7F0027CD33 /* BaseObject.swift in Sources */,
+				2AEE271926D5A3B50091AE52 /* DataProviderManager.swift in Sources */,
+				2AEE271D26D5ABB20091AE52 /* LocalViewController.swift in Sources */,
+				2A72271226CDB47300EEA8FC /* AppDelegate.swift in Sources */,
+				2A62E93C26D90ACE00B4EE77 /* NetworkBonjourListener.swift in Sources */,
+				2A72271426CDB47300EEA8FC /* SceneDelegate.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		2A72272026CDB47B00EEA8FC /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				2A72272926CDB47B00EEA8FC /* TwogreencowsTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		2A72272B26CDB47B00EEA8FC /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				2A72273426CDB47B00EEA8FC /* TwogreencowsUITests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		2A72272626CDB47B00EEA8FC /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 2A72270D26CDB47200EEA8FC /* Twogreencows */;
+			targetProxy = 2A72272526CDB47B00EEA8FC /* PBXContainerItemProxy */;
+		};
+		2A72273126CDB47B00EEA8FC /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 2A72270D26CDB47200EEA8FC /* Twogreencows */;
+			targetProxy = 2A72273026CDB47B00EEA8FC /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin PBXVariantGroup section */
+		2A72271726CDB47300EEA8FC /* Main.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				2A72271826CDB47300EEA8FC /* Base */,
+			);
+			name = Main.storyboard;
+			sourceTree = "<group>";
+		};
+		2A72271C26CDB47A00EEA8FC /* LaunchScreen.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				2A72271D26CDB47A00EEA8FC /* Base */,
+			);
+			name = LaunchScreen.storyboard;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		2A72273626CDB47B00EEA8FC /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.5;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		2A72273726CDB47B00EEA8FC /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.5;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		2A72273926CDB47B00EEA8FC /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = LZ7UJDVFFM;
+				INFOPLIST_FILE = Twogreencows/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = co.twogreenco.Twogreencows;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		2A72273A26CDB47B00EEA8FC /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = LZ7UJDVFFM;
+				INFOPLIST_FILE = Twogreencows/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = co.twogreenco.Twogreencows;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+		2A72273C26CDB47B00EEA8FC /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = LZ7UJDVFFM;
+				INFOPLIST_FILE = TwogreencowsTests/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.5;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = co.twogreenco.TwogreencowsTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Twogreencows.app/Twogreencows";
+			};
+			name = Debug;
+		};
+		2A72273D26CDB47B00EEA8FC /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = LZ7UJDVFFM;
+				INFOPLIST_FILE = TwogreencowsTests/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.5;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = co.twogreenco.TwogreencowsTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Twogreencows.app/Twogreencows";
+			};
+			name = Release;
+		};
+		2A72273F26CDB47B00EEA8FC /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = LZ7UJDVFFM;
+				INFOPLIST_FILE = TwogreencowsUITests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = co.twogreenco.TwogreencowsUITests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = Twogreencows;
+			};
+			name = Debug;
+		};
+		2A72274026CDB47B00EEA8FC /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = LZ7UJDVFFM;
+				INFOPLIST_FILE = TwogreencowsUITests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = co.twogreenco.TwogreencowsUITests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = Twogreencows;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		2A72270926CDB47200EEA8FC /* Build configuration list for PBXProject "Twogreencows" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				2A72273626CDB47B00EEA8FC /* Debug */,
+				2A72273726CDB47B00EEA8FC /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		2A72273826CDB47B00EEA8FC /* Build configuration list for PBXNativeTarget "Twogreencows" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				2A72273926CDB47B00EEA8FC /* Debug */,
+				2A72273A26CDB47B00EEA8FC /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		2A72273B26CDB47B00EEA8FC /* Build configuration list for PBXNativeTarget "TwogreencowsTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				2A72273C26CDB47B00EEA8FC /* Debug */,
+				2A72273D26CDB47B00EEA8FC /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		2A72273E26CDB47B00EEA8FC /* Build configuration list for PBXNativeTarget "TwogreencowsUITests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				2A72273F26CDB47B00EEA8FC /* Debug */,
+				2A72274026CDB47B00EEA8FC /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 2A72270626CDB47200EEA8FC /* Project object */;
+}

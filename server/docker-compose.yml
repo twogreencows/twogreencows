@@ -6,7 +6,25 @@ services:
             dockerfile: DockerfileDB_PG
         ports:
             - "5432:5432"
-            #  api:
-            #build:
-            #context: ./api
-            #dockerfile: DockerfileServer
+    db_cassandra:
+        build: 
+          context: ./dbs/cassandra
+          dockerfile: DockerfileDB_CAS
+        ports:
+            - "9042:9042"
+    db_elasticsearch:
+        build:
+          context: ./dbs/elasticsearch
+          dockerfile: DockerfileDB_ES
+        ulimits:
+          memlock:
+            soft: -1
+            hard: -1
+        environment:
+          - node.name=es01
+          - cluster.name=es-docker-cluster
+          - discovery.type=single-node
+          - bootstrap.memory_lock=true
+          - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+        ports:
+            - "9200:9200"

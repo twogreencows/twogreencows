@@ -1,7 +1,7 @@
 FROM openjdk:8-alpine
 
-COPY target/uberjar/twogreenpots.jar /twogreenpots/app.jar
+COPY target/uberjar/twogreencows.jar /twogreencows/app.jar
 
 EXPOSE 3000
 
-CMD ["java", "-jar", "/twogreenpots/app.jar"]
+CMD ["java", "-jar", "/twogreencows/app.jar"]

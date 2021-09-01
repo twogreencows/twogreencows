@@ -21,6 +21,7 @@
 #include "Base.hpp"
 #include "Growbox.hpp"
 #include "GrowboxManager.hpp"
+#include "NetworkBonjourBroadcaster.hpp"
 #include "Trigger.hpp"
 #include "Timeline.hpp"
 
@@ -46,7 +47,7 @@ int main(int argc, char *argv[]) {
         LastActiveGrowboxIdentifier = GrowboxManager::GetSharedManager()->GetLastActiveGrowboxIdentifier();
         cout << "> Last identifier is " << LastActiveGrowboxIdentifier << endl;
         if (LastActiveGrowboxIdentifier.empty()) {
-            cerr << "No descriptor file found" << endl;
+            cerr << "No growbox descriptor file found" << endl;
             return 0;
         }
         box = GrowboxManager::GetSharedManager()->CreateGrowboxFromPersistentStorage(LastActiveGrowboxIdentifier);
@@ -59,14 +60,20 @@ int main(int argc, char *argv[]) {
                 cerr << "In this last case previously created growboxes are not discarded/deleted as a future version" <<endl; 
                 cerr << "of the agent may handle more than one at a time." << endl;
                 return 0;
+            } else if (std::string(argv[i]) == "--info") {
+                std::vector<std::string> allIdentifiers = GrowboxManager::GetSharedManager()->GetAllGrowboxIdentifiers();             
+                cout << "Printing growbox information on local machine" << endl;
+                for(auto it = std::begin(allIdentifiers); it != std::end(allIdentifiers); ++it) {
+                    cout << " - Identifier found: " << *it << endl;
+                }
             } else if (std::string(argv[i]) == "--tgcfile") {
                 if (i + 1 < argc) { // Make sure we aren't at the end of argv!
                     TGCFilePath = string(argv[++i]);
                 }
-            }  
+            }
         }
         if (TGCFilePath.empty()) {
-            cerr << "No descriptor file found" << endl;
+            cerr << "No growbox descriptor file found" << endl;
             return 0;
         }
 
@@ -78,6 +85,7 @@ int main(int argc, char *argv[]) {
         box = GrowboxManager::GetSharedManager()->CreateGrowboxFromDescriptorFile(TGCFullFilePath);
     }
     if (nullptr != box) {
+        NetworkBonjourBroadcaster::GetSharedBroadcaster()->StartBonjourService();
         box->Start();
     }
     return(0);

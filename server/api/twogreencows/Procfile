@@ -1,1 +1,2 @@
-web: java -cp target/uberjar/twogreenpots.jar clojure.main -m twogreenpots.core
+web: java -cp target/uberjar/twogreencows.jar clojure.main -m twogreencows.core
+

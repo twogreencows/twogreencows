@@ -65,7 +65,8 @@ namespace twogreencows_core
         return SharedManager;
     }
 
-        //Get storage path for a growboz designed by its identifier
+        
+        //Get storage path for a growbox designed by its identifier
     std::string GrowboxManager::GetTopFolderPathForGrowboxIdentifier(std::string GrowboxIdentifier)
     {      
         string prefix = "growbox";
@@ -73,7 +74,30 @@ namespace twogreencows_core
         if (!hasProperPrefix) {
             return "";
         }
-        return this->TwoGreenCowsMainFolderPath +GrowboxIdentifier + "/";
+        return this->TwoGreenCowsMainFolderPath + GrowboxIdentifier + "/";
+    }
+
+    
+        //Get All identifiers on agent for current user        
+    std::vector<std::string> GrowboxManager::GetAllGrowboxIdentifiers()
+    {
+        std::vector<std::string> result;
+        DIR *d;
+        struct dirent *dir;
+        d = opendir(this->TwoGreenCowsMainFolderPath.c_str());
+        if (d) {
+            while ((dir = readdir(d)) != NULL) {
+                if (dir->d_type == DT_DIR) {         
+                    string prefix = "growbox";
+                    bool hasProperPrefix = std::mismatch(prefix.begin(), prefix.end(), string(dir->d_name).begin(), string(dir->d_name).end()).first == prefix.end();
+                    if (hasProperPrefix) {
+                        result.push_back(string(dir->d_name));
+                    }
+                }  
+            }
+            closedir(d);
+        }
+        return result;
     }
 
         //If a Growbox has been run already it should have an identifier
@@ -133,8 +157,14 @@ namespace twogreencows_core
         writer.StartObject();               // Between StartObject()/EndObject(), 
         writer.Key("last_growbox_identifier");                // output a key,
         writer.String(GrowboxIdentifier);             // follow by a value.
+       
+        time_t tmp_date = time(NULL);
+        char buf[sizeof "2011-10-08T07:07:09Z"];
+        strftime(buf, sizeof buf, "%FT%TZ", gmtime(&tmp_date));
+        cout << string(buf) << endl;
+        writer.Key("last_growbox_startdate");                
+        writer.String(string(buf));            
         writer.EndObject();
-        
         std::ofstream of (fullfilepath);
         
         of << s.GetString();

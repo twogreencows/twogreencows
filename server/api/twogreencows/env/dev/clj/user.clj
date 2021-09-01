@@ -1,31 +1,33 @@
 (ns user
   (:require
-    [twogreenpots.config :refer [env]]
+    [twogreencows.config :refer [env]]
     [clojure.spec.alpha :as s]
     [expound.alpha :as expound]
     [mount.core :as mount]
-    [twogreenpots.core :refer [start-app]]
-    [twogreenpots.db.core]
+    [twogreencows.core :refer [start-app]]
+    [twogreencows.db.core]
     [conman.core :as conman]
     [luminus-migrations.core :as migrations]))
 
 (alter-var-root #'s/*explain-out* (constantly expound/printer))
 
+(add-tap (bound-fn* clojure.pprint/pprint))
+
 (defn start []
-  (mount/start-without #'twogreenpots.core/repl-server))
+  (mount/start-without #'twogreencows.core/repl-server))
 
 (defn stop []
-  (mount/stop-except #'twogreenpots.core/repl-server))
+  (mount/stop-except #'twogreencows.core/repl-server))
 
 (defn restart []
   (stop)
   (start))
 
 (defn restart-db []
-  (mount/stop #'twogreenpots.db.core/*db*)
-  (mount/start #'twogreenpots.db.core/*db*)
-  (binding [*ns* 'twogreenpots.db.core]
-    (conman/bind-connection twogreenpots.db.core/*db* "sql/queries.sql")))
+  (mount/stop #'twogreencows.db.core/*db*)
+  (mount/start #'twogreencows.db.core/*db*)
+  (binding [*ns* (the-ns 'twogreencows.db.core)]
+    (conman/bind-connection twogreencows.db.core/*db* "sql/queries.sql")))
 
 (defn reset-db []
   (migrations/migrate ["reset"] (select-keys env [:database-url])))
