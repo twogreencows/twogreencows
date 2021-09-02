@@ -1,6 +1,7 @@
-# Compiled source #
+# Compiled stuff #
 ###################
 *.o
+twogreencows_agent
 
 
 # Logs and databases #
@@ -15,3 +16,6 @@
 .Spotlight-V100
 .Trashes
 *.swp
+
+# VIM stuff
+*.un~
