@@ -9,8 +9,8 @@
 ##
 ## Create script that executes files found in docker-entrypoint-initdb.d/
 
+echo "1"
 cat <<'EOF' >> /run-init-scripts.sh
-ls -lsa
 
 #!/usr/bin/env bash
 
@@ -19,6 +19,7 @@ INIT_DIR=docker-entrypoint-initdb.d
 
 if [ -f "$LOCK" ]; then
     echo "@@ Initialization already performed."
+    echo "lala"
     exit 0
 fi
 
@@ -50,6 +51,7 @@ EOF
 
 ## Patch existing entrypoint to call our script in the background
 # This has been inspired by https://www.thetopsites.net/article/51594713.shtml
+echo "1"
 
 EP=/patched-entrypoint.sh
 sed '$ d' /docker-entrypoint.sh > $EP

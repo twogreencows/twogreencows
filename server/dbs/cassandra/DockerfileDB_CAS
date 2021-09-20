@@ -16,9 +16,8 @@ COPY *.cql /docker-entrypoint-initdb.d/
 COPY entrypoint.sh /
 RUN ["chmod", "+x", "/entrypoint.sh"]
 
-
 # Override ENTRYPOINT, keep CMD
-#ENTRYPOINT ["/entrypoint.sh"]
-#CMD ["cassandra", "-f"]
+ENTRYPOINT ["/entrypoint.sh"]
+CMD ["cassandra", "-f"]
 
-#EXPOSE 9042
+EXPOSE 9042
