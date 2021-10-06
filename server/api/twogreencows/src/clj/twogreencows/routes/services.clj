@@ -8,7 +8,7 @@
     [reitit.ring.middleware.exception :as exception]
     [reitit.ring.middleware.multipart :as multipart]
     [reitit.ring.middleware.parameters :as parameters]
-    [twogreencows.users :as usrs]
+    [twogreencows.entities.users :as usrs]
     [twogreencows.middleware :as middleware]
     [ring.util.http-response :as response]
     [twogreencows.middleware.formats :as formats]))

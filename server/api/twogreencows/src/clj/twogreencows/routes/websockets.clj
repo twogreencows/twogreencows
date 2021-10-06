@@ -5,7 +5,7 @@
              [mount.core :refer [defstate]]
              [taoensso.sente :as sente]
              [taoensso.sente.server-adapters.http-kit :refer [get-sch-adapter]]
-             [twogreencows.users :as usrs]
+             [twogreencows.entities.users :as usrs]
              [twogreencows.middleware :as middleware]))
 
 

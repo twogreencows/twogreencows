@@ -8,7 +8,6 @@
 
 (defn user-list []
   {:users (vec (db/get-users))})
-  ;(vec (db/get-users)))
 
 (defn new-user! [params]
   (if-let [errors (validate-user params)]
