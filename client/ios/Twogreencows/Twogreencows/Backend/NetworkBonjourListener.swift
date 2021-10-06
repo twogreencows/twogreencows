@@ -28,10 +28,11 @@ class NetworkBonjourListener {
                     print("browser.stateUpdateHandler \(newState)")
         }
         browser.browseResultsChangedHandler = { results, changes in
+            print("browseResultsChangedHandler")
             for result in results {
-                if case NWEndpoint.service = result.endpoint {
+                //if case NWEndpoint.service = result.endpoint {
                     print("browser.browseResultsChangedHandler result: \(result)")
-                }
+                //}
             }
         }
         browser.start(queue: .main)
