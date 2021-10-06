@@ -20,9 +20,13 @@ namespace twogreencows_core
         } else {
             struct utsname infoName;
             uname(&infoName);
+            std::string localString(".local");
             this->name = infoName.nodename;
-            //cout << infoName.machine <<endl;
-            //cout << infoName.nodename <<endl;
+            if (this->name.length() > localString.length()) {
+                if (0 == this->name.compare(this->name.length() - localString.length(), localString.length(), localString)) {
+                    this->name = this->name.substr(0, this->name.size()-localString.size());
+                }
+            }  
        }
     }
 

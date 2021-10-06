@@ -146,7 +146,6 @@ namespace twogreencows_core
 
         this->nextEvents = new vector<Event*>();
 
-        //cout << "= Start Timeline triggers " << endl;
 
         for(std::vector<Timeline *>::iterator itt = this->timelines->begin(); itt != this->timelines->end(); ++itt) {
             std::vector<Event *> triggerEvents =  (*itt)->StartTriggers(0, SecondsInDay);

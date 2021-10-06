@@ -18,18 +18,13 @@
 #include <stddef.h>
 #include <stdlib.h>
 #include <string.h>
+#include <string>
 
 #include <fcntl.h>
-#ifdef _WIN32
-#include <Winsock2.h>
-#include <Ws2tcpip.h>
-#define strncasecmp _strnicmp
-#else
 #include <unistd.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <netdb.h>
-#endif
 
 #include <uv.h>
 

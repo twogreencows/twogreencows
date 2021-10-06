@@ -44,6 +44,7 @@ namespace twogreencows_core
         string PathToPhoto = this->PathToDataFolder + string(buf);
 
 #ifdef __MACH__
+        cerr << "Taking picture at " << this->width << this->height << this->quality <<endl;
 #else
         raspicamcontrol_set_defaults(&camera_parameters);
 #endif

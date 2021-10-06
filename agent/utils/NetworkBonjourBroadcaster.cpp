@@ -9,6 +9,7 @@
 #include <netinet/in.h>
 #include <ifaddrs.h>
 #include "mdns.h"
+#include <vector>
 
 typedef struct {
 	mdns_string_t service;
@@ -27,6 +28,26 @@ typedef struct {
 
 #include "NetworkBonjourBroadcaster.hpp"
 
+
+extern "C"
+{
+int GlobalServiceCallback(int sock, const struct sockaddr* from, size_t addrlen, mdns_entry_type_t entry,
+                 uint16_t query_id, uint16_t rtype, uint16_t rclass, uint32_t ttl, const void* data,
+                 size_t size, size_t name_offset, size_t name_length, size_t record_offset,
+                 size_t record_length, void* user_data);
+
+int GlobalServiceCallback(int sock, const struct sockaddr* from, size_t addrlen, mdns_entry_type_t entry,
+                 uint16_t query_id, uint16_t rtype, uint16_t rclass, uint32_t ttl, const void* data,
+                 size_t size, size_t name_offset, size_t name_length, size_t record_offset,
+                 size_t record_length, void* user_data)
+
+{
+    twogreencows_core::NetworkBonjourBroadcaster::GetSharedBroadcaster()->ServiceCallback(sock, from, addrlen, entry, query_id, rtype, 
+            rclass, ttl, data,size,name_offset, name_length, record_offset, record_length, user_data);
+}
+
+}
+
 namespace twogreencows_core
 {
     NetworkBonjourBroadcaster* NetworkBonjourBroadcaster::SharedBroadcaster = nullptr;
@@ -35,9 +56,20 @@ namespace twogreencows_core
     {
         this->ServiceName = "_twogreencowsagent._tcp.local.";
         this->ServicePort = 27512;
+
+        //We get the name without local
         struct utsname infoName;
         uname(&infoName);
         this->Hostname = infoName.nodename;
+        std::string localString(".local");
+        if (this->Hostname.length() > localString.length()) {
+            if (0 == this->Hostname.compare(this->Hostname.length() - localString.length(), localString.length(), localString)) {
+                this->Hostname = this->Hostname.substr(0, this->Hostname.size()-localString.size());
+            }
+        }  
+
+        this->service_address_ipv4s = new std::vector<struct sockaddr_in>();
+        this->service_address_ipv6s = new std::vector<struct sockaddr_in6>();
     }
 
     NetworkBonjourBroadcaster* NetworkBonjourBroadcaster::GetSharedBroadcaster()
@@ -57,28 +89,14 @@ namespace twogreencows_core
 		printf("Failed to open any client sockets\n");
 		return ;
 	}
-	printf("Opened %d socket%s for mDNS service\n", num_sockets, num_sockets ? "s" : "");
-
-	size_t service_name_length = strlen(this->ServiceName.c_str());
-	if (!service_name_length) {
-		printf("Invalid service name\n");
-		return ;
-	}
-
-	char* service_name_buffer = (char *) malloc(service_name_length + 2);
-	memcpy(service_name_buffer, this->ServiceName.c_str(), service_name_length);
-	if (service_name_buffer[service_name_length - 1] != '.')
-		service_name_buffer[service_name_length++] = '.';
-	service_name_buffer[service_name_length] = 0;
-	char *service_name = service_name_buffer;
-
-	printf("Service mDNS: %s:%d\n", service_name, this->ServicePort);
-	printf("Hostname: %s\n", this->Hostname.c_str());
+        std::cerr << "Opened " << num_sockets << " sockets for mDNS service"<< std::endl;
+        std::cerr << "Service mDNS: " << this->ServiceName << ":" <<  this->ServicePort << std::endl;
+	std::cerr << "Hostname: " << this->Hostname << std::endl;
 
 	size_t capacity = 2048;
 	void* buffer = malloc(capacity);
 
-	mdns_string_t service_string = (mdns_string_t){service_name, strlen(service_name)};
+	mdns_string_t service_string = (mdns_string_t){this->ServiceName.c_str(), strlen(this->ServiceName.c_str())};
 	mdns_string_t hostname_string = (mdns_string_t){this->Hostname.c_str(), strlen(this->Hostname.c_str())};
 
 	// Build the service instance "<hostname>.<_service-name>._tcp.local." string
@@ -87,6 +105,7 @@ namespace twogreencows_core
 	         MDNS_STRING_FORMAT(hostname_string), MDNS_STRING_FORMAT(service_string));
 	mdns_string_t service_instance_string =
 	    (mdns_string_t){service_instance_buffer, strlen(service_instance_buffer)};
+        std::cerr << "Service instance string: " <<  service_instance_buffer << std::endl;
 
 	// Build the "<hostname>.local." string
 	char qualified_hostname_buffer[256] = {0};
@@ -95,6 +114,7 @@ namespace twogreencows_core
 	mdns_string_t hostname_qualified_string =
 	    (mdns_string_t){qualified_hostname_buffer, strlen(qualified_hostname_buffer)};
 
+        std::cerr << "Hostname qualified local: " <<  qualified_hostname_buffer << std::endl;;
 	service_t service = {0};
 	service.service = service_string;
 	service.hostname = hostname_string;
@@ -171,7 +191,7 @@ namespace twogreencows_core
 		if (select(nfds, &readfs, 0, 0, 0) >= 0) {
 			for (int isock = 0; isock < num_sockets; ++isock) {
 				if (FD_ISSET(sockets[isock], &readfs)) {
-					mdns_socket_listen(sockets[isock], buffer, capacity, NetworkBonjourBroadcaster::ServiceCallback,
+					mdns_socket_listen(sockets[isock], buffer, capacity, GlobalServiceCallback,
 					                   &service);
 				}
 				FD_SET(sockets[isock], &readfs);
@@ -183,7 +203,7 @@ namespace twogreencows_core
 
 	// Send a goodbye on end of service
 	{
-		mdns_record_t additional[5] = {0};
+		mdns_record_t additional[5] = {{{0}}};
 		size_t additional_count = 0;
 		additional[additional_count++] = service.record_srv;
 		if (service.address_ipv4.sin_family == AF_INET)
@@ -199,7 +219,7 @@ namespace twogreencows_core
 	}
 
 	free(buffer);
-	free(service_name_buffer);
+	//free(service_name_buffer);
 
 	for (int isock = 0; isock < num_sockets; ++isock)
 		mdns_socket_close(sockets[isock]);
@@ -219,18 +239,26 @@ namespace twogreencows_core
 	struct ifaddrs* ifaddr = 0;
 	struct ifaddrs* ifa = 0;
 
+            //socket
 	if (getifaddrs(&ifaddr) < 0)
 		printf("Unable to get interface addresses\n");
 
+        std::cerr << "Enumerating Interfaces for port:" << port << std::endl;
 	int first_ipv4 = 1;
 	int first_ipv6 = 1;
 	for (ifa = ifaddr; ifa; ifa = ifa->ifa_next) {
 		if (!ifa->ifa_addr)
 			continue;
 
+                if (0 != ::strncmp(ifa->ifa_name, "en", 2)) 
+                        continue;
+                std::cerr << " + Interface: " << ifa->ifa_name << ", family :  " << int{ifa->ifa_addr->sa_family } << std::endl;
 		if (ifa->ifa_addr->sa_family == AF_INET) {
 			struct sockaddr_in* saddr = (struct sockaddr_in*)ifa->ifa_addr;
 			if (saddr->sin_addr.s_addr != htonl(INADDR_LOOPBACK)) {
+                         
+                                this->service_address_ipv4s->push_back(*saddr);
+                                std::cerr << ifa->ifa_name << "  --> IPV4" <<std::endl;
 				int log_addr = 0;
 				if (first_ipv4) {
 					service_address_ipv4 = *saddr;
@@ -240,6 +268,7 @@ namespace twogreencows_core
 				has_ipv4 = 1;
 				if (num_sockets < max_sockets) {
 					saddr->sin_port = htons(port);
+                                        std::cerr << "OPEN IPV4" << port << std::endl;
 					int sock = mdns_socket_open_ipv4(saddr);
 					if (sock >= 0) {
 						sockets[num_sockets++] = sock;
@@ -248,14 +277,16 @@ namespace twogreencows_core
 						log_addr = 0;
 					}
 				}
-				if (log_addr) {
+				//if (log_addr) {
 					char buffer[128];
 					mdns_string_t addr = ipv4_address_to_string(buffer, sizeof(buffer), saddr,
 					                                            sizeof(struct sockaddr_in));
-                                        std::cerr << "== INFO Local IPv4 address: " <<  addr.str << std::endl;
-				}
+                                        std::cerr << "== INFO  IPv4 address: " <<  addr.str << std::endl;
+				//}
 			}
 		} else if (ifa->ifa_addr->sa_family == AF_INET6) {
+                    
+                        std::cerr << ifa->ifa_name << " --IPV6" <<std::endl;
 			struct sockaddr_in6* saddr = (struct sockaddr_in6*)ifa->ifa_addr;
 			static const unsigned char localhost[] = {0, 0, 0, 0, 0, 0, 0, 0,
 			                                          0, 0, 0, 0, 0, 0, 0, 1};
@@ -263,6 +294,9 @@ namespace twogreencows_core
 			                                                 0, 0, 0xff, 0xff, 0x7f, 0, 0, 1};
 			if (memcmp(saddr->sin6_addr.s6_addr, localhost, 16) &&
 			    memcmp(saddr->sin6_addr.s6_addr, localhost_mapped, 16)) {
+
+                                
+                                this->service_address_ipv6s->push_back(*saddr);
 				int log_addr = 0;
 				if (first_ipv6) {
 					service_address_ipv6 = *saddr;
@@ -280,14 +314,16 @@ namespace twogreencows_core
 						log_addr = 0;
 					}
 				}
-				if (log_addr) {
+				//if (log_addr) {
 					char buffer[128];
 					mdns_string_t addr = ipv6_address_to_string(buffer, sizeof(buffer), saddr,
 					                                            sizeof(struct sockaddr_in6));
                                         std::cerr << " == INFO Local IPv6 address: " <<  addr.str << std::endl ;
-				}
+				//}
 			}
-		}
+		}  
+                
+
 	}
 
 	freeifaddrs(ifaddr);
@@ -340,6 +376,7 @@ namespace twogreencows_core
                  size_t size, size_t name_offset, size_t name_length, size_t record_offset,
                  size_t record_length, void* user_data)
     {
+        
         (void)sizeof(ttl);
 	if (entry != MDNS_ENTRYTYPE_QUESTION)
 		return 0;
@@ -385,7 +422,7 @@ namespace twogreencows_core
 
 			if (unicast) {
 				mdns_query_answer_unicast(sock, from, addrlen, sendbuffer, sizeof(sendbuffer),
-				                          query_id, rtype, name.str, name.length, answer, 0, 0, 0,
+				                          query_id, (mdns_record_type_t) rtype, name.str, name.length, answer, 0, 0, 0,
 				                          0);
 			} else {
 				mdns_query_answer_multicast(sock, sendbuffer, sizeof(sendbuffer), answer, 0, 0, 0,
@@ -432,7 +469,7 @@ namespace twogreencows_core
 
 			if (unicast) {
 				mdns_query_answer_unicast(sock, from, addrlen, sendbuffer, sizeof(sendbuffer),
-				                          query_id, rtype, name.str, name.length, answer, 0, 0,
+				                          query_id, (mdns_record_type_t)rtype, name.str, name.length, answer, 0, 0,
 				                          additional, additional_count);
 			} else {
 				mdns_query_answer_multicast(sock, sendbuffer, sizeof(sendbuffer), answer, 0, 0,
@@ -474,7 +511,7 @@ namespace twogreencows_core
 
 			if (unicast) {
 				mdns_query_answer_unicast(sock, from, addrlen, sendbuffer, sizeof(sendbuffer),
-				                          query_id, rtype, name.str, name.length, answer, 0, 0,
+				                          query_id, (mdns_record_type_t)rtype, name.str, name.length, answer, 0, 0,
 				                          additional, additional_count);
 			} else {
 				mdns_query_answer_multicast(sock, sendbuffer, sizeof(sendbuffer), answer, 0, 0,
@@ -514,7 +551,7 @@ namespace twogreencows_core
 
 			if (unicast) {
 				mdns_query_answer_unicast(sock, from, addrlen, sendbuffer, sizeof(sendbuffer),
-				                          query_id, rtype, name.str, name.length, answer, 0, 0,
+				                          query_id, (mdns_record_type_t)rtype, name.str, name.length, answer, 0, 0,
 				                          additional, additional_count);
 			} else {
 				mdns_query_answer_multicast(sock, sendbuffer, sizeof(sendbuffer), answer, 0, 0,
@@ -529,7 +566,7 @@ namespace twogreencows_core
 			// Answer AAAA records mapping "<hostname>.local." to IPv6 address
 			mdns_record_t answer = service->record_aaaa;
 
-			mdns_record_t additional[5] = {0};
+			mdns_record_t additional[5] = {{0}};
 			size_t additional_count = 0;
 
 			// A record mapping "<hostname>.local." to IPv4 addresses
@@ -552,15 +589,16 @@ namespace twogreencows_core
 			       (unicast ? "unicast" : "multicast"));
 
 			if (unicast) {
-				//mdns_query_answer_unicast(sock, from, addrlen, sendbuffer, sizeof(sendbuffer),
-				  //                        query_id, rtype, name.str, name.length, answer, 0, 0,
-				    //                      additional, additional_count);
+				mdns_query_answer_unicast(sock, from, addrlen, sendbuffer, sizeof(sendbuffer),
+				                          query_id, (mdns_record_type_t)rtype, name.str, name.length, answer, 0, 0,
+				                          additional, additional_count);
 			} else {
 				mdns_query_answer_multicast(sock, sendbuffer, sizeof(sendbuffer), answer, 0, 0,
 				                            additional, additional_count);
 			}
 		}
 	}
+    
 	return 0;
     }
 
