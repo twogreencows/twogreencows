@@ -98,37 +98,5 @@ CREATE TABLE IF NOT EXISTS plants (
 
 CREATE INDEX IF NOT EXISTS idx_plants_uuid ON plants(uuid);
 
-CREATE TABLE IF NOT EXISTS recordpoints(
-    uuid CHAR(36)  UNIQUE NOT NULL PRIMARY KEY,
-    object_version SMALLINT,
-    data_version SMALLINT,
-    creation_date TIMESTAMPTZ,
-    unit VARCHAR(24),
-    value VARCHAR(36), 
-    description TEXT,
-    sensor_uuid CHAR(36),
-    media_uuid CHAR(36)
-);
-CREATE INDEX IF NOT EXISTS idx_recordpoints_uuid ON recordpoints(uuid);
  
 
-CREATE TABLE IF NOT EXISTS media(
-    uuid CHAR(36)  UNIQUE NOT NULL PRIMARY KEY,
-    object_version SMALLINT,
-    data_version SMALLINT,
-    path  VARCHAR(512),
-    hash_name VARCHAR(256)
-);
-CREATE INDEX IF NOT EXISTS idx_media_uuid ON media(uuid);
-
-CREATE TABLE IF NOT EXISTS sensors(
-    uuid CHAR(36)  UNIQUE NOT NULL PRIMARY KEY,
-    object_version SMALLINT,
-    data_version SMALLINT,
-    precision DOUBLE PRECISION,
-    sensor_type VARCHAR(24),
-    unit VARCHAR(24),
-    model VARCHAR(256)
-);
-
-CREATE INDEX IF NOT EXISTS idx_sensors_uuid ON sensors(uuid);

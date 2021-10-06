@@ -51,7 +51,6 @@ EOF
 
 ## Patch existing entrypoint to call our script in the background
 # This has been inspired by https://www.thetopsites.net/article/51594713.shtml
-echo "1"
 
 EP=/patched-entrypoint.sh
 sed '$ d' /docker-entrypoint.sh > $EP
