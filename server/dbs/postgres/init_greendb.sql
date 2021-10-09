@@ -1,3 +1,11 @@
+CREATE TABLE IF NOT EXISTS environments (
+    uuid CHAR(36) UNIQUE NOT NULL PRIMARY KEY,
+    object_version SMALLINT,
+    data_version SMALLINT,
+    name VARCHAR(256) NOT NULL,
+    sem_version VARCHAR(256) NOT NULL,
+);
+
 CREATE TABLE IF NOT EXISTS users (
     uuid CHAR(36) UNIQUE NOT NULL PRIMARY KEY,
     object_version SMALLINT,
@@ -8,6 +16,7 @@ CREATE TABLE IF NOT EXISTS users (
     country CHAR(3) NOT NULL,
     phone VARCHAR(32)
 );
+
 
 CREATE INDEX IF NOT EXISTS idx_users_uuid ON users(uuid);
 
