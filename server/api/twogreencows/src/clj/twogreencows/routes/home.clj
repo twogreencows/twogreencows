@@ -1,7 +1,7 @@
 (ns twogreencows.routes.home
   (:require
     [twogreencows.layout :as layout]
-    ;[twogreencows.entities.users :as usrs]
+    ;[twogreencows.entities.user :as usrs]
     ;[twogreencows.db.core :as db]
     ;[clojure.java.io :as io]    
     [twogreencows.middleware :as middleware]

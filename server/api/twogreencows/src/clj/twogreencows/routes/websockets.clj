@@ -5,7 +5,12 @@
              [mount.core :refer [defstate]]
              [taoensso.sente :as sente]
              [taoensso.sente.server-adapters.http-kit :refer [get-sch-adapter]]
-             [twogreencows.entities.users :as usrs]
+             [twogreencows.entities.user :as tgc-user]
+             [twogreencows.entities.token :as tgc-token]
+             [twogreencows.entities.environment :as tgc-environment
+             [twogreencows.entities.greenhouse :as tgc-greenhouse]
+             [twogreencows.entities.device :as tgc-device]
+             [twogreencows.entitie.growbox :as tgc-growbox]
              [twogreencows.middleware :as middleware]))
 
 

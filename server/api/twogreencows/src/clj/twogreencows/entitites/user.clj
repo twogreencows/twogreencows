@@ -1,4 +1,4 @@
-(ns twogreencows.users
+(ns twogreencows.entitities.user
     (:require 
     [twogreencows.db.core :as db]
     [buddy.hashers :as hashers]

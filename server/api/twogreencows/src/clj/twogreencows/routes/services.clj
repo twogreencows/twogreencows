@@ -8,7 +8,12 @@
     [reitit.ring.middleware.exception :as exception]
     [reitit.ring.middleware.multipart :as multipart]
     [reitit.ring.middleware.parameters :as parameters]
-    [twogreencows.entities.users :as usrs]
+    [twogreencows.entities.user :as tgc-user]
+    [twogreencows.entities.token :as tgc-token]
+    [twogreencows.entities.environment :as tgc-environment
+    [twogreencows.entities.greenhouse :as tgc-greenhouse]
+    [twogreencows.entities.device :as tgc-device]
+    [twogreencows.entitie.growbox :as tgc-growbox]
     [twogreencows.middleware :as middleware]
     [ring.util.http-response :as response]
     [twogreencows.middleware.formats :as formats]))
