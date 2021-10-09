@@ -6,6 +6,8 @@
     ))
 
 (def greenhouse-object-version 1)
+(def greenhouse-predix "grn")
+
 
 (defn get-greenhouse [uuid]
   (db/get-greenhouse-by-uuid {:uuid uuid} ))

@@ -6,6 +6,7 @@
     ))
 
 (def growbox-object-version 1)
+(def growbox-prefix "gro")
 
 (defn get-growbox [uuid]
   (db/get-growbox-by-uuid {:uuid uuid} ))

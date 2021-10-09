@@ -10,7 +10,7 @@
     [reitit.ring.middleware.parameters :as parameters]
     [twogreencows.entities.user :as tgc-user]
     [twogreencows.entities.token :as tgc-token]
-    [twogreencows.entities.environment :as tgc-environment
+    [twogreencows.entities.environment :as tgc-environment]
     [twogreencows.entities.greenhouse :as tgc-greenhouse]
     [twogreencows.entities.device :as tgc-device]
     [twogreencows.entitie.growbox :as tgc-growbox]
@@ -73,7 +73,7 @@
               }}}
 
       :handler
-       (fn [_] (response/ok (do (usrs/user-list))))
+       (fn [_] (response/ok (do (tgc-user/user-list))))
        }}]
 
     ["/user"
@@ -91,7 +91,7 @@
           (fn [{{params :body} :parameters}]
             (try
               (do
-                (let [newuser (usrs/new-user! params)]
+                (let [newuser (tgc-user/new-user! params)]
                 (response/ok (assoc {:status :ok} :user newuser))))
                 (catch Exception e
                   (println e)

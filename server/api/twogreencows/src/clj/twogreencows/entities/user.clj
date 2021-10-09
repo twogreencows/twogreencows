@@ -1,10 +1,11 @@
-(ns twogreencows.entitities.user
+(ns twogreencows.entities.user
     (:require 
     [twogreencows.db.core :as db]
     [buddy.hashers :as hashers]
     [twogreencows.validation :refer [validate-user]]))
 
 (def user-data-version 1)
+(def user-prefix "usr")
 
 (defn user-list []
   {:users (vec (db/get-users))})
