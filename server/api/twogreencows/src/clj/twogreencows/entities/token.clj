@@ -6,4 +6,5 @@
     ))
 
 (def token-object-version 1)
+(def token-prefix "tok")
 

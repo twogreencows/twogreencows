@@ -22,7 +22,7 @@
   :start (if-let [jdbc-url (env :database-url)]
            (conman/connect! {:jdbc-url jdbc-url})
            (do
-             (log/warn "database connection URL was not found, please set :database-url in your config, e.g: dev-config.edn")
+             (log/warn "Database connection URL was not found, please set :database-url in your config, e.g: dev-config.edn")
              *db*))
   :stop (conman/disconnect! *db*))
 

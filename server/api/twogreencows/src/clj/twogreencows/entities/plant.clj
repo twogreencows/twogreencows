@@ -1,3 +1,2 @@
-(ns twogreencoes.entities.util)
+(ns twogreencoes.entities.plant)
 
-(defn tgc-object-description [] ({:uuid string? :object_version int? :data_version}))

@@ -7,10 +7,10 @@
              [taoensso.sente.server-adapters.http-kit :refer [get-sch-adapter]]
              [twogreencows.entities.user :as tgc-user]
              [twogreencows.entities.token :as tgc-token]
-             [twogreencows.entities.environment :as tgc-environment
+             [twogreencows.entities.environment :as tgc-environment]
              [twogreencows.entities.greenhouse :as tgc-greenhouse]
              [twogreencows.entities.device :as tgc-device]
-             [twogreencows.entitie.growbox :as tgc-growbox]
+             [twogreencows.entities.growbox :as tgc-growbox]
              [twogreencows.middleware :as middleware]))
 
 
@@ -34,9 +34,9 @@
 
 (defmethod handle-user :user/create!
   [{:keys [?data uid] :as user}]
-  (let [response (try usrs/new-user! ?data)
+  (let [response (try tgc-user/new-user! ?data)
      response (try
-              (usrs/new-user! user)
+              (tgc-user/new-user! user)
               (catch Exception e
                 (let [{id :twogreencows/error-id errors :errors} (ex-data e)]
                   (case id

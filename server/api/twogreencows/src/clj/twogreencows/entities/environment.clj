@@ -1,4 +1,4 @@
-(ns twogreencoes.entities.environment
+(ns twogreencows.entities.environment
   (:require
     [twogreencows.db.core :as db]
     [twogreencows.middleware :as middleware]

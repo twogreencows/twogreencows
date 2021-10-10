@@ -9,7 +9,7 @@
 (def greenhouse-predix "grn")
 
 
-(defn get-greenhouse [uuid]
-  (db/get-greenhouse-by-uuid {:uuid uuid} ))
+;(defn get-greenhouse [uuid]
+;  (db/get-greenhouse-by-uuid {:uuid uuid} ))
 
 

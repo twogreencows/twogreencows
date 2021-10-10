@@ -13,7 +13,7 @@
     [twogreencows.entities.environment :as tgc-environment]
     [twogreencows.entities.greenhouse :as tgc-greenhouse]
     [twogreencows.entities.device :as tgc-device]
-    [twogreencows.entitie.growbox :as tgc-growbox]
+    [twogreencows.entities.growbox :as tgc-growbox]
     [twogreencows.middleware :as middleware]
     [ring.util.http-response :as response]
     [twogreencows.middleware.formats :as formats]))
@@ -56,7 +56,7 @@
       { 
       :summary "Get information about the server"
       :responses
-      {:200 {:body
+      {200 {:body
              {:environment {:uuid string? :object_version int? :data_version int? :name string? :version string?}}}}
       }
       :handler
