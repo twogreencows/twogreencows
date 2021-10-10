@@ -3,7 +3,7 @@ CREATE TABLE IF NOT EXISTS environments (
     object_version SMALLINT,
     data_version SMALLINT,
     name VARCHAR(256) NOT NULL,
-    sem_version VARCHAR(256) NOT NULL,
+    sem_version VARCHAR(32) NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS users (
@@ -27,6 +27,7 @@ CREATE TABLE IF NOT EXISTS tokens (
     creation_date TIMESTAMPTZ,
     termination_date TIMESTAMPTZ,
     is_valid BOOL,
+    value CHAR(128).
     user_uuid CHAR(36)
 );
 
