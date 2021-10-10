@@ -56,12 +56,10 @@
       { 
       :summary "Get information about the server"
       :responses
-      {200 {:body
-             {:environment {:uuid string? :object_version int? :data_version int? :name string? :version string?}}}}
-      }
+      {200 {:body {:data (tgc-environment/environment-description)}}}
       :handler
-      (fn [_] (response/ok {:uuid "serv-twogreencowsserver" :object_version 1 :datataversion 1 :name "TGCNAME" :version "0.0.8"}))}
-     ]
+      (fn [_] (response/ok (do (tgc-environment/unique-environment))))
+      }}]
     ["/users"
     {:get
      {:summary "Get lists of all users. For Admin only" 

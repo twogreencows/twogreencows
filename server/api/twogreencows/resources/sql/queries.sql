@@ -52,3 +52,20 @@ WHERE uuid = :uuid
 -- :doc retrieves all device records for a user
 SELECT uuid, object_version, data_version, creation_date, display_name, password, country, phone FROM users
 
+
+-- :name get-environments :? :*
+-- :doc retrieves all environment records
+SELECT uuid, object_version, data_version, name, sem_version FROM environments
+
+
+-- :name create-environment! :! :n
+-- :doc creates a new environment record
+INSERT INTO environments
+(uuid, object_version, data_version, name , sem_version)
+VALUES (:uuid, :object_version, :data_version, :name, :sem_version)
+
+
+-- :name get-environment-by-uuid :? :1
+-- :doc retrieves a environment record given the uuid
+SELECT * FROM environments
+WHERE uuid LIKE :uuid
