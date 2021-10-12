@@ -11,12 +11,13 @@
 		2A62E93C26D90ACE00B4EE77 /* NetworkBonjourListener.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2A62E93B26D90ACE00B4EE77 /* NetworkBonjourListener.swift */; };
 		2A72271226CDB47300EEA8FC /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2A72271126CDB47300EEA8FC /* AppDelegate.swift */; };
 		2A72271426CDB47300EEA8FC /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2A72271326CDB47300EEA8FC /* SceneDelegate.swift */; };
-		2A72271626CDB47300EEA8FC /* ServersViewControllerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2A72271526CDB47300EEA8FC /* ServersViewControllerViewController.swift */; };
+		2A72271626CDB47300EEA8FC /* ServersViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2A72271526CDB47300EEA8FC /* ServersViewController.swift */; };
 		2A72271926CDB47300EEA8FC /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 2A72271726CDB47300EEA8FC /* Main.storyboard */; };
 		2A72271B26CDB47A00EEA8FC /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 2A72271A26CDB47A00EEA8FC /* Assets.xcassets */; };
 		2A72271E26CDB47A00EEA8FC /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 2A72271C26CDB47A00EEA8FC /* LaunchScreen.storyboard */; };
 		2A72272926CDB47B00EEA8FC /* TwogreencowsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2A72272826CDB47B00EEA8FC /* TwogreencowsTests.swift */; };
 		2A72273426CDB47B00EEA8FC /* TwogreencowsUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2A72273326CDB47B00EEA8FC /* TwogreencowsUITests.swift */; };
+		2AD297372714D9C3003F37E4 /* AddServerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2AD297362714D9C3003F37E4 /* AddServerViewController.swift */; };
 		2AEE271926D5A3B50091AE52 /* DataProviderManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2AEE271826D5A3B50091AE52 /* DataProviderManager.swift */; };
 		2AEE271B26D5A4210091AE52 /* DataProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2AEE271A26D5A4210091AE52 /* DataProvider.swift */; };
 		2AEE271D26D5ABB20091AE52 /* LocalViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2AEE271C26D5ABB20091AE52 /* LocalViewController.swift */; };
@@ -45,7 +46,7 @@
 		2A72270E26CDB47300EEA8FC /* Twogreencows.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Twogreencows.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		2A72271126CDB47300EEA8FC /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		2A72271326CDB47300EEA8FC /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
-		2A72271526CDB47300EEA8FC /* ServersViewControllerViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServersViewControllerViewController.swift; sourceTree = "<group>"; };
+		2A72271526CDB47300EEA8FC /* ServersViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServersViewController.swift; sourceTree = "<group>"; };
 		2A72271826CDB47300EEA8FC /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		2A72271A26CDB47A00EEA8FC /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		2A72271D26CDB47A00EEA8FC /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
@@ -56,6 +57,7 @@
 		2A72272F26CDB47B00EEA8FC /* TwogreencowsUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = TwogreencowsUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		2A72273326CDB47B00EEA8FC /* TwogreencowsUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TwogreencowsUITests.swift; sourceTree = "<group>"; };
 		2A72273526CDB47B00EEA8FC /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		2AD297362714D9C3003F37E4 /* AddServerViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddServerViewController.swift; sourceTree = "<group>"; };
 		2AEE271826D5A3B50091AE52 /* DataProviderManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataProviderManager.swift; sourceTree = "<group>"; };
 		2AEE271A26D5A4210091AE52 /* DataProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataProvider.swift; sourceTree = "<group>"; };
 		2AEE271C26D5ABB20091AE52 /* LocalViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalViewController.swift; sourceTree = "<group>"; };
@@ -122,7 +124,8 @@
 			children = (
 				2A72271126CDB47300EEA8FC /* AppDelegate.swift */,
 				2A72271326CDB47300EEA8FC /* SceneDelegate.swift */,
-				2A72271526CDB47300EEA8FC /* ServersViewControllerViewController.swift */,
+				2A72271526CDB47300EEA8FC /* ServersViewController.swift */,
+				2AD297362714D9C3003F37E4 /* AddServerViewController.swift */,
 				2AEE271C26D5ABB20091AE52 /* LocalViewController.swift */,
 				2A72271726CDB47300EEA8FC /* Main.storyboard */,
 				2A55A28926D2BC940027CD33 /* Backend */,
@@ -282,11 +285,12 @@
 			buildActionMask = 2147483647;
 			files = (
 				2AEE271B26D5A4210091AE52 /* DataProvider.swift in Sources */,
-				2A72271626CDB47300EEA8FC /* ServersViewControllerViewController.swift in Sources */,
+				2A72271626CDB47300EEA8FC /* ServersViewController.swift in Sources */,
 				2A55A28826D2BC7F0027CD33 /* BaseObject.swift in Sources */,
 				2AEE271926D5A3B50091AE52 /* DataProviderManager.swift in Sources */,
 				2AEE271D26D5ABB20091AE52 /* LocalViewController.swift in Sources */,
 				2A72271226CDB47300EEA8FC /* AppDelegate.swift in Sources */,
+				2AD297372714D9C3003F37E4 /* AddServerViewController.swift in Sources */,
 				2A62E93C26D90ACE00B4EE77 /* NetworkBonjourListener.swift in Sources */,
 				2A72271426CDB47300EEA8FC /* SceneDelegate.swift in Sources */,
 			);

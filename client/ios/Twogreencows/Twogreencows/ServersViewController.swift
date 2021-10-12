@@ -15,7 +15,6 @@ class ServersViewController: UIViewController, UITableViewDelegate, UITableViewD
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view.
-        view.backgroundColor = UIColor.green
         tableView.backgroundColor = UIColor.clear
         tableView.delegate = self;
         tableView.dataSource = self;
@@ -36,5 +35,18 @@ class ServersViewController: UIViewController, UITableViewDelegate, UITableViewD
         return cell
 
     }
+    
+    @IBAction func doAddServer(_ sender:UIButton) {
+        self.performSegue(withIdentifier: "servers.modal.add", sender: nil)
+    }
+        
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        
+    }
+    
+    @IBAction func unwindToServers(segue: UIStoryboardSegue) {
+        
+    }
+        
 }
 

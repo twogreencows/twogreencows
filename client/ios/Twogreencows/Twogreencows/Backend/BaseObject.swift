@@ -9,8 +9,8 @@ import Foundation
 
 class BaseObject {
     var uuid:String?;
-    var objectVersion:Int?;
-    var dataVersion:Int?;
+    var objectVersion:Int = 0;
+    var dataVersion:Int = 0;
     
     init() {
         uuid="nil-uuid";
