@@ -22,13 +22,20 @@ CREATE INDEX IF NOT EXISTS idx_users_uuid ON users(uuid);
 
 CREATE TABLE IF NOT EXISTS tokens (
     uuid CHAR(36) UNIQUE NOT NULL PRIMARY KEY,
+    owner_uuid CHAR(36),
     object_version SMALLINT,
     data_version SMALLINT,
     creation_date TIMESTAMPTZ,
     termination_date TIMESTAMPTZ,
     is_valid BOOL,
     value CHAR(128).
-    user_uuid CHAR(36)
+    owner_uuid CHAR(36)
+);
+
+CREATE TABLE IF NOT EXIST users_tokens (
+    id  SERIAL PRIMARY KEY,
+    user_uuid CHAR(36) UNIQUE NOT NULL,
+    token_uuid CHAR(36) UNIQUE NOT NULL 
 );
 
 CREATE INDEX IF NOT EXISTS idx_tokens_uuid ON tokens(uuid);
@@ -39,6 +46,7 @@ CREATE TABLE IF NOT EXISTS sessions (
     data_version SMALLINT,
     creation_date TIMESTAMPTZ,
     termination_date TIMESTAMPTZ,
+    owner_uuid CHAR(36),
     user_uuid CHAR(36),
     device_uuid CHAR(36),
     token_uuid CHAR(36),
@@ -49,9 +57,11 @@ CREATE TABLE IF NOT EXISTS sessions (
 
 CREATE INDEX IF NOT EXISTS idx_sessions_uuid ON sessions(uuid);
 
+
 CREATE TABLE IF NOT EXISTS devices (
     uuid CHAR(36)  UNIQUE NOT NULL PRIMARY KEY,
     object_version SMALLINT,
+    owner_uuid CHAR(36)
     data_version SMALLINT,
     creation_date TIMESTAMPTZ,
     kind VARCHAR(8),
@@ -63,14 +73,17 @@ CREATE TABLE IF NOT EXISTS devices (
 
 CREATE INDEX IF NOT EXISTS idx_devices_uuid ON devices(uuid);
 
+
+
 CREATE TABLE IF NOT EXISTS greenhouses (
     uuid CHAR(36)  UNIQUE NOT NULL PRIMARY KEY,
-    user_uuid CHAR(36),
+    owner_uuid CHAR(36),
     object_version SMALLINT,
     data_version SMALLINT,
     creation_date TIMESTAMPTZ,
     latitude DOUBLE PRECISION,
     longitude DOUBLE PRECISION,
+    owner_uuid CHAR(36)
     display_name VARCHAR(256),
     description TEXT
 );
@@ -79,7 +92,7 @@ CREATE INDEX IF NOT EXISTS idx_greenhouses_uuid ON greenhouses(uuid);
 
 CREATE TABLE IF NOT EXISTS growboxes (
     uuid CHAR(36) UNIQUE NOT NULL PRIMARY KEY,
-    user_uuid CHAR(36),
+    owner_uuid CHAR(36)
     object_version SMALLINT,
     data_version SMALLINT,
     display_name VARCHAR(256)
