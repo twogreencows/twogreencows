@@ -8,7 +8,7 @@
 (def user-prefix "usr")
 
 (defn user-list []
-  {:users (vec (db/get-users))})
+  {:data (vec (db/get-users))})
 
 (defn new-user! [params]
   (if-let [errors (validate-user params)]

@@ -54,11 +54,10 @@
     ["/environment"
      {:get
       { 
-      :summary "Get information about the server"
-      :responses
-      {200 {:body {:data (tgc-environment/environment-description)}}}
-      :handler
-      (fn [_] (response/ok (do (tgc-environment/unique-environment))))
+        :summary "Get information about the server"
+        :responses
+          {200 {:body {:data (tgc-environment/environment-description)}}}
+        :handler (fn [_] (response/ok (do (tgc-environment/unique-environment))))
       }}]
     ["/users"
     {:get
