@@ -28,12 +28,12 @@ CREATE TABLE tgc_data.sensors(
     PRIMARY KEY ((kind, brand), uuid)
 ) WITH CLUSTERING ORDER BY (uuid ASC);
 
-CREATE TABLE tgc_data.media{
+CREATE TABLE tgc_data.media(
     uuid ascii,
     data_version int,
     object_version int,
     path ascii,
     hash_name asciim
     PRIMARY KEY (uuid)
-} WITH CLUSTERING ORDER BY (uuid ASC);
+) WITH CLUSTERING ORDER BY (uuid ASC);
 
