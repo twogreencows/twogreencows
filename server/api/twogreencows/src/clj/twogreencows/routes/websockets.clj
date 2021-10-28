@@ -20,7 +20,6 @@
            (get-sch-adapter)
            {:user-id-fn (fn [ring-req] 
                           (do
-                          (println "AHAHA")  
                           (get-in ring-req [:params :client-id])))}))
 
 (defn send! [uid user]

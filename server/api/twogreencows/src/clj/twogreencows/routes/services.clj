@@ -14,13 +14,11 @@
     [twogreencows.entities.greenhouse :as tgc-greenhouse]
     [twogreencows.entities.device :as tgc-device]
     [twogreencows.entities.growbox :as tgc-growbox]
+    [twogreencows.entities.util :as tgc-util]
     [twogreencows.middleware :as middleware]
     [ring.util.http-response :as response]
     [twogreencows.middleware.formats :as formats]))
 
-(defn wrap-markstarttime [handler]
- (fn [request]
-    (handler (assoc request :start_time (/ (System/currentTimeMillis) 1000)))))
  
 (defn service-routes []
   ["/api"
@@ -39,8 +37,11 @@
                  coercion/coerce-response-middleware
                  ;;corecing request parameters
                  coercion/coerce-request-middleware
+                 ;;server metatagging;
+                 middleware/wrap-server-metatagging
                  ;;multipart params
-                 multipart/multipart-middleware]
+                 multipart/multipart-middleware
+                 ]
 
     :muuntaja formats/instance
     :coercion  spec-coercion/coercion
@@ -56,7 +57,7 @@
       { 
         :summary "Get information about the server"
         :responses
-          {200 {:body {:data (tgc-environment/environment-description)}}}
+          {200 {:body  (tgc-util/tgc-httpanswer-metadescription  (tgc-environment/environment-description)) }}
         :handler (fn [_] (response/ok (do (tgc-environment/unique-environment))))
       }}]
     ["/users"
@@ -77,7 +78,7 @@
      {:post
         {:parameters
           {:body
-           {:display_name string? :password string? :confirm_pwd string? :phone string?}}
+           {:display_name string? :password string? :confirm_password string? :phone string?}}
 
           :responses
           {200 {:body map?}

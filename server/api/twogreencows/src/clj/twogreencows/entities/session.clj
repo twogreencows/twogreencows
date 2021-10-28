@@ -8,7 +8,7 @@
 (def session-object-version 1)
 (def session-prefix "ses")
 
-(defn get-session [uuid]
-  (db/get-session-by-uuid {:uuid uuid} ))
+;(defn get-session [uuid]
+;  (db/get-session-by-uuid {:uuid uuid} ))
 
 

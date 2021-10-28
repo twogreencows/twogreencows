@@ -12,8 +12,7 @@
     [ring.middleware.flash :refer [wrap-flash]]
     [immutant.web.middleware :refer [wrap-session]]
     [ring.middleware.defaults :refer [site-defaults wrap-defaults]])
-  (:import 
-           ))
+           )
 
 (defn wrap-internal-error [handler]
   (fn [req]
@@ -53,12 +52,14 @@
             (dissoc :session)))
       wrap-internal-error))
 
-(defn wrap-server-goin [handler content-type]
+(defn wrap-server-metatagging [handler]
   (fn [request]
-      (assoc-in request [:headers "X-SERVER-TIMESTAMP-IN"] (java.time.LocalDateTime/now))))
+        (let [xt-in (System/currentTimeMillis) w (handler request) xt-out (System/currentTimeMillis)] 
+              (let [data (get w :body) server {:server_duration (- xt-out xt-in) :status (get w :status)}]
+                (assoc-in (assoc-in (assoc-in (assoc-in {}  [:body :data] data) [:body :server] server ) [:headers] (get w :headers)) [:status] (get w :status))
+                ))))
+             
+              
 
 
-(defn wrap-server-goout [handler content-type]
-  (fn [request]
-    (let [response (handler request)]
-      (assoc-in request [:headers "X-SERVER-TIMESTAMP-OUT"] (java.time.LocalDateTime/now)))))
+          
