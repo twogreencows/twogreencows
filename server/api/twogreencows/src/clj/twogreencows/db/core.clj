@@ -7,6 +7,7 @@
     ;[clojure.java.jdbc :as jdbc]
     [clojure.tools.logging :as log]
     [conman.core :as conman]
+    [twogreencows.entities.environment :as tgc-environment]
     [java-time :as jt]
     [twogreencows.config :refer [env]]
     [mount.core :refer [defstate]])
@@ -19,7 +20,7 @@
             PreparedStatement]))
 
 (defstate ^:dynamic *db*
-  :start (if-let [jdbc-url (env :database-url)]
+  :start (if-let [jdbc-url (env :database-sql-url)]
            (conman/connect! {:jdbc-url jdbc-url})
            (do
              (log/warn "Database connection URL was not found, please set :database-url in your config, e.g: dev-config.edn")
@@ -27,6 +28,7 @@
   :stop (conman/disconnect! *db*))
 
 (conman/bind-connection *db* "sql/queries.sql")
+(tgc-environment/unique-environment)
 
 (defn sql-timestamp->inst [t] 
   (-> t

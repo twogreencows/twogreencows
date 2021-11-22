@@ -43,7 +43,7 @@ Launch DB Locally
 
 
 Launch and run test DB
-- docker image build -t server_db_test - < DockerfileDB-Test
+- docker image build -t tgc_server_db_test - < DockerfileDB-Test
 - docker run -p 5433:5432 server_db_test
 - psql -h localhost -p 5433 -d twogreencows-test -U onebigcow -W
 
@@ -64,3 +64,11 @@ User and session management
 
 
 All answer from server have a "data" component and a "server" component (that may be empty i prod but returns serveur information.Like processing time)
+
+
+For cassandra
+
+docker build -t  my-cassandra-image --progress=plain --file DockerfileDB_CAS .
+docker run --rm -p 9042:9042 --name cassandra-container -d my-cassandra-image
+docker exec -it 851 /bin/bash
+

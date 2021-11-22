@@ -63,7 +63,7 @@ SELECT uuid, object_version, data_version, name, sem_version FROM environments
 INSERT INTO environments
 (uuid, object_version, data_version, name , sem_version)
 VALUES (:uuid, :object_version, :data_version, :name, :sem_version)
-
+RETURNING *;
 
 -- :name get-environment-by-uuid :? :1
 -- :doc retrieves a environment record given the uuid

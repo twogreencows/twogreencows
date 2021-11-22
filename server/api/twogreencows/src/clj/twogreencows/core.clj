@@ -59,9 +59,9 @@
 (defn -main [& args]
   (mount/start #'twogreencows.config/env)
   (cond
-    (nil? (:database-url env))
+    (nil? (:database-sql-url env))
     (do
-      (log/error "Database configuration not found, :database-url environment variable must be set before running")
+      (log/error "Database configuration not found, :database-sql -url environment variable must be set before running")
       (System/exit 1))
     (some #{"init"} args)
     (do

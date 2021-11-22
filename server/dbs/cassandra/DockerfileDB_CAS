@@ -10,6 +10,8 @@ ENV LANG C.UTF8
 #  *.sh files will be executed BEFORE launching cassandra
 #  *.cql files will be executed with cqlsh -f AFTER cassandra started
 # Files are executed in name order (ls * | sort)
+#
+RUN ["mkdir" , "-p", "/docker-entrypoint-initdb.d"]
 COPY *.cql /docker-entrypoint-initdb.d/
 
 # this is the script that will patch the already existing entrypoint from cassandra image

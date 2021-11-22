@@ -54,14 +54,11 @@
    ["/V1"
     ["/environment"
      {:get
-      { 
-        :summary "Get information about the server"
-        :responses
-          {200 {:body  (tgc-util/tgc-httpanswer-metadescription  (tgc-environment/environment-description)) }}
-        :handler (fn [_] (response/ok (do (tgc-environment/unique-environment))))
-      }}]
+      { :summary "Get information about the server"
+        :responses {200 {:body  (tgc-util/tgc-httpanswer-metadescription  (tgc-environment/environment-description)) }}
+        :handler (fn [_] (response/ok (do (tgc-environment/unique-environment))))}}]
     ["/users"
-    {:get
+     {:get
      {:summary "Get lists of all users. For Admin only" 
       :responses
       {200 {:body 
@@ -82,7 +79,8 @@
 
           :responses
           {200 {:body map?}
-           400 {:body map?}
+           400 {:body map?} 
+           409 {:body map?}
            500 {:errors map?}}
 
           :handler

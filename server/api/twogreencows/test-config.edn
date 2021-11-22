@@ -4,5 +4,5 @@
 
 {:port 3000
 
- :database-url "jdbc:postgresql://localhost:5433/twogreencows-test?user=onebigcow&password=acikiwabybocfyviycy"}
+ :database-sql-url "jdbc:postgresql://localhost:5433/twogreencows-test?user=onebigcow&password=acikiwabybocfyviycy"}
 

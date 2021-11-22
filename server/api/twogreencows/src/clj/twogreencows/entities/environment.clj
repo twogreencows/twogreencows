@@ -26,7 +26,7 @@
           (try
             (let [newuuid (str environment-prefix "-" (tgc-util/tgc-entity-uuidpostfix))]
                 (db/create-environment! {:uuid newuuid :data_version environment-data-version :object_version 1 :name (generate-environment-name) :sem_version current-version})
-                (db/get-environment-by-uuid {:uuid newuuid})
+                ;;(db/get-environment-by-uuid {:uuid newuuid})
             ))
           (get envs 0))))
 
