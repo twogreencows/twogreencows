@@ -4,10 +4,10 @@
     [next.jdbc.date-time]
     [next.jdbc.result-set]
     [cheshire.core :refer [generate-string parse-string]]
-    ;[clojure.java.jdbc :as jdbc]
+    [clojure.java.jdbc :as jdbc]
     [clojure.tools.logging :as log]
     [conman.core :as conman]
-    [twogreencows.entities.environment :as tgc-environment]
+    ;[twogreencows.entities.environment :as tgc-environment]
     [java-time :as jt]
     [twogreencows.config :refer [env]]
     [mount.core :refer [defstate]])
@@ -21,14 +21,21 @@
 
 (defstate ^:dynamic *db*
   :start (if-let [jdbc-url (env :database-sql-url)]
+
            (conman/connect! {:jdbc-url jdbc-url})
            (do
              (log/warn "Database connection URL was not found, please set :database-url in your config, e.g: dev-config.edn")
              *db*))
   :stop (conman/disconnect! *db*))
 
+;(defstate ^:dynamic *db-cassandra*
+;  :start (println "Start cassandra")
+;  :stop (println "Stop cassandra")))
+
+
+
 (conman/bind-connection *db* "sql/queries.sql")
-(tgc-environment/unique-environment)
+;(tgc-environment/unique-environment)
 
 (defn sql-timestamp->inst [t] 
   (-> t
@@ -55,40 +62,40 @@
 
 
 
-;(defn to-pg-json [value]
-;  (doto (PGobject.)
-;    (.setType "jsonb")
-;    (.setValue (generate-string value))))
+(defn to-pg-json [value]
+  (doto (PGobject.)
+    (.setType "jsonb")
+    (.setValue (generate-string value))))
 
-;(extend-type clojure.lang.IPersistentVector
-;  jdbc/ISQLParameter
-;  (set-parameter [v ^java.sql.PreparedStatement stmt ^long idx]
-;    (let [conn      (.getConnection stmt)
-;          meta      (.getParameterMetaData stmt)
-;          type-name (.getParameterTypeName meta idx)]
-;      (if-let [elem-type (when (= (first type-name) \_) (apply str (rest type-name)))]
-;        (.setObject stmt idx (.createArrayOf conn elem-type (to-array v)))
-;        (.setObject stmt idx (to-pg-json v))))))
+(extend-type clojure.lang.IPersistentVector
+  jdbc/ISQLParameter
+  (set-parameter [v ^java.sql.PreparedStatement stmt ^long idx]
+    (let [conn      (.getConnection stmt)
+          meta      (.getParameterMetaData stmt)
+          type-name (.getParameterTypeName meta idx)]
+      (if-let [elem-type (when (= (first type-name) \_) (apply str (rest type-name)))]
+        (.setObject stmt idx (.createArrayOf conn elem-type (to-array v)))
+        (.setObject stmt idx (to-pg-json v))))))
 
-;(extend-protocol jdbc/ISQLValue
-;    java.util.Date
-;  (sql-value [v]
-;    (java.sql.Timestamp. (.getTime v)))
-;  java.time.LocalTime
-;  (sql-value [v]
-;    (jt/sql-time v))
-;  java.time.LocalDate
-;  (sql-value [v]
-;    (jt/sql-date v))
-;  java.time.LocalDateTime
-;  (sql-value [v]
-;    (jt/sql-timestamp v))
-;  java.time.ZonedDateTime
-;  (sql-value [v]
-;    (jt/sql-timestamp v))
-;  IPersistentMap
-;  (sql-value [value] (to-pg-json value))
-;  IPersistentVector
-;  (sql-value [value] (to-pg-json value)))
+(extend-protocol jdbc/ISQLValue
+    java.util.Date
+  (sql-value [v]
+    (java.sql.Timestamp. (.getTime v)))
+  java.time.LocalTime
+  (sql-value [v]
+    (jt/sql-time v))
+  java.time.LocalDate
+  (sql-value [v]
+    (jt/sql-date v))
+  java.time.LocalDateTime
+  (sql-value [v]
+    (jt/sql-timestamp v))
+  java.time.ZonedDateTime
+  (sql-value [v]
+    (jt/sql-timestamp v))
+  IPersistentMap
+  (sql-value [value] (to-pg-json value))
+  IPersistentVector
+  (sql-value [value] (to-pg-json value)))
 ;
 

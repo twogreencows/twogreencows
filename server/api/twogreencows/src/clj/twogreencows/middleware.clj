@@ -22,7 +22,7 @@
         (log/error t (.getMessage t))
         (error-page {:status 500
                      :title "Something very bad has happened!"
-                     :message "We've dispatched a team of highly trained gnomes to take care of the problem."})))))
+                     :message "No more sprout, no more cows!"})))))
 
 (defn wrap-csrf [handler]
   (wrap-anti-forgery

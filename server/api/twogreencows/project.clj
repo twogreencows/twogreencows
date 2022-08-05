@@ -5,6 +5,7 @@
 
   :dependencies [[ch.qos.logback/logback-classic "1.2.3"]
                  [buddy "2.0.0"]
+                 [com.fasterxml.jackson.core/jackson-core "2.13.1"]
                  [cheshire "5.10.0"]
                  [clojure.java-time "0.3.2"]
                  [com.github.seancorfield/next.jdbc "1.2.659"]
@@ -22,9 +23,9 @@
                  [luminus-undertow "0.1.7"]
                  [luminus/ring-ttl-session "0.3.3"]
                  [markdown-clj "1.10.5"]
-                 [metosin/muuntaja "0.6.7"]
-                 [metosin/reitit "0.5.10"]
-                 [metosin/ring-swagger-ui "2.2.10"]
+                 [metosin/muuntaja "0.6.8"]
+                 [metosin/reitit "0.5.15"]
+                 [metosin/ring-swagger-ui "4.5.0"]
                  [metosin/ring-http-response "0.9.1"]
                  [mount "0.1.16"]
                  [nrepl "0.8.3"]
@@ -49,7 +50,6 @@
                  [com.taoensso/sente "1.16.2"]]
 
   :min-lein-version "2.0.0"
-  
   :source-paths ["src/clj" "src/cljs" "src/cljc" ]
   :test-paths ["test/clj"]
   :resource-paths ["resources" "target/cljsbuild"]

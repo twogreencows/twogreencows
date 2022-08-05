@@ -1,5 +1,6 @@
  (ns twogreencows.routes.services
    (:require
+    [clojure.string :as string] 
     [reitit.swagger :as swagger]
     [reitit.swagger-ui :as swagger-ui]
     [reitit.ring.coercion :as coercion]
@@ -14,6 +15,7 @@
     [twogreencows.entities.greenhouse :as tgc-greenhouse]
     [twogreencows.entities.device :as tgc-device]
     [twogreencows.entities.growbox :as tgc-growbox]
+    [twogreencows.entities.error :as tgc-error]
     [twogreencows.entities.util :as tgc-util]
     [twogreencows.middleware :as middleware]
     [ring.util.http-response :as response]
@@ -34,11 +36,11 @@
                  ;;decoding request bodys
                  muuntaja/format-request-middleware
                  ;;coercing response bodys
-                 coercion/coerce-response-middleware
-                 ;;corecing request parameters
+                 ;coercion/coerce-response-middleware
+                 ;;coercing request parameters
                  coercion/coerce-request-middleware
                  ;;server metatagging;
-                 middleware/wrap-server-metatagging
+                 ;;middleware/wrap-server-metatagging
                  ;;multipart params
                  multipart/multipart-middleware
                  ]
@@ -51,79 +53,82 @@
     ["/swagger.json" {:get (swagger/create-swagger-handler)}]
     ["/swagger-ui*" {:get (swagger-ui/create-swagger-ui-handler {:url "/api/swagger.json"})}]
     ]
-   ["/V1"
+   ["/V1" {:middleware [middleware/wrap-server-metatagging]} 
     ["/environment"
      {:get
       { :summary "Get information about the server"
-        :responses {200 {:body  (tgc-util/tgc-httpanswer-metadescription  (tgc-environment/environment-description)) }}
-        :handler (fn [_] (response/ok (do (tgc-environment/unique-environment))))}}]
+        :responses {200 {:body  (tgc-util/tgc-httpanswer-metadescription (tgc-environment/environment-description)) }}
+        :handler (fn [_] (response/ok (tgc-environment/unique-environment))) }}] ; environment
     ["/users"
      {:get
-     {:summary "Get lists of all users. For Admin only" 
-      :responses
-      {200 {:body 
-             {:users
-                [{:uuid string? :object_version int? :data_version int? :creation_date inst?
-                  :display_name string? :password string? :country string? :phone string?}]
-              }}}
+        {:summary "Get lists of all users. For Admin only" 
+         :responses {200 {:body (tgc-util/tgc-httpanswer-metadescription [(tgc-user/user-description)]) }} 
+         :handler (fn [_] (response/ok (tgc-user/user-list))) }
+      :post 
+        {:summary "Create a new user"  
+         :responses
+          {200 {:body (tgc-util/tgc-httpanswer-metadescription (tgc-user/user-description)) }
+           400 {:body (tgc-util/tgc-httpanswer-metadescription (tgc-error/error-description)) } 
+           409 {:body (tgc-util/tgc-httpanswer-metadescription (tgc-error/error-description)) }
+           500 {:body (tgc-util/tgc-httpanswer-metadescription (tgc-error/error-description)) }}
+         :parameters {:body (tgc-user/user-post-description) }
+         :handler (fn [{{params :body} :parameters}] 
+                     (let [creation_result (tgc-user/new-user! params) created_uuid (get-in creation_result [:uuid])]
+                        (if (string/starts-with? created_uuid  "usr")
+                        (response/ok creation_result)
+                        {:status (get-in creation_result [:code]) :headers { } :body creation_result}
+                        )))
+                    
+            }
+        }
+     ];users
+    ];v1
+   ];api
+  )
 
-      :handler
-       (fn [_] (response/ok (do (tgc-user/user-list))))
-       }}]
 
-    ["/user"
-     {:post
-        {:parameters
-          {:body
-           {:display_name string? :password string? :confirm_password string? :phone string?}}
+;(comment     {:post
+;        {:summary "Create a new user"
+        ;{:parameters {:body (tgc-user/user-post-description) }
+;
+;          :handler
+;          (fn [{{params :body} :parameters}]
+;            (try
+;              (do
+;                (let [newuser (tgc-user/new-user! params)]
+;               (response/ok (assoc {:status :ok} :user newuser))))
+;               (catch Exception e
+;                  (println e)
+;                  (let [{id :twogreencows/error-id errors :errors} (ex-data e)]
+;                  (case id
+;                    :validation
+;                        (response/bad-request {:errors  errors})
+;                    ;;else
+;                        (response/internal-server-error 
+;                            {:errors {:server-error ["Failed to create user!"]}}))))))}}
+ ;    )
 
-          :responses
-          {200 {:body map?}
-           400 {:body map?} 
-           409 {:body map?}
-           500 {:errors map?}}
-
-          :handler
-          (fn [{{params :body} :parameters}]
-            (try
-              (do
-                (let [newuser (tgc-user/new-user! params)]
-                (response/ok (assoc {:status :ok} :user newuser))))
-                (catch Exception e
-                  (println e)
-                  (let [{id :twogreencows/error-id errors :errors} (ex-data e)]
-                  (case id
-                    :validation
-                        (response/bad-request {:errors  errors})
-                    ;;else
-                        (response/internal-server-error 
-                            {:errors {:server-error ["Failed to create user!"]}}))))))}}]
-    ["/device"
-      {:post
-         {:parameters
-            {:body
-              {:uuid string?
-               :kind string?
-               :vendor_uuid string?
-               :platform string?
-               :os_version string?}}
-            :responses
-            {200
-             {:body map?}
-             400
-              {:body map?}
-             500
-              {:errors map?}}
-            :handler
-             (fn [{{params :body} :parameters}]
-               (println "calling device"))
-            }}]
-    ]
-
-                
-
-             
-    ])
+    ;["/device"
+     ; {:post
+      ;   {:parameters
+       ;     {:body
+        ;      {:uuid string?
+         ;      :kind string?
+          ;     :vendor_uuid string?
+          ;     :platform string?
+          ;     :os_version string?}}
+          ;  :responses
+          ;  {200
+          ;   {:body map?}
+          ;   400
+           ;   {:body map?}
+           ;  500
+           ;   {:errors map?}}
+           ; :handler
+            ; (fn [{{params :body} :parameters}]
+            ;   (println "calling device"))
+           ; }}]
+   
 
 
 
