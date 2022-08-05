@@ -1,7 +1,7 @@
 CREATE KEYSPACE tgc_data WITH replication = {'class': 'SimpleStrategy', 'replication_factor': '1'} AND durable_writes = true;
 
 
-CREATE TABLE tgc_data.datapoints (
+CREATE TABLE IF NOT EXISTS tgc_data.datapoints (
     uuid ascii, 
     data_version int,
     object_version int,
@@ -16,7 +16,7 @@ CREATE TABLE tgc_data.datapoints (
 ) WITH CLUSTERING ORDER BY (timestamp ASC);
 
 
-CREATE TABLE tgc_data.sensors( 
+CREATE TABLE IF NOT EXISTS tgc_data.sensors( 
     uuid ascii,
     data_version int,
     object_version int,
@@ -28,7 +28,7 @@ CREATE TABLE tgc_data.sensors(
     PRIMARY KEY ((kind, brand), uuid)
 ) WITH CLUSTERING ORDER BY (uuid ASC);
 
-CREATE TABLE tgc_data.media(
+CREATE TABLE IF NOT EXISTS tgc_data.media(
     uuid ascii,
     data_version int,
     object_version int,

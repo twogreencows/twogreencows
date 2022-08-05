@@ -1,12 +1,12 @@
 version: '3'
 services:
-    db_pg:
+    tgc_db_pg:
         build: 
             context: ./dbs/postgres
             dockerfile: DockerfileDB_PG
         ports:
             - "5432:5432"
-    db_cassandra:
+    tgc_db_cassandra:
         build: 
           context: ./dbs/cassandra
           dockerfile: DockerfileDB_CAS

@@ -14,7 +14,7 @@ CREATE TABLE IF NOT EXISTS users (
     display_name VARCHAR(256) NOT NULL,
     password VARCHAR(256) NOT NULL,
     country CHAR(3) NOT NULL,
-    phone VARCHAR(32)
+    phone_number VARCHAR(32)
 );
 
 

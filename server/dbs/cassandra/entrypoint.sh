@@ -89,17 +89,18 @@ EOF
 echo "2 - testing existent of docker-entrypoint "
 EP=/patched-entrypoint.sh
 if [ -f /docker-entrypoint.sh ]; then
-    echo " == docker-entrypoint.sh s existing"
+    echo " == docker-entrypoint.sh is existing"
 else
+    echo " == docker-entrypoint.sh was not existing"
     touch /docker-entrypoint.sh
 fi
 
 echo "3 - Doing the sed manipulation"
+
+echo "$@"
 sed '$ d' /docker-entrypoint.sh > $EP
 cat <<'EOF' >> $EP
-echo "$@"
-/run-init-scripts.sh &
-exec "$@"
+/run-init-scripts.sh & exec "$@"
 EOF
 
 echo "4 - make both script executable"
@@ -109,7 +110,9 @@ chmod +x $EP
 
 echo "5 - call the new entrypoint"
 echo $EP
+echo "-----"
 cat $EP
+echo "-----"
 echo $@
 
 # Call the new entrypoint
