@@ -54,19 +54,22 @@ namespace twogreencows_core
     
     NetworkBonjourBroadcaster::NetworkBonjourBroadcaster()
     {
-        this->ServiceName = "_twogreencowsagent._tcp.local.";
+        this->ServiceName = "_twogreencowsagent";
         this->ServicePort = 27512;
+        
 
         //We get the name without local
         struct utsname infoName;
         uname(&infoName);
-        this->Hostname = infoName.nodename;
+        this->HostName = infoName.nodename;
         std::string localString(".local");
-        if (this->Hostname.length() > localString.length()) {
-            if (0 == this->Hostname.compare(this->Hostname.length() - localString.length(), localString.length(), localString)) {
-                this->Hostname = this->Hostname.substr(0, this->Hostname.size()-localString.size());
+        if (this->HostName.length() > localString.length()) {
+            if (0 == this->HostName.compare(this->HostName.length() - localString.length(), localString.length(), localString)) {
+                this->HostName = this->HostName.substr(0, this->HostName.size()-localString.size());
             }
         }  
+        this->HostNameQualified = this->HostName +  localString + ".";
+        this->ServiceInstanceFullName  = this->HostName+ "."  +this->ServiceName + "._tcp.local.";
 
         this->service_address_ipv4s = new std::vector<struct sockaddr_in>();
         this->service_address_ipv6s = new std::vector<struct sockaddr_in6>();
@@ -91,30 +94,33 @@ namespace twogreencows_core
 	}
         std::cerr << "Opened " << num_sockets << " sockets for mDNS service"<< std::endl;
         std::cerr << "Service mDNS: " << this->ServiceName << ":" <<  this->ServicePort << std::endl;
-	std::cerr << "Hostname: " << this->Hostname << std::endl;
+	std::cerr << "Hostname: " << this->HostName << std::endl;
 
 	size_t capacity = 2048;
 	void* buffer = malloc(capacity);
 
-	mdns_string_t service_string = (mdns_string_t){this->ServiceName.c_str(), strlen(this->ServiceName.c_str())};
-	mdns_string_t hostname_string = (mdns_string_t){this->Hostname.c_str(), strlen(this->Hostname.c_str())};
+	mdns_string_t service_string = (mdns_string_t){(this->ServiceName+".tcp_.local.").c_str(), strlen((this->ServiceName+"_tcp.local.").c_str())};
+	mdns_string_t hostname_string = (mdns_string_t){this->HostName.c_str(), strlen(this->HostName.c_str())};
 
 	// Build the service instance "<hostname>.<_service-name>._tcp.local." string
 	char service_instance_buffer[256] = {0};
-	snprintf(service_instance_buffer, sizeof(service_instance_buffer) - 1, "%.*s.%.*s",
+	snprintf(service_instance_buffer, sizeof(service_instance_buffer) - 1, "%.*s.%.*s._tcp.local.",
 	         MDNS_STRING_FORMAT(hostname_string), MDNS_STRING_FORMAT(service_string));
 	mdns_string_t service_instance_string =
 	    (mdns_string_t){service_instance_buffer, strlen(service_instance_buffer)};
         std::cerr << "Service instance string: " <<  service_instance_buffer << std::endl;
+        std::cerr << this->ServiceInstanceFullName << std::endl;
 
 	// Build the "<hostname>.local." string
-	char qualified_hostname_buffer[256] = {0};
-	snprintf(qualified_hostname_buffer, sizeof(qualified_hostname_buffer) - 1, "%.*s.local.",
-	         MDNS_STRING_FORMAT(hostname_string));
+            char qualified_hostname_buffer[256] = {0};
+-       snprintf(qualified_hostname_buffer, sizeof(qualified_hostname_buffer) - 1, "%.*s.local.",
+-                MDNS_STRING_FORMAT(hostname_string));
 	mdns_string_t hostname_qualified_string =
-	    (mdns_string_t){qualified_hostname_buffer, strlen(qualified_hostname_buffer)};
+	    (mdns_string_t){qualified_hostname_buffer , strlen(qualified_hostname_buffer)};
 
-        std::cerr << "Hostname qualified local: " <<  qualified_hostname_buffer << std::endl;;
+        std::cerr << "Hostname qualified local: " <<  qualified_hostname_buffer << std::endl;
+        std::cerr << this->HostNameQualified << std::endl;
+
 	service_t service = {0};
 	service.service = service_string;
 	service.hostname = hostname_string;
@@ -172,9 +178,11 @@ namespace twogreencows_core
 		additional[additional_count++] = service.txt_record[0];
 		additional[additional_count++] = service.txt_record[1];
 
-		for (int isock = 0; isock < num_sockets; ++isock)
+		for (int isock = 0; isock < num_sockets; ++isock) {
+                        std::cerr << buffer <<std::endl;
 			mdns_announce_multicast(sockets[isock], buffer, capacity, service.record_ptr, 0, 0,
 			                        additional, additional_count);
+                }
 	}
 
 	// This is a crude implementation that checks for incoming queries

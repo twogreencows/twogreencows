@@ -4,7 +4,7 @@
             [re-frame.core :as rf]
             [ajax.core :refer [GET POST]]
             [clojure.string :as string]
-            [twogreencows.validation :refer [validate-user]]
+            ;[twogreencows.validation :refer [validate-user]]
             [twogreencows.websockets :as ws]
             [mount.core :as mount]))
 
@@ -196,7 +196,7 @@
   :form/validation-errors
   :<- [:form/fields]
   (fn [fields _]
-    (validate-user fields)))
+    (empty? fields)))
 
 (rf/reg-sub
   :form/validation-errors?

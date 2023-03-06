@@ -25,16 +25,11 @@ CREATE TABLE IF NOT EXISTS tokens (
     object_version SMALLINT,
     data_version SMALLINT,
     creation_date TIMESTAMPTZ,
-    termination_date TIMESTAMPTZ,
+    expiration_date TIMESTAMPTZ,
     is_valid BOOL,
     value CHAR(256),
-    owner_uuid CHAR(36)
-);
-
-CREATE TABLE IF NOT EXISTS users_tokens (
-    id  SERIAL PRIMARY KEY,
-    user_uuid CHAR(36) UNIQUE NOT NULL,
-    token_uuid CHAR(36) UNIQUE NOT NULL 
+    owner_uuid CHAR(36),
+    CONSTRAINT fk_user FOREIGN KEY(owner_uuid) REFERENCES users(uuid) 
 );
 
 CREATE INDEX IF NOT EXISTS idx_tokens_uuid ON tokens(uuid);

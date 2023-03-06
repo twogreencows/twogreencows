@@ -827,6 +827,8 @@ mdns_multicast_send(int sock, const void* buffer, size_t size) {
 		saddrlen = sizeof(addr);
 	}
 
+        std::cerr << "SEND" << size << std::endl;
+        std::cerr << (char *) buffer << std::endl;
 	if (sendto(sock, (const char*)buffer, (mdns_size_t)size, 0, saddr, saddrlen) < 0)
 		return -1;
 	return 0;
@@ -1355,6 +1357,7 @@ mdns_answer_multicast_rclass_ttl(int sock, void* buffer, size_t capacity, uint16
 	if (capacity < (sizeof(struct mdns_header_t) + 32 + 4))
 		return -1;
 
+        std::cerr << "mdns_announce_multicast_rclass_ttl"  << std::endl;
 	// Basic answer structure
 	struct mdns_header_t* header = (struct mdns_header_t*)buffer;
 	header->query_id = 0;
@@ -1394,6 +1397,8 @@ static int
 mdns_answer_multicast_rclass(int sock, void* buffer, size_t capacity, uint16_t rclass,
                              mdns_record_t answer, mdns_record_t* authority, size_t authority_count,
                              mdns_record_t* additional, size_t additional_count) {
+
+        std::cerr << "mdns_announce_multicast_rclass"  << std::endl;
 	return mdns_answer_multicast_rclass_ttl(sock, buffer, capacity, rclass, answer, authority,
 	                                        authority_count, additional, additional_count, 60);
 }
@@ -1411,6 +1416,8 @@ static int
 mdns_announce_multicast(int sock, void* buffer, size_t capacity, mdns_record_t answer,
                         mdns_record_t* authority, size_t authority_count, mdns_record_t* additional,
                         size_t additional_count) {
+
+        std::cerr << "mdns_announce_multicast"  << std::endl;
 	uint16_t rclass = MDNS_CLASS_IN | MDNS_CACHE_FLUSH;
 	return mdns_answer_multicast_rclass(sock, buffer, capacity, rclass, answer, authority,
 	                                    authority_count, additional, additional_count);

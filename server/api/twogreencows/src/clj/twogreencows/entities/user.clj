@@ -2,7 +2,7 @@
     (:require 
     [twogreencows.db.core :as db]
     [buddy.hashers :as hashers]
-    [struct.core :as st]
+    [malli.core :as m]
     [twogreencows.entities.error :as tgc-error]
     [twogreencows.entities.util :as tgc-util]))
 
@@ -21,25 +21,20 @@
 (defn user-list [] (vec (db/get-users)))
 
 (defn new-user! [params]
-  (try
   (let [[errors _] (st/validate params user-schema)]
-    (println (get-in params [:display_name]))
+
     (if (nil? errors)
-      (let [tmpUser (db/get-user-by-display_name {:display_name (get-in params [:display_name])})]
-        (println tmpUser)
-        (println (tmpUser :display_name))
-        (if (nil? tmpUser)
-          (let [newuuid (str user-prefix "-" (clojure.string/replace (.toString (java.util.UUID/randomUUID)) #"-" ""))]
-            (db/create-user! (assoc params :uuid newuuid
-            :data_version user-data-version :object_version 1 :country "FRA" :creation_date (java.time.LocalDateTime/now))))
-          (if (= (tmpUser :password) (params :password))
-            (identity tmpUser)
-            (tgc-error/create-error 409 (str "User already exists with different password")))))
-       (tgc-error/create-error 400 (str errors)))  
+     (println "no error") 
+     (tgc-error/create-error 400 (str errors))
+       
+     
+     )
+      ;(let [newuuid (str user-prefix "-" (clojure.string/replace (.toString (java.util.UUID/randomUUID)) #"-" ""))]
+       ; (db/create-user! (assoc params :uuid newuuid
+         ;   :data_version user-data-version :object_version 1 :country "FRA" :creation_date (java.time.LocalDateTime/now)))
+       ; )
       )
-  (catch Exception e (println e))
-  ))
-  
+  )
   
 
 (defn get-user [uuid]

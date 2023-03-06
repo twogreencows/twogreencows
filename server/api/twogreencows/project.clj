@@ -23,6 +23,7 @@
                  [luminus-undertow "0.1.7"]
                  [luminus/ring-ttl-session "0.3.3"]
                  [markdown-clj "1.10.5"]
+                 [metosin/malli "0.10.1"]
                  [metosin/muuntaja "0.6.8"]
                  [metosin/reitit "0.5.15"]
                  [metosin/ring-swagger-ui "4.5.0"]

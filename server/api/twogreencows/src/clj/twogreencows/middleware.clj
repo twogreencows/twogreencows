@@ -57,7 +57,8 @@
         (let [xt-in (System/currentTimeMillis) w (handler request) xt-out (System/currentTimeMillis)] 
               (let [data (get w :body) server {:server_duration (- xt-out xt-in) :status (get w :status)}]
                 (assoc-in (assoc-in (assoc-in (assoc-in {}  [:body :data] data) [:body :server] server ) [:headers] (get w :headers)) [:status] (get w :status))
-                ))))
+                ))
+        ))
              
               
 

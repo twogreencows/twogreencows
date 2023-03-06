@@ -53,7 +53,7 @@
                         (parse-opts cli-options)
                         mount/start-with-args
                         :started)]
-    (log/info component "started"))
+    (log/info component " is started"))
   (.addShutdownHook (Runtime/getRuntime) (Thread. stop-app)))
 
 (defn -main [& args]

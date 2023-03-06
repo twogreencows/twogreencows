@@ -12,8 +12,10 @@ namespace twogreencows_core
             static NetworkBonjourBroadcaster *SharedBroadcaster;
             NetworkBonjourBroadcaster();
             std::string ServiceName;
+            std::string HostName;
             int ServicePort;
-            std::string Hostname;
+            std::string HostNameQualified;
+            std::string ServiceInstanceFullName;
 
             std::vector<struct sockaddr_in> *service_address_ipv4s;
             std::vector<struct sockaddr_in6> *service_address_ipv6s;

@@ -30,6 +30,32 @@ WHERE uuid = :uuid RETURNIN *
 SELECT uuid, object_version, data_version, creation_date, display_name, password, country, phone_number FROM users
 
 
+
+-- :name create-token! :! :n
+-- :doc creates a new token record
+INSERT INTO tokenss
+(uuid, object_version, data_version, creation_date, expiration_date, is_valid, value ,owner_uuid)
+VALUES (:uuid, :object_version, :data_version, :creation_date, :expiration_date, :is_valid, :value, :owner_uuid) RETURNING *
+
+-- :name update-token! :! :n
+-- :doc updates an existing token record
+UPDATE tokens
+SET object_version = :object_version, data_version = :data_version, expiration_date= :expiration_date, is_valid= :is_valid, = :is_valid, owner_uuid= :owner_uuid
+WHERE uuid = :uuid RETURNING *
+
+-- :name get-token-by-uuid :? :1
+-- :doc retrieves a token record given the uuid
+SELECT * FROM tokens
+WHERE uuid LIKE :uuid
+
+-- :name get-tokens-for-owner :? :1
+-- :doc retrieves a user record given the owner_uuid 
+SELECT * FROM tokens 
+WHERE owner_uuid LIKE :owner_uuid
+
+
+
+
 -- :name create-device! :! :n
 -- :doc creates a new device record
 INSERT INTO devices

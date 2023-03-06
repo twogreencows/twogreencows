@@ -20,16 +20,10 @@
 #include <string.h>
 
 #include <fcntl.h>
-#ifdef _WIN32
-#include <Winsock2.h>
-#include <Ws2tcpip.h>
-#define strncasecmp _strnicmp
-#else
 #include <unistd.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <netdb.h>
-#endif
 
 #include <uv.h>
 
@@ -98,13 +92,8 @@ typedef struct mdns_record_a_t mdns_record_a_t;
 typedef struct mdns_record_aaaa_t mdns_record_aaaa_t;
 typedef struct mdns_record_txt_t mdns_record_txt_t;
 
-#ifdef _WIN32
-typedef int mdns_size_t;
-typedef int mdns_ssize_t;
-#else
 typedef size_t mdns_size_t;
 typedef ssize_t mdns_ssize_t;
-#endif
 
 struct mdns_string_t {
 	const char* str;
