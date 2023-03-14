@@ -3,28 +3,33 @@
     [twogreencows.db.core :as db]
     [buddy.hashers :as hashers]
     [malli.core :as m]
+    [malli.error :as me]
     [twogreencows.entities.error :as tgc-error]
     [twogreencows.entities.util :as tgc-util]))
 
 (def user-data-version 1)
 (def user-prefix "usr")
 
-(def user-schema
-  [[:display_name st/required st/string]
-   [:password st/required st/string {:message "Password too short, should be 8 minimum" :validate (fn [msg] (>= (count msg) 8))}]
-   [:confirm_password st/required st/string [st/identical-to :password]]
-   [:phone_number st/string st/required]
-   ])
+(def user-post-schema
+  [:and 
+   [:map {:closed true}
+              [:display_name [:string {:min 1}]]
+              [:password [:string {:min 8}]]
+              [:confirm_password :string]
+              [:phone_number :string]]
+        [:fn {:error/message "confirmation password does not match"
+              :error/path [:confirm_password]}
+         (fn [{:keys [password confirm_password]}]
+         (= password confirm_password))]]
+     )
 
- 
 
 (defn user-list [] (vec (db/get-users)))
 
 (defn new-user! [params]
-  (let [[errors _] (st/validate params user-schema)]
+  (let [errors (m/validate params user-post-schema)]
 
     (if (nil? errors)
-     (println "no error") 
      (tgc-error/create-error 400 (str errors))
        
      

@@ -72,7 +72,7 @@
            400 {:body (tgc-util/tgc-httpanswer-metadescription (tgc-error/error-description)) } 
            409 {:body (tgc-util/tgc-httpanswer-metadescription (tgc-error/error-description)) }
            500 {:body (tgc-util/tgc-httpanswer-metadescription (tgc-error/error-description)) }}
-         :parameters {:body (tgc-user/user-post-description) }
+         ;;:parameters {:body (tgc-user/user-post-description) }
          :handler (fn [{{params :body} :parameters}] 
                      (let [creation_result (tgc-user/new-user! params) created_uuid (get-in creation_result [:uuid])]
                         (println "POST USER")
