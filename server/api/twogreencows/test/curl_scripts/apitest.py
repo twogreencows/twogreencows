@@ -27,7 +27,7 @@ print()
 #print()
 #
 pp.pprint("Test POST one user - missing parameters")
-r = requests.post(core_url+"/users",  headers=h , json={"display_name":"paul", "password":"yesterday","phone_number":"+33687853132"}) 
+r = requests.post(core_url+"/users?a1=lolo",  headers=h , json={"display_name":"paul", "password":"yesterday","phone_number":"+33687853132"}) 
 pp.pprint(r.status_code)
 if r.status_code != 400:
     pp.pprint("  ->Test FAILED")

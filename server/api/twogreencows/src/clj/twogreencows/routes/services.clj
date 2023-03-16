@@ -5,6 +5,7 @@
     [reitit.swagger-ui :as swagger-ui]
     [reitit.ring.coercion :as coercion]
     [reitit.coercion.spec :as spec-coercion]
+    [reitit.coercion.malli :as malli-coercion]
     [reitit.ring.middleware.muuntaja :as muuntaja]
     [reitit.ring.middleware.exception :as exception]
     [reitit.ring.middleware.multipart :as multipart]
@@ -46,7 +47,7 @@
                  ]
 
     :muuntaja formats/instance
-    :coercion  spec-coercion/coercion
+    :coercion  malli-coercion/coercion
     :swagger {:id ::api}}
 
    ["" {:no-doc true}
@@ -74,12 +75,13 @@
            500 {:body (tgc-util/tgc-httpanswer-metadescription (tgc-error/error-description)) }}
          ;;:parameters {:body (tgc-user/user-post-description) }
          :handler (fn [{{params :body} :parameters}] 
-                     (let [creation_result (tgc-user/new-user! params) created_uuid (get-in creation_result [:uuid])]
+                     ;;(let [creation_result (tgc-user/new-user! params) created_uuid (get-in creation_result [:uuid])]
+                     (do
                         (println "POST USER")
-                        (if (string/starts-with? created_uuid  "usr")
-                          (response/ok creation_result)
-                          {:status (get-in creation_result [:code]) :headers { } :body creation_result}
-                        )))
+                        ;;(if (string/starts-with? created_uuid  "usr")
+                          (response/ok {:uuid "lalalalaa" :phone_number "+33687853131" :display_name "lolo" :data_version 1 :object_version 2 :country "FRA" :creation_date (java.time.Instant/now)})
+                          ;;{:status (get-in creation_result [:code]) :headers { } :body creation_result}
+                        ))
                     
             }
         }

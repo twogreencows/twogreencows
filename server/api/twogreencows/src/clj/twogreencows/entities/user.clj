@@ -4,6 +4,7 @@
     [buddy.hashers :as hashers]
     [malli.core :as m]
     [malli.error :as me]
+    [malli.util :as mu]
     [twogreencows.entities.error :as tgc-error]
     [twogreencows.entities.util :as tgc-util]))
 
@@ -28,12 +29,13 @@
 
 (defn new-user! [params]
   (let [errors (m/validate params user-post-schema)]
+    (println "USERPOST")
 
-    (if (nil? errors)
-     (tgc-error/create-error 400 (str errors))
+    ;;(if (nil? errors)
+     ;;(tgc-error/create-error 400 (str errors)))
        
      
-     )
+     ;;)
       ;(let [newuuid (str user-prefix "-" (clojure.string/replace (.toString (java.util.UUID/randomUUID)) #"-" ""))]
        ; (db/create-user! (assoc params :uuid newuuid
          ;   :data_version user-data-version :object_version 1 :country "FRA" :creation_date (java.time.LocalDateTime/now)))
@@ -50,8 +52,12 @@
 
 
 
-(defn user-description [] 
-  (assoc (assoc (assoc (assoc (tgc-util/tgc-entity-description) :creation_date inst?) :display_name string?) :country string?) :phone_number string?))
+(def user-description
+    (mu/merge (tgc-util/tgc-entity-description) (m/schema [:map 
+                                                         [:display_name string?] 
+                                                         [:country string?] 
+                                                         [:phone_number string?]])))
+
 
 
 (defn user-post-description [] {:display_name string? :password string? :confirm_password string? :phone_number string?})

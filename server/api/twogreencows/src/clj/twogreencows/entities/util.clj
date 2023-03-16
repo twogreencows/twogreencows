@@ -1,15 +1,30 @@
-(ns twogreencows.entities.util)
+(ns twogreencows.entities.util
+  (:require
+    [malli.core :as m]
+    [malli.error :as me]
+    [malli.experimental.time :as mt]
+    ))
+
 (import (javax.crypto Cipher KeyGenerator SecretKey)
         (javax.crypto.spec SecretKeySpec)
         (java.security SecureRandom)
         (org.apache.commons.codec.binary Base64))
 
 
-(defn tgc-entity-description [] {:uuid string? :object_version int? :data_version int?})
+(def tgc-entity-description  [:map
+                                 [:uuid :string] 
+                                 [:object_version :int] 
+                                 [:data_version :int]
+                                 [:creation_date :time/instant]])
 
 (defn tgc-entity-uuidpostfix [] (clojure.string/replace (.toString (java.util.UUID/randomUUID)) #"-" ""))
 
-(defn tgc-httpanswer-metadescription [x] {:data x :server {:server_duration int? :status int?}}) 
+(defn tgc-httpanswer-metadescription [x] [:map {:closed true}
+                                          [:data x] 
+                                          [:server 
+                                           [:map 
+                                            [:server_duration :int] 
+                                            [:status :int]]]]) 
 
 
 (defn bytes [s]

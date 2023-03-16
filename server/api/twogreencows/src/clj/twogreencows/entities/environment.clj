@@ -3,6 +3,9 @@
     [twogreencows.db.core :as db]
     [twogreencows.middleware :as middleware]
     [twogreencows.entities.util :as tgc-util]
+    [malli.core :as m]
+    [malli.error :as me]
+    [malli.util :as mu]
   ))
 
 (def environment-data-version 1)
@@ -16,8 +19,10 @@
 (defn generate-environment-name []
   (str (rand-nth words_1) "-" (rand-nth words_2) "-" (rand-nth words_3) "-" (int (rand 27130410))))
 
-(defn environment-description [] 
-  (assoc (assoc (tgc-util/tgc-entity-description) :name string?) :sem_version string?))
+(def environment-description  
+  (mu/merge (tgc-util/tgc-entity-description) (m/schema [:map 
+                                                         [:name string?] 
+                                                         [:sem_version string?]])))
 
 
 (defn get-environment! []

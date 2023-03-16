@@ -1,8 +1,8 @@
 -- :name create-user! :! :n
 -- :doc creates a new user record
 INSERT INTO users
-(uuid, object_version, data_version, creation_date, display_name, password, country,phone_number)
-VALUES (:uuid, :object_version, :data_version, :creation_date, :display_name, :password, :country, :phone_number) RETURNING *
+(uuid, object_version, data_version, created_date, updated_at, display_name, password, country,phone_number)
+VALUES (:uuid, :object_version, :data_version, :created_at, :updated_at, :display_name, :password, :country, :phone_number) RETURNING *
 
 -- :name update-user! :! :n
 -- :doc updates an existing user record
