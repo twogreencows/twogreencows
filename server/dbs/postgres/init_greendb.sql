@@ -1,4 +1,4 @@
-CREATE TABLE IF NOT EXISTS environment (
+CREATE TABLE IF NOT EXISTS environments (
     uuid CHAR(36) UNIQUE NOT NULL PRIMARY KEY,
     object_version SMALLINT,
     data_version SMALLINT,
@@ -9,7 +9,7 @@ CREATE TABLE IF NOT EXISTS environment (
     sem_version VARCHAR(32) NOT NULL
 );
 
-CREATE TABLE IF NOT EXISTS user (
+CREATE TABLE IF NOT EXISTS users (
     uuid CHAR(36) UNIQUE NOT NULL PRIMARY KEY,
     object_version SMALLINT,
     data_version SMALLINT,
@@ -23,9 +23,9 @@ CREATE TABLE IF NOT EXISTS user (
 );
 
 
-CREATE INDEX IF NOT EXISTS idx_user_uuid ON user(uuid);
+CREATE INDEX IF NOT EXISTS idx_users_uuid ON users(uuid);
 
-CREATE TABLE IF NOT EXISTS token (
+CREATE TABLE IF NOT EXISTS tokens (
     uuid CHAR(36) UNIQUE NOT NULL PRIMARY KEY,
     object_version SMALLINT,
     data_version SMALLINT,
@@ -36,12 +36,12 @@ CREATE TABLE IF NOT EXISTS token (
     expiration_date TIMESTAMPTZ,
     is_valid BOOL,
     value CHAR(256),
-    CONSTRAINT fk_owner FOREIGN KEY(owner_uuid) REFERENCES user(uuid) 
+    CONSTRAINT fk_owner FOREIGN KEY(owner_uuid) REFERENCES users(uuid) 
 );
 
-CREATE INDEX IF NOT EXISTS idx_token_uuid ON token(uuid);
+CREATE INDEX IF NOT EXISTS idx_tokens_uuid ON tokens(uuid);
 
-CREATE TABLE IF NOT EXISTS device (
+CREATE TABLE IF NOT EXISTS devices (
     uuid CHAR(36)  UNIQUE NOT NULL PRIMARY KEY,
     object_version SMALLINT,
     data_version SMALLINT,
@@ -55,13 +55,13 @@ CREATE TABLE IF NOT EXISTS device (
     platform VARCHAR(8),  
     os_version VARCHAR(16),
     last_connection_date TIMESTAMPTZ,
-    CONSTRAINT fk_owner FOREIGN KEY(owner_uuid) REFERENCES user(uuid) 
+    CONSTRAINT fk_owner FOREIGN KEY(owner_uuid) REFERENCES users(uuid) 
 );
 
-CREATE INDEX IF NOT EXISTS idx_device_uuid ON device(uuid);
+CREATE INDEX IF NOT EXISTS idx_devices_uuid ON devices(uuid);
 
 
-CREATE TABLE IF NOT EXISTS session (
+CREATE TABLE IF NOT EXISTS sessions (
     uuid CHAR(36) UNIQUE NOT NULL PRIMARY KEY,
     object_version SMALLINT,
     data_version SMALLINT,
@@ -75,17 +75,17 @@ CREATE TABLE IF NOT EXISTS session (
     token_uuid CHAR(36),
     is_new_user BOOLEAN NOT NULL,
     is_new_device BOOLEAN NOT NULL,
-    CONSTRAINT fk_owner FOREIGN KEY(owner_uuid) REFERENCES user(uuid), 
-    CONSTRAINT fk_user FOREIGN KEY(user_uuid) REFERENCES user(uuid), 
-    CONSTRAINT fk_device FOREIGN KEY(device_uuid) REFERENCES device(uuid), 
-    CONSTRAINT fk_token FOREIGN KEY(token_uuid) REFERENCES token(uuid) 
+    CONSTRAINT fk_owner FOREIGN KEY(owner_uuid) REFERENCES users(uuid), 
+    CONSTRAINT fk_user FOREIGN KEY(user_uuid) REFERENCES users(uuid), 
+    CONSTRAINT fk_device FOREIGN KEY(device_uuid) REFERENCES devices(uuid), 
+    CONSTRAINT fk_token FOREIGN KEY(token_uuid) REFERENCES tokens(uuid) 
 );
 
 
-CREATE INDEX IF NOT EXISTS idx_session_uuid ON session(uuid);
+CREATE INDEX IF NOT EXISTS idx_session_uuid ON sessions(uuid);
 
 
-CREATE TABLE IF NOT EXISTS greenhouse (
+CREATE TABLE IF NOT EXISTS greenhouses (
     uuid CHAR(36)  UNIQUE NOT NULL PRIMARY KEY,
     object_version SMALLINT,
     data_version SMALLINT,
@@ -98,12 +98,12 @@ CREATE TABLE IF NOT EXISTS greenhouse (
     longitude DOUBLE PRECISION,
     display_name VARCHAR(256),
     description TEXT,
-    CONSTRAINT fk_owner FOREIGN KEY(owner_uuid) REFERENCES user(uuid) 
+    CONSTRAINT fk_owner FOREIGN KEY(owner_uuid) REFERENCES users(uuid) 
 );
 
-CREATE INDEX IF NOT EXISTS idx_greenhouse_uuid ON greenhouse(uuid);
+CREATE INDEX IF NOT EXISTS idx_greenhouses_uuid ON greenhouses(uuid);
 
-CREATE TABLE IF NOT EXISTS growbox (
+CREATE TABLE IF NOT EXISTS growboxes (
     uuid CHAR(36) UNIQUE NOT NULL PRIMARY KEY,
     object_version SMALLINT,
     data_version SMALLINT,
@@ -114,13 +114,13 @@ CREATE TABLE IF NOT EXISTS growbox (
     greenhouse_uuid CHAR(36),
     
     display_name VARCHAR(256),
-    CONSTRAINT fk_owner FOREIGN KEY(owner_uuid) REFERENCES user(uuid), 
-    CONSTRAINT fk_greenhouse FOREIGN KEY(greenhouse_uuid) REFERENCES greenhouse(uuid) 
+    CONSTRAINT fk_owner FOREIGN KEY(owner_uuid) REFERENCES users(uuid), 
+    CONSTRAINT fk_greenhouse FOREIGN KEY(greenhouse_uuid) REFERENCES greenhouses(uuid) 
 );
 
-CREATE INDEX  IF NOT EXISTS idx_growbox_uuid ON growbox(uuid);
+CREATE INDEX  IF NOT EXISTS idx_growboxes_uuid ON growboxes(uuid);
 
-CREATE TABLE IF NOT EXISTS plant (
+CREATE TABLE IF NOT EXISTS plants (
     uuid CHAR(36)  UNIQUE NOT NULL PRIMARY KEY,
     object_version SMALLINT,
     data_version SMALLINT, 
@@ -130,12 +130,12 @@ CREATE TABLE IF NOT EXISTS plant (
     display_name VARCHAR(256),
     description TEXT,
     bio_reference VARCHAR(256)
-};
+);
  
 
-CREATE INDEX  IF NOT EXISTS idx_plant_uuid ON plant(uuid);
+CREATE INDEX IF NOT EXISTS idx_plants_uuid ON plants(uuid);
 
-CREATE TABLE IF NOT EXISTS stem (
+CREATE TABLE IF NOT EXISTS stems (
     uuid CHAR(36)  UNIQUE NOT NULL PRIMARY KEY,
     object_version SMALLINT,
     data_version SMALLINT, 
@@ -157,12 +157,9 @@ CREATE TABLE IF NOT EXISTS stem (
     harvest_date TIMESTAMPTZ,
 
 
-    CONSTRAINT fk_owner FOREIGN KEY(owner_uuid) REFERENCES user(uuid), 
-    CONSTRAINT fk_growbox FOREIGN KEY(growbox_uuid) REFERENCES growbox(uuid), 
-    CONSTRAINT fk_plant FOREIGN KEY(plant_uuid) REFERENCES plant(uuid) 
+    CONSTRAINT fk_owner FOREIGN KEY(owner_uuid) REFERENCES users(uuid), 
+    CONSTRAINT fk_growbox FOREIGN KEY(growbox_uuid) REFERENCES growboxes(uuid), 
+    CONSTRAINT fk_plant FOREIGN KEY(plant_uuid) REFERENCES plants(uuid) 
 ); 
 
-CREATE INDEX IF NOT EXISTS idx_stem_uuid ON stem(uuid);
-
- 
-
+CREATE INDEX IF NOT EXISTS idx_stem_uuids ON stems(uuid);
