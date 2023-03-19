@@ -85,14 +85,14 @@ SELECT uuid, object_version, data_version, creation_date, display_name, password
 
 -- :name get-environments :? :*
 -- :doc retrieves all environment records
-SELECT uuid, object_version, data_version, name, sem_version FROM environments
+SELECT uuid, object_version, data_version, created_at, updated_at, name, sem_version FROM environments
 
 
 -- :name create-environment! :! :n
 -- :doc creates a new environment record
 INSERT INTO environments
-(uuid, object_version, data_version, name , sem_version)
-VALUES (:uuid, :object_version, :data_version, :name, :sem_version)
+(uuid, object_version, data_version, created_at, updated_at, name , sem_version)
+VALUES (:uuid, :object_version, :data_version, :created_at, :updated_at,:name, :sem_version)
 RETURNING *;
 
 -- :name get-environment-by-uuid :? :1

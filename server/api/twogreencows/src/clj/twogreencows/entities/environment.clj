@@ -20,17 +20,17 @@
   (str (rand-nth words_1) "-" (rand-nth words_2) "-" (rand-nth words_3) "-" (int (rand 27130410))))
 
 (def environment-description  
-  (mu/merge (tgc-util/tgc-entity-description) (m/schema [:map 
-                                                         [:name string?] 
-                                                         [:sem_version string?]])))
+  (mu/merge tgc-util/tgc-entity-description (m/schema [:map 
+                                                         [:name :string] 
+                                                         [:sem_version :string]])))
 
 
 (defn get-environment! []
   (if-let [envs (vec (db/get-environments))] 
         (if (= (count envs) 0) 
           (try
-            (let [newuuid (str environment-prefix "-" (tgc-util/tgc-entity-uuidpostfix))]
-                (db/create-environment! {:uuid newuuid :data_version environment-data-version :object_version 1 :name (generate-environment-name) :sem_version current-version})
+            (let [t_now (java.time.Instant/now) newuuid (str environment-prefix "-" (tgc-util/tgc-entity-uuidpostfix))]
+                (db/create-environment! {:uuid newuuid :data_version environment-data-version :object_version 1 :name (generate-environment-name) :sem_version current-version :created_at t_now :updated_at t_now})
                 ;;(db/get-environment-by-uuid {:uuid newuuid})
             ))
           (get envs 0))))

@@ -1,7 +1,7 @@
 (ns twogreencows.entities.token
   (:require
     [twogreencows.db.core :as db]
-    [clojure.java.io :as io]    
+   [clojure.java.io :as io]    
     [twogreencows.entities.util :as tgc-util]
     [twogreencows.middleware :as middleware]
     ))

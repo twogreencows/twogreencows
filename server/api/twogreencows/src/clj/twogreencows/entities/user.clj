@@ -5,6 +5,7 @@
     [malli.core :as m]
     [malli.error :as me]
     [malli.util :as mu]
+    [malli.experimental.time :as mt]
     [twogreencows.entities.error :as tgc-error]
     [twogreencows.entities.util :as tgc-util]))
 
@@ -24,6 +25,19 @@
          (= password confirm_password))]]
      )
 
+(def user-description
+    (mu/merge tgc-util/tgc-entity-description (m/schema [:map 
+                                                         [:display_name string?] 
+                                                         [:country string?] 
+                                                         [:phone_number string?]])))
+
+(def user-description  
+  (mu/merge tgc-util/tgc-entity-description (m/schema [:map 
+                                                         [:country string?] 
+                                                         [:display_name string?] 
+                                                         [:phone_number string?]])))
+
+
 
 (defn user-list [] (vec (db/get-users)))
 
@@ -31,8 +45,6 @@
   (let [errors (m/validate params user-post-schema)]
     (println "USERPOST")
 
-    ;;(if (nil? errors)
-     ;;(tgc-error/create-error 400 (str errors)))
        
      
      ;;)
@@ -52,12 +64,4 @@
 
 
 
-(def user-description
-    (mu/merge (tgc-util/tgc-entity-description) (m/schema [:map 
-                                                         [:display_name string?] 
-                                                         [:country string?] 
-                                                         [:phone_number string?]])))
 
-
-
-(defn user-post-description [] {:display_name string? :password string? :confirm_password string? :phone_number string?})

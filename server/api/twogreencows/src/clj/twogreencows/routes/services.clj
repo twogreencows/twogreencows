@@ -1,6 +1,11 @@
  (ns twogreencows.routes.services
    (:require
-    [clojure.string :as string] 
+    [clojure.string :as string]     
+    [malli.core :as m]
+    [malli.error :as me]
+    [malli.registry :as mr]
+    [malli.experimental.time :as met]
+ 
     [reitit.swagger :as swagger]
     [reitit.swagger-ui :as swagger-ui]
     [reitit.ring.coercion :as coercion]
@@ -58,29 +63,26 @@
     ["/environment"
      {:get
       { :summary "Get information about the server"
-        :responses {200 {:body  (tgc-util/tgc-httpanswer-metadescription (tgc-environment/environment-description)) }}
+        :responses {200 {:body  (tgc-util/tgc-httpanswer-metadescription tgc-environment/environment-description) }}
         :handler (fn [_] (let [r (tgc-environment/unique-environment)] 
                      (response/ok r)) ) }}] ; environment
     ["/users"
      {:get
         {:summary "Get lists of all users. For Admin only" 
-         :responses {200 {:body (tgc-util/tgc-httpanswer-metadescription [(tgc-user/user-description)]) }} 
+         :responses {200 {:body (tgc-util/tgc-httpanswer-metadescription tgc-user/user-description) }} 
          :handler (fn [_] (response/ok (tgc-user/user-list))) }
       :post 
         {:summary "Create a new user"  
          :responses
-          {200 {:body (tgc-util/tgc-httpanswer-metadescription (tgc-user/user-description)) }
-           400 {:body (tgc-util/tgc-httpanswer-metadescription (tgc-error/error-description)) } 
-           409 {:body (tgc-util/tgc-httpanswer-metadescription (tgc-error/error-description)) }
-           500 {:body (tgc-util/tgc-httpanswer-metadescription (tgc-error/error-description)) }}
+          {200 {:body (tgc-util/tgc-httpanswer-metadescription tgc-user/user-description) }
+           400 {:body (tgc-util/tgc-httpanswer-metadescription tgc-error/error-description) } 
+           409 {:body (tgc-util/tgc-httpanswer-metadescription tgc-error/error-description) }
+           500 {:body (tgc-util/tgc-httpanswer-metadescription tgc-error/error-description) }}
          ;;:parameters {:body (tgc-user/user-post-description) }
          :handler (fn [{{params :body} :parameters}] 
-                     ;;(let [creation_result (tgc-user/new-user! params) created_uuid (get-in creation_result [:uuid])]
                      (do
                         (println "POST USER")
-                        ;;(if (string/starts-with? created_uuid  "usr")
-                          (response/ok {:uuid "lalalalaa" :phone_number "+33687853131" :display_name "lolo" :data_version 1 :object_version 2 :country "FRA" :creation_date (java.time.Instant/now)})
-                          ;;{:status (get-in creation_result [:code]) :headers { } :body creation_result}
+                          (response/ok {:uuid "lalalalaa" :phone_number "+33687853131" :display_name "lolo" :data_version 1 :object_version 2 :country "FRA" :created_at (java.time.Instant/now) :updated_at (java.time.Instant/now)})
                         ))
                     
             }
@@ -90,16 +92,16 @@
         {:get
            {:summary "Get a specific user"
             :responses 
-            { 404 {:body (tgc-util/tgc-httpanswer-metadescription (tgc-error/error-description)) }
-              200 {:body (tgc-util/tgc-httpanswer-metadescription (tgc-user/user-description)) }}
+            { 404 {:body (tgc-util/tgc-httpanswer-metadescription tgc-error/error-description) }
+              200 {:body (tgc-util/tgc-httpanswer-metadescription tgc-user/user-description) }}
             :handler (fn [{{params :body} :parameters}]
                            (println params))
             }
           :delete 
            {:summary "Deletea specific user"
             :responses 
-            { 404 {:body (tgc-util/tgc-httpanswer-metadescription (tgc-error/error-description)) }
-              200 {:body (tgc-util/tgc-httpanswer-metadescription (tgc-user/user-description)) }}
+            { 404 {:body (tgc-util/tgc-httpanswer-metadescription tgc-error/error-description) }
+              200 {:body (tgc-util/tgc-httpanswer-metadescription tgc-user/user-description) }}
             :handler (fn [{{params :body} :parameters}]
                            (println params))
             }
@@ -109,23 +111,20 @@
         {:get
            {:summary "Get the tokens for a specific user"
             :responses 
-            { 200 {:body (tgc-util/tgc-httpanswer-metadescription (tgc-user/user-description)) }}
+            { 200 {:body (tgc-util/tgc-httpanswer-metadescription tgc-user/user-description) }}
             :handler (fn [{{params :body} :parameters}]
                            (println params))
             }
           :post 
            {:summary "Creste a new token for a specific user"
             :responses 
-            { 404 {:body (tgc-util/tgc-httpanswer-metadescription (tgc-error/error-description)) }
-              200 {:body (tgc-util/tgc-httpanswer-metadescription (tgc-user/user-description)) }}
+            { 404 {:body (tgc-util/tgc-httpanswer-metadescription tgc-error/error-description) }
+              200 {:body (tgc-util/tgc-httpanswer-metadescription tgc-user/user-description) }}
             :handler (fn [{{params :body} :parameters}]
                            (println params))
             }
          }
       ]; user/uuid
-
-
-
     ];v1
    ];api
   )

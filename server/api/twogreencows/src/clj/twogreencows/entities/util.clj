@@ -2,7 +2,8 @@
   (:require
     [malli.core :as m]
     [malli.error :as me]
-    [malli.experimental.time :as mt]
+    [malli.registry :as mr]
+    [malli.experimental.time :as met]
     ))
 
 (import (javax.crypto Cipher KeyGenerator SecretKey)
@@ -10,12 +11,15 @@
         (java.security SecureRandom)
         (org.apache.commons.codec.binary Base64))
 
+(mr/set-default-registry!
+  (mr/composite-registry (m/default-schemas) (met/schemas)))
 
-(def tgc-entity-description  [:map
+(def tgc-entity-description  [:map {:closed true}
                                  [:uuid :string] 
                                  [:object_version :int] 
                                  [:data_version :int]
-                                 [:creation_date :time/instant]])
+                                 [:created_at :time/instant] 
+                                 [:updated_at :time/instant]])
 
 (defn tgc-entity-uuidpostfix [] (clojure.string/replace (.toString (java.util.UUID/randomUUID)) #"-" ""))
 
