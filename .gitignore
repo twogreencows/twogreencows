@@ -18,4 +18,4 @@ twogreencows_agent
 *.swp
 
 # VIM stuff
-*.un~
+.*.un~
