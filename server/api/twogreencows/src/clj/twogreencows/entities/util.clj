@@ -19,7 +19,10 @@
                                  [:object_version :int] 
                                  [:data_version :int]
                                  [:created_at :time/instant] 
-                                 [:updated_at :time/instant]])
+                                 ;;:[:created_at :time/offset-date-time] 
+                                 
+                                 ;;[:updated_at :time/instant]
+                                 ])
 
 (defn tgc-entity-uuidpostfix [] (clojure.string/replace (.toString (java.util.UUID/randomUUID)) #"-" ""))
 
