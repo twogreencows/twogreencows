@@ -7,7 +7,7 @@
                  [buddy "2.0.0"]
                  [com.fasterxml.jackson.core/jackson-core "2.13.1"]
                  [cheshire "5.10.0"]
-                 [clojure.java-time "0.3.2"]
+                 [clojure.java-time "1.2.0"]
                  [com.github.seancorfield/next.jdbc "1.3.862"]
                  [cljs-ajax "0.8.3"]
                  [cc.qbits/alia-all "5.0.0-alpha7"]
