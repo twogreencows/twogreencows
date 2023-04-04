@@ -36,13 +36,10 @@
 
 (defn new-user! [params]
   (do
-
-     (println "lala")
-     (println params)
      (let [newuuid (str user-prefix "-" (clojure.string/replace (.toString (java.util.UUID/randomUUID)) #"-" "")) tnow (java.time.LocalDateTime/now)
-             users (db/execute-query ["insert into users (uuid, created_at, updated_at, data_version, object_version, country, phone_number, display_name, password) 
-                  values (?,?,?,?,?,?,?, ?, ?)", newuuid tnow tnow user-data-version 1 (params :country) (params :phone_number) (params :display_name) (params :password)])]
-              (print users)
+             newuser (db/execute-query ["insert into users (uuid, created_at, updated_at, data_version, object_version, country, phone_number, display_name, password) 
+                  values (?,?,?,?,?,?,?,?,?)", newuuid tnow tnow user-data-version 1 "FRA" (params :phone_number) (params :display_name) (params :password)])]
+            (get newuser 0)
           ) 
       ))
   
