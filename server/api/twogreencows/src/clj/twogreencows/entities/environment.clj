@@ -26,12 +26,13 @@
 
 
 (defn get-environment! []
-  (if-let [envs (vec (db/get-environments))] 
+  (if-let [envs (db/execute-query ["select * from environments"])]
         (if (= (count envs) 0) 
           (try
-            (let [t_now (java.time.Instant/now) newuuid (str environment-prefix "-" (tgc-util/tgc-entity-uuidpostfix))]
-                (db/create-environment! {:uuid newuuid :data_version environment-data-version :object_version 1 :name (generate-environment-name) :sem_version current-version :created_at t_now :updated_at t_now})
-                ;;(db/get-environment-by-uuid {:uuid newuuid})
+            (let [t_now (java.time.Instant/now) newuuid (str environment-prefix "-" (tgc-util/tgc-entity-uuidpostfix))
+                newenv (db/execute-query ["insert into environments (uuid, created_at, updated_at, data_version, object_version, name, sem_version) values (?, ?, ?, ?, ?, ?, ?)" 
+                                   newuuid t_now t_now environment-data-version 1 (generate-environment-name) current-version])]
+                (get newenv 0)
             ))
           (get envs 0))))
 

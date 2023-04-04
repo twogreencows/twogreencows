@@ -4,7 +4,7 @@
     [malli.core :as m]
     [malli.error :as me]
     [malli.registry :as mr]
-    [malli.experimental.time :as met]
+    [malli.experimental.time :as mt]
  
     [reitit.swagger :as swagger]
     [reitit.swagger-ui :as swagger-ui]
@@ -69,8 +69,12 @@
     ["/users"
      {:get
         {:summary "Get lists of all users. For Admin only" 
-         :responses {200 {:body (tgc-util/tgc-httpanswer-metadescription tgc-user/user-description) }} 
-         :handler (fn [_] (response/ok (tgc-user/user-list))) }
+         :responses {200 {:body (tgc-util/tgc-httpanswer-metadescription [:vector tgc-user/user-description]) }} 
+         :handler (fn [_] (let [ul  (tgc-user/user-list)]
+                            (do
+                              (response/ok ul) 
+                                       
+                                       ))) }
       :post 
         {:summary "Create a new user"  
          :responses
@@ -79,10 +83,11 @@
            409 {:body (tgc-util/tgc-httpanswer-metadescription tgc-error/error-description) }
            500 {:body (tgc-util/tgc-httpanswer-metadescription tgc-error/error-description) }}
          ;;:parameters {:body (tgc-user/user-post-description) }
-         :handler (fn [{{params :body} :parameters}] 
-                     (do
-                        (println "POST USER")
-                          (response/ok {:uuid "lalalalaa" :phone_number "+33687853131" :display_name "lolo" :data_version 1 :object_version 2 :country "FRA" :created_at (java.time.Instant/now) :updated_at (java.time.Instant/now)})
+         :handler (fn [{params :body-params}]
+                     (let [newuser (tgc-user/new-user! params)]
+                        (do
+                          (println params)
+                          (response/ok newuser))
                         ))
                     
             }
@@ -98,7 +103,7 @@
                            (println params))
             }
           :delete 
-           {:summary "Deletea specific user"
+           {:summary "Delete a specific user"
             :responses 
             { 404 {:body (tgc-util/tgc-httpanswer-metadescription tgc-error/error-description) }
               200 {:body (tgc-util/tgc-httpanswer-metadescription tgc-user/user-description) }}

@@ -31,36 +31,25 @@
                                                          [:country string?] 
                                                          [:phone_number string?]])))
 
-(def user-description  
-  (mu/merge tgc-util/tgc-entity-description (m/schema [:map 
-                                                         [:country string?] 
-                                                         [:display_name string?] 
-                                                         [:phone_number string?]])))
 
-
-
-(defn user-list [] (vec (db/get-users)))
+(defn user-list [] (db/execute-query ["select * from users"]))
 
 (defn new-user! [params]
-  (let [errors (m/validate params user-post-schema)]
-    (println "USERPOST")
+  (do
 
-       
-     
-     ;;)
-      ;(let [newuuid (str user-prefix "-" (clojure.string/replace (.toString (java.util.UUID/randomUUID)) #"-" ""))]
-       ; (db/create-user! (assoc params :uuid newuuid
-         ;   :data_version user-data-version :object_version 1 :country "FRA" :creation_date (java.time.LocalDateTime/now)))
-       ; )
-      )
-  )
+     (println "lala")
+     (println params)
+     (let [newuuid (str user-prefix "-" (clojure.string/replace (.toString (java.util.UUID/randomUUID)) #"-" "")) tnow (java.time.LocalDateTime/now)
+             users (db/execute-query ["insert into users (uuid, created_at, updated_at, data_version, object_version, country, phone_number, display_name, password) 
+                  values (?,?,?,?,?,?,?, ?, ?)", newuuid tnow tnow user-data-version 1 (params :country) (params :phone_number) (params :display_name) (params :password)])]
+              (print users)
+          ) 
+      ))
   
 
 (defn get-user [uuid]
-  (db/get-user-by-uuid {:uuid uuid} ))
+  (db/execute-query [(str "select * from users where uuid="  uuid)]))
 
-;(defn delete-user [uuid]
-;  (db/delete-user-with-uuid {:uuid uuid}))
 
 
 

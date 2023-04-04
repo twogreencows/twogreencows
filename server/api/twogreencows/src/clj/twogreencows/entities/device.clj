@@ -8,6 +8,6 @@
 (def datapoint-prefix "dev")
 
 (defn get-device [uuid]
-  (db/get-device-by-uuid {:uuid uuid} ))
+  (db/execute-query [(str "select * from devices where uuid=" uuid)]))
 
 

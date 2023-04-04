@@ -1,8 +1,8 @@
 (ns twogreencows.db.core
   (:require
     [java-time :refer [java-date]]
-    [next.jdbc.date-time]
-    [next.jdbc.result-set]
+    [next.jdbc.date-time :as jdt]
+    [next.jdbc.result-set :as rs]
     [cheshire.core :refer [generate-string parse-string]]
     ;;[clojure.java.jdbc :as jdbc]
     [next.jdbc :as jdbc]
@@ -21,21 +21,21 @@
             PreparedStatement]))
 
 (defstate ^:dynamic *db*
-  :start (if-let [jdbc-url (env :database-sql-url)]
-           (print jdbc-url)
-           (conman/connect! {:jdbc-url jdbc-url})
-           (do
-             (log/warn "Database connection URL was not found, please set :database-url in your config, e.g: dev-config.edn")
-             *db*))
-  :stop (conman/disconnect! *db*))
+  :start (if-let [jdbc-url (env :database-sql-url)] 
+           (let [*db* (jdbc/get-datasource jdbc-url)]
+             (identity *db*))))
+           ;;(conman/connect! {:jdbc-url jdbc-url})
+           ;;(do
+           ;;  (log/warn "Database connection URL was not found, please set :database-url in your config, e.g: dev-config.edn")
+           ;;  *db*))
+  ;;:stop  (println "Stop db") ;; (conman/disconnect! *db*)))
+;;)
 
-;(defstate ^:dynamic *db-cassandra*
-;  :start (println "Start cassandra")
-;  :stop (println "Stop cassandra")))
+(defn execute-query [query_array]
+   (jdbc/execute! *db* query_array {:return-keys true :builder-fn rs/as-unqualified-lower-maps}))
 
-
-
-(conman/bind-connection *db* "sql/queries.sql")
+(jdt/read-as-instant)
+;;(conman/bind-connection *db* "sql/queries.sql")
 ;(tgc-environment/unique-environment)
 
 ;;(defn sql-timestamp->inst [t] 
