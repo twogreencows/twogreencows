@@ -17,6 +17,7 @@ CREATE TABLE IF NOT EXISTS users (
     updated_at TIMESTAMPTZ,
     
     display_name VARCHAR(256) NOT NULL,
+    salt VARCHAR(256) NOT NULL,
     password VARCHAR(256) NOT NULL,
     country CHAR(3) NOT NULL,
     phone_number VARCHAR(32)

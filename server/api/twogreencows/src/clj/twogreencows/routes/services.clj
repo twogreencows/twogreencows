@@ -84,10 +84,12 @@
            500 {:body (tgc-util/tgc-httpanswer-metadescription tgc-error/error-description) }}
          ;;:parameters {:body (tgc-user/user-post-description) }
          :handler (fn [{params :body-params}]
-                     (let [newuser (tgc-user/new-user! params)]
-                        (do
-                          (println params)
-                          (response/ok newuser))
+                    (let [tmpuser (tgc-user/check-for-user params)]
+                        (cond 
+                            (nil? tmpuser)  (let [newuser (tgc-user/new-user! params)]
+                                      (response/ok newuser))
+                            (false? tmpuser)  (response/conflict "this is crap")
+                            :else tmpuser)
                         ))
                     
             }

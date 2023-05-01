@@ -6,10 +6,14 @@
     [malli.experimental.time :as met]
     ))
 
-(import (javax.crypto Cipher KeyGenerator SecretKey)
+(import (javax.crypto Cipher KeyGenerator SecretKey SecretKeyFactory)
         (javax.crypto.spec SecretKeySpec)
+        (javax.crypto.spec PBEKeySpec)
         (java.security SecureRandom)
         (org.apache.commons.codec.binary Base64))
+
+(def iterations-count 65536) 
+(def salt-reference-n 16) ;;this means a salt of 3n bytes which will give 4n base64 string 
 
 (mr/set-default-registry!
   (mr/composite-registry (m/default-schemas) (met/schemas)))
@@ -19,9 +23,7 @@
                                  [:object_version :int] 
                                  [:data_version :int]
                                  [:created_at :time/instant] 
-                                 ;;:[:created_at :time/offset-date-time] 
-                                 
-                                 ;;[:updated_at :time/instant]
+                                 [:updated_at :time/instant]
                                  ])
 
 (defn tgc-entity-uuidpostfix [] (clojure.string/replace (.toString (java.util.UUID/randomUUID)) #"-" ""))
@@ -34,33 +36,28 @@
                                             [:status :int]]]]) 
 
 
-(defn bytes [s]
-  (.getBytes s "UTF-8"))
 
-(defn base64 [b]
+(defn tobase64 [b]
   (Base64/encodeBase64String b))
 
-(defn debase64 [s]
-  (Base64/decodeBase64 (bytes s)))
+(defn frombase64 [s]
+  (Base64/decodeBase64 s))
 
-(defn get-raw-key [seed]
-  (let [keygen (KeyGenerator/getInstance "AES")
-        sr (SecureRandom/getInstance "SHA1PRNG")]
-    (.setSeed sr (bytes seed))
-    (.init keygen 128 sr)
-    (.. keygen generateKey getEncoded)))
+(defn tgc-hash-generate-salt []
+  (let [sr (java.security.SecureRandom/getInstance "SHA1PRNG")
+        salt (byte-array (* 3 salt-reference-n))]
+    (do
+      (.nextBytes sr salt) 
+      (identity salt))))
 
-(defn get-cipher [mode seed]
-  (let [key-spec (SecretKeySpec. (get-raw-key seed) "AES")
-        cipher (Cipher/getInstance "AES")]
-    (.init cipher mode key-spec)
-    cipher))
 
-(defn encrypt [text key]
-  (let [bytes (bytes text)
-        cipher (get-cipher Cipher/ENCRYPT_MODE key)]
-    (base64 (.doFinal cipher bytes))))
 
-(defn decrypt [text key]
-  (let [cipher (get-cipher Cipher/DECRYPT_MODE key)]
-    (String. (.doFinal cipher (debase64 text)))))
+(defn tgc-hash-password 
+    ( [password] (tgc-hash-password password nil))
+    ( [password saltstring] 
+     (let [salt (if (nil? saltstring) (tgc-hash-generate-salt) (frombase64 saltstring))]
+          (let [key_spec (javax.crypto.spec.PBEKeySpec. (.toCharArray password) salt iterations-count 512)
+                factory  (javax.crypto.SecretKeyFactory/getInstance "PBKDF2WithHmacSHA256")]
+                [(tobase64 salt) (tobase64 (.getEncoded (.generateSecret factory key_spec))) ]
+        ))))
+

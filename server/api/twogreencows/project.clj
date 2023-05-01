@@ -4,9 +4,9 @@
   :url "http://example.com/FIXME"
 
   :dependencies [[ch.qos.logback/logback-classic "1.2.3"]
-                 [buddy "2.0.0"]
                  [com.fasterxml.jackson.core/jackson-core "2.13.1"]
                  [cheshire "5.10.0"]
+                 ;;[org.mindrot.jbcrypt "0.4"]
                  [clojure.java-time "1.2.0"]
                  [com.github.seancorfield/next.jdbc "1.3.862"]
                  [cljs-ajax "0.8.3"]
@@ -15,8 +15,11 @@
                  [cprop "0.1.17"]
                  [day8.re-frame/re-frame-10x "1.1.10"]
                  [expound "0.8.7"]
+                 [org.bouncycastle/bcprov-jdk15to18 "1.72"]
                  [http-kit "2.5.3"]
                  [funcool/struct "1.4.0"]
+                 ;;[buddy/buddy-hashers "1.8.158"]
+                 [buddy "2.0.0"]
                  [luminus-immutant "0.2.5"]
                  [luminus-migrations "0.6.5"]
                  [luminus-transit "0.1.2"]

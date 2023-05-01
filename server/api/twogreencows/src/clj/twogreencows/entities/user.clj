@@ -1,7 +1,7 @@
 (ns twogreencows.entities.user
     (:require 
     [twogreencows.db.core :as db]
-    [buddy.hashers :as hashers]
+    ;;[buddy.hashers :as hashers]
     [malli.core :as m]
     [malli.error :as me]
     [malli.util :as mu]
@@ -35,19 +35,27 @@
 (defn user-list [] (db/execute-query ["select * from users"]))
 
 (defn new-user! [params]
-  (do
-     (let [newuuid (str user-prefix "-" (clojure.string/replace (.toString (java.util.UUID/randomUUID)) #"-" "")) tnow (java.time.LocalDateTime/now)
-             newuser (db/execute-query ["insert into users (uuid, created_at, updated_at, data_version, object_version, country, phone_number, display_name, password) 
-                  values (?,?,?,?,?,?,?,?,?)", newuuid tnow tnow user-data-version 1 "FRA" (params :phone_number) (params :display_name) (params :password)])]
-            (get newuser 0)
+     (let [newuuid (str user-prefix "-" (clojure.string/replace (.toString (java.util.UUID/randomUUID)) #"-" "")) 
+           tnow (java.time.LocalDateTime/now)
+           [hsalt hpassword] (tgc-util/tgc-hash-passwword (params :password)) 
+           newuser (db/execute-query ["insert into users (uuid, created_at, updated_at, data_version, object_version, country, phone_number, display_name, salt, password) 
+                  values (?,?,?,?,?,?,?,?,?,?)", newuuid tnow tnow user-data-version 1 "FRA" (params :phone_number) (params :display_name) hsalt hpassword])]
+             (get newuser 0) 
           ) 
-      ))
+      )
   
 
 (defn get-user [uuid]
   (db/execute-query [(str "select * from users where uuid="  uuid)]))
 
 
+(defn check-for-user [params]
+  (let [existingusers (db/execute-query (str "select * from users where phone_number=" (params :phone_number)))]
+      (if (not-empty existingusers) 
+          (let [tmpuser (get existingusers 0)]
+            (identity tmpuser)))))
+            ;;(if  (= (hashers/derive (tmpuser :password) {:alg :bcrypt+sha512}) (params :password))
+              ;; tmpuser  false)) nil)))       
 
 
 
