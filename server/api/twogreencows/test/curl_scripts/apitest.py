@@ -54,8 +54,21 @@ pp.pprint("Test POST one user - good parameters")
 r=requests.post(core_url+ "/users", headers = h, json= {"display_name":"paul", "password":"yesterday","confirm_password":"yesterday","phone_number":"+33687853132"})
 if r.status_code != 200:
     pp.pprint("  ->Test FAILED")
+    pp.pprint(r.json())
+    pp.pprint(r.status_code)
 else:
     pp.pprint(r.json())
+
+print()
+pp.pprint("Test POST one user - conflicting passwords")
+r=requests.post(core_url+ "/users", headers = h, json= {"display_name":"paul", "password":"sergeantpepper","confirm_password":"sergeantpepper","phone_number":"+33687853132"})
+if r.status_code != 409:
+    pp.pprint("  ->Test FAILED")
+    pp.pprint(r.json())
+    pp.pprint(r.status_code)
+else:
+    pp.pprint(r.json())
+
 
 print()
 pp.pprint("Test POST one user - good parameters with tokens")

@@ -50,8 +50,6 @@
       (.nextBytes sr salt) 
       (identity salt))))
 
-
-
 (defn tgc-hash-password 
     ( [password] (tgc-hash-password password nil))
     ( [password saltstring] 

@@ -4,7 +4,6 @@
     [next.jdbc.date-time :as jdt]
     [next.jdbc.result-set :as rs]
     [cheshire.core :refer [generate-string parse-string]]
-    ;;[clojure.java.jdbc :as jdbc]
     [next.jdbc :as jdbc]
     [clojure.tools.logging :as log]
     [conman.core :as conman]
@@ -32,7 +31,9 @@
 ;;)
 
 (defn execute-query [query_array]
-   (jdbc/execute! *db* query_array {:return-keys true :builder-fn rs/as-unqualified-lower-maps}))
+  (do
+   (println (apply str query_array))
+   (jdbc/execute! *db* query_array {:return-keys true :builder-fn rs/as-unqualified-lower-maps})))
 
 (jdt/read-as-instant)
 ;;(conman/bind-connection *db* "sql/queries.sql")

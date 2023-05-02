@@ -73,7 +73,6 @@
          :handler (fn [_] (let [ul  (tgc-user/user-list)]
                             (do
                               (response/ok ul) 
-                                       
                                        ))) }
       :post 
         {:summary "Create a new user"  
@@ -85,13 +84,12 @@
          ;;:parameters {:body (tgc-user/user-post-description) }
          :handler (fn [{params :body-params}]
                     (let [tmpuser (tgc-user/check-for-user params)]
+                      (do
                         (cond 
-                            (nil? tmpuser)  (let [newuser (tgc-user/new-user! params)]
-                                      (response/ok newuser))
-                            (false? tmpuser)  (response/conflict "this is crap")
-                            :else tmpuser)
-                        ))
-                    
+                            (nil? tmpuser)  (let [newuser (tgc-user/new-user! params)] (response/ok newuser))
+                            (false? tmpuser)  (response/conflict (tgc-error/create-error 409 "tgc.error.conflict.user_already_exists"))
+                            :else (response/ok tmpuser))
+                        )))
             }
         }
      ];users

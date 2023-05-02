@@ -14,8 +14,9 @@
 (def error-description  
     (mu/merge tgc-util/tgc-entity-description (m/schema [:map 
                                                          [:message :string] 
-                                                         [:code :string]])))
+                                                         [:code :int]])))
   
 (defn create-error [code message] 
-   (let [tmpuuid (str error-prefix "-" (clojure.string/replace (.toString (java.util.UUID/randomUUID)) #"-" ""))]
-            {:message message :code code :uuid tmpuuid :object_version 1 :data_version error-data-version}))
+   (let [tmpuuid (str error-prefix "-" (clojure.string/replace (.toString (java.util.UUID/randomUUID)) #"-" ""))
+           tnow (java.time.Instant/now)]
+            {:message message :code code :uuid tmpuuid :object_version 1 :data_version error-data-version :created_at tnow :updated_at tnow}))
