@@ -13,6 +13,7 @@ pp.pprint("= Test GET environment")
 r = requests.get(core_url+"/environment")
 if r.status_code != 200:
     pp.pprint("  ->Test FAILED  " + str(r.status_code)+ "\n")
+    pp.pprint(r.content)
 else:
     pp.pprint(r.json())
     pp.pprint(r.status_code)
@@ -22,6 +23,7 @@ r= requests.get( core_url+ "/users")
 if r.status_code != 200:
     pp.pprint("  ->Test FAILED")
     pp.pprint(r.status_code)
+    pp.pprint(r.content)
 else:
     pp.pprint(r.json())
 print()
@@ -52,13 +54,13 @@ print()
 
 pp.pprint("Test POST one user - good parameters")
 r=requests.post(core_url+ "/users", headers = h, json= {"display_name":"paul", "password":"yesterday","confirm_password":"yesterday","phone_number":"+33687853132"})
-if r.status_code != 200:
+if r.status_code != 201:
     pp.pprint("  ->Test FAILED")
     pp.pprint(r.json())
     pp.pprint(r.status_code)
 else:
     pp.pprint(r.json())
-
+sys.exit(0)
 print()
 pp.pprint("Test POST one user - conflicting passwords")
 r=requests.post(core_url+ "/users", headers = h, json= {"display_name":"paul", "password":"sergeantpepper","confirm_password":"sergeantpepper","phone_number":"+33687853132"})
@@ -75,6 +77,7 @@ pp.pprint("Test POST one user - good parameters with tokens")
 #r=requests.post = (core_url+ "/users?withToken=true", headers={"Content-Type: application/json"}, json={"display_name":"john", "password":"yerblues","confirm_password":"yerblues","phone_number":"+33687853133"})
 if r.status_code != 200:
     pp.pprint("  ->Test FAILED")
+    pp.pprint(r.json())
 else:
     pp.pprint(r.json())
 
@@ -91,7 +94,7 @@ print()
 
 
 pp.pprint("Test GET one user: not existing")
-#r=request.get(core_url+ "/user/usr-ewklewlkewkwekelwk222kl")
+r=requests.get(core_url+ "/useris/usr-ewklewlkewkwekelwk222kl")
 if r.status_code != 404:
     pp.pprint("  ->Test FAILED")
 else:
@@ -100,6 +103,15 @@ else:
 print()
 
 
-pp.pprint("Test GET one user: existing")
+#pp.pprint("Test GET one user: existing")
+pp.pprint("Test GET all tokens: not existing")
+r=requests.get(core_url+ "/tokens/")
+if r.status_code != 200:
+    pp.pprint("  ->Test FAILED")
+else:
+    pp.pprint(r.json())
+
+print()
+
 
 

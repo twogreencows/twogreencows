@@ -20,6 +20,7 @@
     [twogreencows.entities.environment :as tgc-environment]
     [twogreencows.entities.greenhouse :as tgc-greenhouse]
     [twogreencows.entities.device :as tgc-device]
+    [twogreencows.entities.session :as tgc-session]
     [twogreencows.entities.growbox :as tgc-growbox]
     [twogreencows.entities.error :as tgc-error]
     [twogreencows.entities.util :as tgc-util]
@@ -64,32 +65,33 @@
      {:get
       { :summary "Get information about the server"
         :responses {200 {:body  (tgc-util/tgc-httpanswer-metadescription tgc-environment/environment-description) }}
-        :handler (fn [_] (let [r (tgc-environment/unique-environment)] 
-                     (response/ok r)) ) }}] ; environment
+        :handler (fn [_] (let [r (tgc-environment/unique-environment)] (response/ok r)))  }}] ; environment
+    ["/sessions"
+     {:get  
+      {:summary "Get all sessions"
+       :responses {200 {:body (tgc-util/tgc-httpanswer-metadescription [:vector tgc-user/user-description]) }}
+       :handler (fn [_] (let [r (tgc-session/session-list)] (response/ok r)) ) }}] ; session
     ["/users"
      {:get
         {:summary "Get lists of all users. For Admin only" 
          :responses {200 {:body (tgc-util/tgc-httpanswer-metadescription [:vector tgc-user/user-description]) }} 
-         :handler (fn [_] (let [ul  (tgc-user/user-list)]
-                            (do
-                              (response/ok ul) 
-                                       ))) }
+         :handler (fn [_] (let [ul  (tgc-user/user-list)] (response/ok ul)))}
       :post 
         {:summary "Create a new user"  
          :responses
           {200 {:body (tgc-util/tgc-httpanswer-metadescription tgc-user/user-description) }
+           201 {:body (tgc-util/tgc-httpanswer-metadescription tgc-user/user-description) }
            400 {:body (tgc-util/tgc-httpanswer-metadescription tgc-error/error-description) } 
            409 {:body (tgc-util/tgc-httpanswer-metadescription tgc-error/error-description) }
            500 {:body (tgc-util/tgc-httpanswer-metadescription tgc-error/error-description) }}
-         ;;:parameters {:body (tgc-user/user-post-description) }
          :handler (fn [{params :body-params}]
                     (let [tmpuser (tgc-user/check-for-user params)]
-                      (do
+                      
                         (cond 
-                            (nil? tmpuser)  (let [newuser (tgc-user/new-user! params)] (response/ok newuser))
+                            (nil? tmpuser)  (let [newuser (tgc-user/new-user! params true)] (response/created (str "/api/V1/users/" (newuser :uuid)) newuser))
                             (false? tmpuser)  (response/conflict (tgc-error/create-error 409 "tgc.error.conflict.user_already_exists"))
                             :else (response/ok tmpuser))
-                        )))
+                        ))
             }
         }
      ];users

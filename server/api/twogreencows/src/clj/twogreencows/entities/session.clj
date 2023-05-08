@@ -9,10 +9,11 @@
     [twogreencows.entities.util :as tgc-util]
     ))
 
-(def session-object-version 1)
+(def session-data-version 1)
 (def session-prefix "ses")
 (def current-version "0.0.8")
 
+(defn session-list [] (db/execute-query ["select * from sessions"]))
 ;(defn get-session [uuid]
 ;  (db/get-session-by-uuid {:uuid uuid} ))
 

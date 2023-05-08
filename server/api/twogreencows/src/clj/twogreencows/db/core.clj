@@ -23,17 +23,13 @@
   :start (if-let [jdbc-url (env :database-sql-url)] 
            (let [*db* (jdbc/get-datasource jdbc-url)]
              (identity *db*))))
-           ;;(conman/connect! {:jdbc-url jdbc-url})
-           ;;(do
-           ;;  (log/warn "Database connection URL was not found, please set :database-url in your config, e.g: dev-config.edn")
-           ;;  *db*))
-  ;;:stop  (println "Stop db") ;; (conman/disconnect! *db*)))
-;;)
 
-(defn execute-query [query_array]
+(defn execute-query 
+  ([query_array] (execute-query query_array false))
+  ([query_array with_transaction]
   (do
    (println (apply str query_array))
-   (jdbc/execute! *db* query_array {:return-keys true :builder-fn rs/as-unqualified-lower-maps})))
+   (jdbc/execute! *db* query_array {:return-keys true :builder-fn rs/as-unqualified-lower-maps}))))
 
 (jdt/read-as-instant)
 ;;(conman/bind-connection *db* "sql/queries.sql")
