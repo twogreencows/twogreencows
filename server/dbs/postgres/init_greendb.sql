@@ -34,10 +34,10 @@ CREATE TABLE IF NOT EXISTS tokens (
     updated_at TIMESTAMPTZ,
     
     owner_uuid CHAR(36),
-    expiration_date TIMESTAMPTZ,
+    expires_at TIMESTAMPTZ,
     is_valid BOOL,
-    value CHAR(256),
-    CONSTRAINT fk_owner FOREIGN KEY(owner_uuid) REFERENCES users(uuid) 
+    value VARCHAR(256),
+    CONSTRAINT fk_owner FOREIGN KEY(owner_uuid) REFERENCES users(uuid) ON DELETE CASCADE 
 );
 
 CREATE INDEX IF NOT EXISTS idx_tokens_uuid ON tokens(uuid);
