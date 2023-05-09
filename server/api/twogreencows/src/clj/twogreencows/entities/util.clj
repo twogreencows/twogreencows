@@ -13,7 +13,7 @@
         (org.apache.commons.codec.binary Base64))
 
 (def iterations-count 65536) 
-(def salt-reference-n 16) ;;this means a salt of 3n bytes which will give 4n base64 string 
+(def salt-reference-n-default 16) ;;this means a salt of 3n bytes which will give 4n base64 string 
 
 (mr/set-default-registry!
   (mr/composite-registry (m/default-schemas) (met/schemas)))
@@ -43,12 +43,13 @@
 (defn frombase64 [s]
   (Base64/decodeBase64 s))
 
-(defn tgc-hash-generate-salt []
-  (let [sr (java.security.SecureRandom/getInstance "SHA1PRNG")
-        salt (byte-array (* 3 salt-reference-n))]
-    (do
-      (.nextBytes sr salt) 
-      (identity salt))))
+(defn tgc-hash-generate-salt 
+  ([] (tgc-hash-generate-salt salt-reference-n-default))
+  ([n] (let [sr (java.security.SecureRandom/getInstance "SHA1PRNG")
+             salt (byte-array (* 3 n))]
+          (do
+              (.nextBytes sr salt) 
+              (identity salt)))))
 
 (defn tgc-hash-password 
     ( [password] (tgc-hash-password password nil))

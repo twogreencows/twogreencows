@@ -75,7 +75,7 @@
      {:get
         {:summary "Get lists of all users. For Admin only" 
          :responses {200 {:body (tgc-util/tgc-httpanswer-metadescription [:vector tgc-user/user-description]) }} 
-         :handler (fn [_] (let [ul  (tgc-user/user-list)] (response/ok ul)))}
+         :handler (fn [_] (let [r  (tgc-user/user-list)] (response/ok r)))}
       :post 
         {:summary "Create a new user"  
          :responses
@@ -84,11 +84,12 @@
            400 {:body (tgc-util/tgc-httpanswer-metadescription tgc-error/error-description) } 
            409 {:body (tgc-util/tgc-httpanswer-metadescription tgc-error/error-description) }
            500 {:body (tgc-util/tgc-httpanswer-metadescription tgc-error/error-description) }}
-         :handler (fn [{params :body-params}]
-                    (let [tmpuser (tgc-user/check-for-user params)]
-                      
+         :handler (fn [{params :body-params qparams :query-params}]
+                    (let [withToken (qparams "withToken")
+                          tmpuser (tgc-user/check-for-user params withToken)]
+                      (prn withToken)
                         (cond 
-                            (nil? tmpuser)  (let [newuser (tgc-user/new-user! params true)] (response/created (str "/api/V1/users/" (newuser :uuid)) newuser))
+                            (nil? tmpuser)  (let [newuser (tgc-user/new-user! params withToken)] (response/created (str "/api/V1/users/" (newuser :uuid)) newuser))
                             (false? tmpuser)  (response/conflict (tgc-error/create-error 409 "tgc.error.conflict.user_already_exists"))
                             :else (response/ok tmpuser))
                         ))
