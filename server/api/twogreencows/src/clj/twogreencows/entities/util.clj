@@ -28,6 +28,11 @@
 
 (defn tgc-entity-uuidpostfix [] (clojure.string/replace (.toString (java.util.UUID/randomUUID)) #"-" ""))
 
+(defn tgc-queryparam-subobjects
+      ([] (tgc-queryparam-subobjects [nil]))
+      ([subobjectlist] ([]))
+      )
+
 (defn tgc-httpanswer-metadescription [x] [:map {:closed true}
                                           [:data x] 
                                           [:server 

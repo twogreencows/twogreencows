@@ -87,12 +87,15 @@
          :handler (fn [{params :body-params qparams :query-params}]
                     (let [withToken (qparams "withToken")
                           tmpuser (tgc-user/check-for-user params withToken)]
-                      (prn withToken)
+                      (do
+                        (prn "lalala")
+                        (prn qparams)
+                        (prn withToken)
                         (cond 
                             (nil? tmpuser)  (let [newuser (tgc-user/new-user! params withToken)] (response/created (str "/api/V1/users/" (newuser :uuid)) newuser))
                             (false? tmpuser)  (response/conflict (tgc-error/create-error 409 "tgc.error.conflict.user_already_exists"))
                             :else (response/ok tmpuser))
-                        ))
+                        )))
             }
         }
      ];users
@@ -102,16 +105,25 @@
             :responses 
             { 404 {:body (tgc-util/tgc-httpanswer-metadescription tgc-error/error-description) }
               200 {:body (tgc-util/tgc-httpanswer-metadescription tgc-user/user-description) }}
-            :handler (fn [{{params :body} :parameters}]
-                           (println params))
+            :handler (fn [{{:keys [uuid]} :path-params qparams :query-params}]
+                       (let [tmpusers (tgc-user/get-user uuid true)]
+                           (if (empty? (seq tmpusers))
+                              (response/not-found (tgc-error/create-error 404 "tgc.error.notfound.user_notx__exists"))
+                              (response/ok (nth tmpusers 0))
+                           )))
             }
           :delete 
            {:summary "Delete a specific user"
             :responses 
             { 404 {:body (tgc-util/tgc-httpanswer-metadescription tgc-error/error-description) }
-              200 {:body (tgc-util/tgc-httpanswer-metadescription tgc-user/user-description) }}
-            :handler (fn [{{params :body} :parameters}]
-                           (println params))
+              204 {:body (tgc-util/tgc-httpanswer-metadescription tgc-user/user-description) }}
+            :handler (fn [{{:keys [uuid]} :path-params qparams :query-params}]
+                        (let [tmpusers (tgc-user/delete-user uuid)]
+                           (if (empty? (seq tmpusers))
+                              (response/not-found (tgc-error/create-error 404 "tgc.error.notfound.user_notx__exists"))
+                              ;; we have to do things ourselves as ring no-content sends back no content and we decide to senfd the user
+                              {:status 200 :headers {} :body (nth tmpusers 0)}
+                           )))
             }
          }
       ]; user/uuid

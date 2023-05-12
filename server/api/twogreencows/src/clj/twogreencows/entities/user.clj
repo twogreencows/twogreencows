@@ -50,9 +50,12 @@
 
 (defn get-user [uuid withToken]
   (if (= true withToken)
-    (db/execute-query [(str "select * from users where uuid= ? inner join tokens on tokens.owner_uuid = ?"  uuid uuid)])
-    (db/execute-query [(str "select * from users where uuid= ? "  uuid )])))
+    (db/execute-query ["select * from users inner join tokens on tokens.owner_uuid = users.uuid where users.uuid= ?"  uuid])
+    (db/execute-query ["select * from users where uuid= ? "  uuid ])
+    ))
 
+(defn delete-user [uuid]
+  (db/execute-query ["delete from users where uuid=? returning *" uuid]))
 
 (defn check-for-user [params withToken]
   (let [existing-users (db/execute-query ["select * from users where phone_number= ?" (params :phone_number)])]
@@ -60,11 +63,8 @@
           (let [tmpuser (get existing-users 0)
                 proposed-display-name (params :display_name)
                 proposed-hashed-password (nth (tgc-util/tgc-hash-password (params :password) (tmpuser :salt)) 1)]
-                  (do
-                    (prn "GOGO")
                    (if (and (= 0 (compare proposed-display-name (tmpuser :display_name))) (= 0 (compare proposed-hashed-password (tmpuser :password))))
-                        (if (= true withToken) tmpuser tmpuser)                       
-                        false) (prn "GAGA"))) 
-                    nil
-                )))
+                        tmpuser                        
+                        false )) 
+           nil)))
 
