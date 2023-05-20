@@ -46,8 +46,6 @@
                  coercion/coerce-response-middleware
                  ;;coercing request parameters
                  coercion/coerce-request-middleware
-                 ;;server metatagging;
-                 ;;middleware/wrap-server-metatagging
                  ;;multipart params
                  multipart/multipart-middleware
                  ]
@@ -69,7 +67,7 @@
     ["/sessions"
      {:get  
       {:summary "Get all sessions"
-       :responses {200 {:body (tgc-util/tgc-httpanswer-metadescription [:vector tgc-user/user-description]) }}
+       :responses {200 {:body (tgc-util/tgc-httpanswer-metadescription [:vector tgc-session/session-description]) }}
        :handler (fn [_] (let [r (tgc-session/session-list)] (response/ok r)) ) }}] ; session
     ["/users"
      {:get
@@ -78,6 +76,7 @@
          :handler (fn [_] (let [r  (tgc-user/user-list)] (response/ok r)))}
       :post 
         {:summary "Create a new user"  
+         :parameters {:body tgc-user/user-post-description }
          :responses
           {200 {:body (tgc-util/tgc-httpanswer-metadescription tgc-user/user-description) }
            201 {:body (tgc-util/tgc-httpanswer-metadescription tgc-user/user-description) }
@@ -88,9 +87,6 @@
                     (let [withToken (qparams "withToken")
                           tmpuser (tgc-user/check-for-user params withToken)]
                       (do
-                        (prn "lalala")
-                        (prn qparams)
-                        (prn withToken)
                         (cond 
                             (nil? tmpuser)  (let [newuser (tgc-user/new-user! params withToken)] (response/created (str "/api/V1/users/" (newuser :uuid)) newuser))
                             (false? tmpuser)  (response/conflict (tgc-error/create-error 409 "tgc.error.conflict.user_already_exists"))
@@ -108,7 +104,7 @@
             :handler (fn [{{:keys [uuid]} :path-params qparams :query-params}]
                        (let [tmpusers (tgc-user/get-user uuid true)]
                            (if (empty? (seq tmpusers))
-                              (response/not-found (tgc-error/create-error 404 "tgc.error.notfound.user_notx__exists"))
+                              (response/not-found (tgc-error/create-error 404 "tgc.error.notfound.user_notexists"))
                               (response/ok (nth tmpusers 0))
                            )))
             }
@@ -120,7 +116,7 @@
             :handler (fn [{{:keys [uuid]} :path-params qparams :query-params}]
                         (let [tmpusers (tgc-user/delete-user uuid)]
                            (if (empty? (seq tmpusers))
-                              (response/not-found (tgc-error/create-error 404 "tgc.error.notfound.user_notx__exists"))
+                              (response/not-found (tgc-error/create-error 404 "tgc.error.notfound.user_notexists"))
                               ;; we have to do things ourselves as ring no-content sends back no content and we decide to senfd the user
                               {:status 200 :headers {} :body (nth tmpusers 0)}
                            )))
@@ -131,7 +127,7 @@
         {:get
            {:summary "Get the tokens for a specific user"
             :responses 
-            { 200 {:body (tgc-util/tgc-httpanswer-metadescription tgc-user/user-description) }}
+            { 200 {:body (tgc-util/tgc-httpanswer-metadescription tgc-token/token-description) }}
             :handler (fn [{{params :body} :parameters}]
                            (println params))
             }

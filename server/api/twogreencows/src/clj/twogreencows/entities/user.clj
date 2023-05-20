@@ -13,7 +13,7 @@
 (def user-data-version 1)
 (def user-prefix "usr")
 
-(def user-post-schema
+(def user-post-description
   [:and 
    [:map {:closed true}
               [:display_name [:string {:min 1}]]
