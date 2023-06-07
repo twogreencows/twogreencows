@@ -28,27 +28,47 @@
     [ring.util.http-response :as response]
     [twogreencows.middleware.formats :as formats]))
 
+(defn handler-param-error [message exception request]
+  {:status 400
+   :body (tgc-error/create-error 400 "tgc.error.conflict.parameter_error")})
+
+(def tgc-exception-middleware
+  (exception/create-exception-middleware
+    (merge
+      exception/default-handlers
+      { :coercion/request-coercion handler-param-error})))
+
+(defn wrap-tgccoercion-request [handler]
+  (fn [request]
+        (let [xt-in (System/currentTimeMillis) w (handler request) xt-out (System/currentTimeMillis)] 
+              (let [data (get w :body) server {:server_duration (- xt-out xt-in) :status (get w :status)}]
+                (if (= 400 (server :status))
+                  (merge w {:body  (assoc {} :data (tgc-error/create-error 400 "tgc.error.parameter") :server server)})
+                  (identity w)
+                  )))))
  
+
 (defn service-routes []
   ["/api"
-   {:middleware [
-                 ;;query-params & form-params
-                 parameters/parameters-middleware
-                 ;;content negotiation
-                 muuntaja/format-negotiate-middleware
-                 ;;encoding respond body
-                 muuntaja/format-response-middleware
-                 ;;exception handling
-                 exception/exception-middleware
-                 ;;decoding request bodys
-                 muuntaja/format-request-middleware
-                 ;;coercing response bodys
-                 coercion/coerce-response-middleware
-                 ;;coercing request parameters
-                 coercion/coerce-request-middleware
-                 ;;multipart params
-                 multipart/multipart-middleware
-                 ]
+   {
+    ;;:middleware [
+    ;;             ;;query-params & form-params
+     ;;            ;;parameters/parameters-middleware
+     ;;            ;;content negotiation
+     ;;            muuntaja/format-negotiate-middleware
+     ;;            ;;encoding respond body
+     ;;            muuntaja/format-response-middleware
+     ;;            ;;exception handling
+     ;;            exception/exception-middleware
+     ;;            ;;decoding request bodys
+     ;;            muuntaja/format-request-middleware
+     ;;            ;;coercing response bodys
+     ;;            coercion/coerce-response-middleware
+     ;;            ;;coercing request parameters
+     ;;            coercion/coerce-request-middleware
+     ;;            ;;multipart params
+      ;;           multipart/multipart-middleware
+      ;;           ]
 
     :muuntaja formats/instance
     :coercion  malli-coercion/coercion
@@ -57,8 +77,30 @@
    ["" {:no-doc true}
     ["/swagger.json" {:get (swagger/create-swagger-handler)}]
     ["/swagger-ui*" {:get (swagger-ui/create-swagger-ui-handler {:url "/api/swagger.json"})}]
-    ]
-   ["/V1" {:middleware [middleware/wrap-server-metatagging]} 
+
+   ]
+   ["/V1" {:middleware [     
+                        ;;query-params & form-params
+                        parameters/parameters-middleware
+                        ;;content negotiation
+                        muuntaja/format-negotiate-middleware
+                        ;;encoding respond body
+                        muuntaja/format-response-middleware
+                        ;;exception handling
+                        wrap-tgccoercion-request
+                        exception/exception-middleware
+                        ;;tgc-exception-middleware
+                        ;;decoding request bodys
+                        muuntaja/format-request-middleware
+                        ;;coercing response bodys
+                        coercion/coerce-response-middleware
+                        ;;coercing request parameters
+                        coercion/coerce-request-middleware
+                        ;;multipart params
+                        multipart/multipart-middleware
+                        ;;server meta-tagging
+                        middleware/wrap-server-metatagging
+                        ]} 
     ["/environment"
      {:get
       { :summary "Get information about the server"

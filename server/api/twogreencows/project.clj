@@ -26,7 +26,7 @@
                  [markdown-clj "1.10.5"]
                  [metosin/malli "0.10.1"]
                  [metosin/muuntaja "0.6.8"]
-                 [metosin/reitit "0.6.0"]
+                 [metosin/reitit "0.7.0-alpha4"]
                  [metosin/ring-swagger-ui "5.0.0-alpha.0"]
                  [metosin/ring-http-response "0.9.3"]
                  [mount "0.1.16"]
