@@ -126,11 +126,11 @@
            409 {:body (tgc-util/tgc-httpanswer-metadescription tgc-error/error-description) }
            500 {:body (tgc-util/tgc-httpanswer-metadescription tgc-error/error-description) }}
          :handler (fn [{params :body-params qparams :query-params}]
-                    (let [withToken (qparams "withToken")
-                          tmpuser (tgc-user/check-for-user params withToken)]
+                    (let [subobjects (if (= (qparams "withSubObjects") "tokens") [:tokens] [])
+                          tmpuser (tgc-user/check-for-user params subobjects )]
                       (do
                         (cond 
-                            (nil? tmpuser)  (let [newuser (tgc-user/new-user! params withToken)] (response/created (str "/api/V1/users/" (newuser :uuid)) newuser))
+                            (nil? tmpuser)  (let [newuser (tgc-user/new-user! params subobjects)] (response/created (str "/api/V1/users/" (newuser :uuid)) newuser))
                             (false? tmpuser)  (response/conflict (tgc-error/create-error 409 "tgc.error.conflict.user_already_exists"))
                             :else (response/ok tmpuser))
                         )))
@@ -144,11 +144,14 @@
             { 404 {:body (tgc-util/tgc-httpanswer-metadescription tgc-error/error-description) }
               200 {:body (tgc-util/tgc-httpanswer-metadescription tgc-user/user-description) }}
             :handler (fn [{{:keys [uuid]} :path-params qparams :query-params}]
-                       (let [tmpusers (tgc-user/get-user uuid true)]
-                           (if (empty? (seq tmpusers))
+                       (let [subobjects (if (= (qparams "withSubObjects") "tokens") [:tokens] [])
+                             tmpuser (tgc-user/get-user uuid subobjects)]
+                         (do
+                           (prn tmpuser)
+                           (if (nil?  tmpuser)
                               (response/not-found (tgc-error/create-error 404 "tgc.error.notfound.user_notexists"))
-                              (response/ok (nth tmpusers 0))
-                           )))
+                              (response/ok tmpuser)
+                           ))))
             }
           :delete 
            {:summary "Delete a specific user"

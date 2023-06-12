@@ -33,10 +33,25 @@
                                                          [:phone_number string?]
                                                          [:tokens {:optional true} [:vector tgc-token/token-description]]])))
 
+(def user-subobjects {:tokens "owner_uuid" :devices "owner_uuid"})
+
+
+(defn get-user-subobjects [user_uuid subobjectkeyword]
+  (let [query (str "select * from " (name subobjectkeyword) " where " (str (user-subobjects subobjectkeyword)) "=?") 
+        subobjects (db/execute-query [query user_uuid])]
+      (identity subobjects)
+  ))
+
+(defn format-with-subobjects [user subobjects]
+  (let [real_subobjects (filter #(contains? user-subobjects %) subobjects)]
+    (merge user (reduce conj {} (zipmap real_subobjects (map (fn [u] (get-user-subobjects (user :uuid) u)) real_subobjects))))
+  )
+)
+
 
 (defn user-list [] (db/execute-query ["select * from users"]))
 
-(defn new-user! [params withToken]
+(defn new-user! [params subobjects]
      (let [newuuid (str user-prefix "-" (clojure.string/replace (.toString (java.util.UUID/randomUUID)) #"-" "")) 
            tnow (java.time.LocalDateTime/now)
            [hsalt hpassword] (tgc-util/tgc-hash-password (params :password)) 
@@ -44,27 +59,35 @@
                   values (?,?,?,?,?,?,?,?,?,?)", newuuid tnow tnow user-data-version 1 "FRA" (params :phone_number) (params :display_name) hsalt hpassword])
            u (get newuser 0)
            tmptoken (tgc-token/new-token! {:owner_uuid newuuid})]
-                (if (= true withToken) (assoc u :tokens [tmptoken]) (identity u))))
+                (format-with-subobjects u subobjects)
+                ))
 
-  
 
-(defn get-user [uuid withToken]
-  (if (= true withToken)
-    (db/execute-query ["select * from users inner join tokens on tokens.owner_uuid = users.uuid where users.uuid= ?"  uuid])
-    (db/execute-query ["select * from users where uuid= ? "  uuid ])
+(defn get-user [uuid subobjects]
+  (let [userquery "select * from users where uuid= ?"
+        existing-users (db/execute-query [userquery uuid])]
+      (if (not-empty existing-users)
+        (do
+          (prn subobjects)
+          (prn existing-users)
+          (format-with-subobjects (get existing-users 0) subobjects)
+        )
+        nil)
     ))
 
 (defn delete-user [uuid]
   (db/execute-query ["delete from users where uuid=? returning *" uuid]))
 
-(defn check-for-user [params withToken]
-  (let [existing-users (db/execute-query ["select * from users where phone_number= ?" (params :phone_number)])]
-      (if (not-empty existing-users) 
+
+(defn check-for-user [params subobjects]
+  (let [userquery "select * from users where phone_number= ?"
+        existing-users (db/execute-query [userquery (params :phone_number)])]
+      (if (not-empty existing-users)
           (let [tmpuser (get existing-users 0)
                 proposed-display-name (params :display_name)
                 proposed-hashed-password (nth (tgc-util/tgc-hash-password (params :password) (tmpuser :salt)) 1)]
                    (if (and (= 0 (compare proposed-display-name (tmpuser :display_name))) (= 0 (compare proposed-hashed-password (tmpuser :password))))
-                        tmpuser                        
+                        (format-with-subobjects tmpuser subobjects)                        
                         false )) 
            nil)))
 

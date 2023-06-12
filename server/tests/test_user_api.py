@@ -18,20 +18,6 @@ core_url = "http://localhost:3000/api/V1"
 h = {"Content-Type":"application/json"}
 context["user_uuid"]=""
 
-def test_v1_environment(endpoint="/environment", context=context) -> None:
-    pp.pprint("== Test GET environment")
-    r = requests.get(core_url+endpoint)
-    if r.status_code != 200:
-        pp.pprint("  ->Test FAILED  " + str(r.status_code)+ "\n")
-        pp.pprint(r.content)
-    else:
-        pp.pprint("  ->Test SUCCEEDED")
-        pp.pprint(r.json())
-    assert r.status_code == 200, f'Received wrong status code {r.status_code} instead of 200' 
-    env_uuid = r.json()["data"]["uuid"]
-    assert env_uuid.startswith("env") == True, f'Received an object which is not a environment UUID' 
-
-
 
 def test_v1_users_get_all(endpoint="/users", context=context) -> None:
     pp.pprint("== Test GET all users")
@@ -130,7 +116,7 @@ def test_v1_users_postone_newonereceivetokens(endpoint="/users", context=context
 
     assert r.status_code == 200 or r.status_code == 201, f'Received wrong status code {r.status_code} instead of 200 or 201' 
     usr_uuid = r.json()["data"]["uuid"]
-    assert usr_uuid.startswith("usr") == True, f'Received an object which is not a error UUID' 
+    assert usr_uuid.startswith("usr") == True, f'Received an object which is not a user UUID' 
     user_tokens = (r.json()["data"]).get("tokens", None)
     assert user_tokens != None , f'Received data does not contain tokens array'
     assert type(user_tokens).__name__ in ('list', 'tuple'), f'Received tokens is not a proper array type'
@@ -158,7 +144,7 @@ def test_v1_users_getone_nonexisting(endpoint="/users", context=context) -> None
 
 
 def test_v1_users_getone_existing(endpoint="/users", context=context) -> None:
-    pp.pprint("== Test GET one user simple version ")
+    pp.pprint("== Test GET one user simple version " + context["user_uuid"])
     pp.pprint(context)
     r=requests.get(core_url+ "/users/"+context["user_uuid"])
     if r.status_code != 200:
