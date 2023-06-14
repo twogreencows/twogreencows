@@ -115,7 +115,11 @@
      {:get
         {:summary "Get lists of all users. For Admin only" 
          :responses {200 {:body (tgc-util/tgc-httpanswer-metadescription [:vector tgc-user/user-description]) }} 
-         :handler (fn [_] (let [r  (tgc-user/user-list)] (response/ok r)))}
+         :handler (fn [{qparams :query-params}] 
+                    (let [subobjects (if (= (qparams "withSubObjects") "tokens") [:tokens] [])
+                          r (tgc-user/user-list subobjects)] 
+                      (response/ok r))
+                    )}
       :post 
         {:summary "Create a new user"  
          :parameters {:body tgc-user/user-post-description }
@@ -146,12 +150,10 @@
             :handler (fn [{{:keys [uuid]} :path-params qparams :query-params}]
                        (let [subobjects (if (= (qparams "withSubObjects") "tokens") [:tokens] [])
                              tmpuser (tgc-user/get-user uuid subobjects)]
-                         (do
-                           (prn tmpuser)
                            (if (nil?  tmpuser)
                               (response/not-found (tgc-error/create-error 404 "tgc.error.notfound.user_notexists"))
                               (response/ok tmpuser)
-                           ))))
+                           )))
             }
           :delete 
            {:summary "Delete a specific user"
@@ -168,22 +170,82 @@
             }
          }
       ]; user/uuid
+     ["/users/:user_uuid/tokens/:token_uuid"
+      {:get
+           {:summary "Get a specific token for a specific user"
+            :responses 
+            { 404 {:body (tgc-util/tgc-httpanswer-metadescription tgc-error/error-description) }
+              200 {:body (tgc-util/tgc-httpanswer-metadescription tgc-token/token-description) }}
+              :handler (fn [{{:keys [user_uuid token_uuid]} :path-params qparams :query-params}]
+                         (let [tmpuser (tgc-user/get-user user_uuid [:tokens])]
+                              (if (nil? tmpuser)
+                                 (response/not-found (tgc-error/create-error 404 "tgc.error.notfound.user_notexists"))
+                                 (let [tmptoken (filter (fn [tk] (= (tk :uuid) token_uuid)) (tmpuser :tokens))]
+                                   (do 
+                                     (print tmptoken) 
+                                     (response/ok tmptoken)
+                                     ))))
+                         )
+              
+            }
+        :delete 
+           {:summary "Delete a specific token for a specific user"
+            :responses 
+            { 404 {:body (tgc-util/tgc-httpanswer-metadescription tgc-error/error-description) }
+              200 {:body (tgc-util/tgc-httpanswer-metadescription tgc-token/token-description) }}
+              :handler (fn [{{:keys [user_uuid token_uuid]} :path-params qparams :query-params}]
+                         (let [tmpuser (tgc-user/get-user user_uuid [:tokens])]
+                              (if (nil? tmpuser)
+                                 (response/not-found (tgc-error/create-error 404 "tgc.error.notfound.user_notexists"))
+                                 (let [tmptoken (filter (fn [tk] (= (tk :uuid) token_uuid)) (tmpuser :tokens))]
+                                     (if (empty? tmptoken)
+                                          (response/not-found (tgc-error/create-error 404 "tgc.error.notfound.token_notexists"))
+                                          (response/ok (nth tmptoken 0))
+                                     ))))
+                                                                    
+                         )
+              
+            }
+        }
+      ]
      ["/users/:uuid/tokens"
         {:get
            {:summary "Get the tokens for a specific user"
             :responses 
-            { 200 {:body (tgc-util/tgc-httpanswer-metadescription tgc-token/token-description) }}
-            :handler (fn [{{params :body} :parameters}]
-                           (println params))
+            { 404 {:body (tgc-util/tgc-httpanswer-metadescription tgc-error/error-description) }
+              200 {:body (tgc-util/tgc-httpanswer-metadescription [:vector tgc-token/token-description]) }}
+            :handler (fn [{{:keys [uuid]} :path-params qparams :query-params}]
+                          (let [tmpuser (tgc-user/get-user uuid [:tokens])]
+                              (if (nil? tmpuser)
+                                  (response/not-found (tgc-error/create-error 404 "tgc.error.notfound.user_notexists"))
+                                  (response/ok (tmpuser :tokens))
+                           )))
             }
           :post 
            {:summary "Creste a new token for a specific user"
             :responses 
             { 404 {:body (tgc-util/tgc-httpanswer-metadescription tgc-error/error-description) }
-              200 {:body (tgc-util/tgc-httpanswer-metadescription tgc-user/user-description) }}
-            :handler (fn [{{params :body} :parameters}]
-                           (println params))
+              201 {:body (tgc-util/tgc-httpanswer-metadescription tgc-token/token-description) }}
+            :handler (fn [{{:keys [uuid]} :path-params qparams :query-params}]
+                    (let [tmpuser (tgc-user/get-user uuid [])]
+                        (if (nil? tmpuser)
+                           (response/not-found (tgc-error/create-error 404 "tgc.error.notfound.user_notexists"))
+                           (let [newtoken (tgc-token/new-token! {:owner_uuid uuid})] 
+                              (response/created (str "/api/V1/users/" uuid "/tokens/" (newtoken :uuid)) newtoken)
+                              )))) 
             }
+           :delete
+           {:summary "Delete all tokens for a specific user"
+            :response
+            { 404 {:body (tgc-util/tgc-httpanswer-metadescription tgc-error/error-description) }
+              200 {:body (tgc-util/tgc-httpanswer-metadescription [:vector tgc-token/token-description]) }}
+             :handler (fn [{{:keys [user_uuid]} :path-params qparams :query-params}]
+                    (let [tmpuser (tgc-user/get-user user_uuid [])]
+                        (if (nil? tmpuser)
+                           (response/not-found (tgc-error/create-error 404 "tgc.error.notfound.user_notexists"))
+                           (response/ok (tgc-token/delete-tokens-for-user user_uuid))
+                              ))) 
+           }
          }
       ]; user/uuid
     ];v1

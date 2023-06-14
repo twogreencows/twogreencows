@@ -39,3 +39,10 @@
 
 (defn get-tokens-for-user [owner-uuid]
   (db/execute-query [(str "select * from tokens where owner_uuid="  owner-uuid)]))
+
+(defn delete-tokens-for-user [owner-uuid]
+  (db/execute-query [(str "delete from tokens where owner_uuid="  owner-uuid)]))
+
+(defn delete-token [uuid] 
+  (db/execute-query ["delete from tokens where uuid=? returning * " uuid])) 
+

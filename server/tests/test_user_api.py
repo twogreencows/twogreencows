@@ -19,7 +19,7 @@ h = {"Content-Type":"application/json"}
 context["user_uuid"]=""
 
 
-def test_v1_users_get_all(endpoint="/users", context=context) -> None:
+def test_v1_users_getall_plain(endpoint="/users", context=context) -> None:
     pp.pprint("== Test GET all users")
     r= requests.get( core_url+ endpoint )
     if r.status_code != 200:
@@ -33,6 +33,28 @@ def test_v1_users_get_all(endpoint="/users", context=context) -> None:
     assert type(all_users).__name__ in ('list', 'tuple'), f'Received data for all users is not an array'
     for a_user in all_users:
         assert a_user["uuid"].startswith("usr") == True , f'Received an object which is not a user UUID' 
+
+def test_v1_users_getall_withtokens(endpoint="/users", context=context) -> None:
+    pp.pprint("== Test GET all users")
+    r= requests.get( core_url+ endpoint+"?withSubObjects=tokens" )
+    if r.status_code != 200:
+        pp.pprint("  ->Test FAILED  " + str(r.status_code)+ "\n")
+        pp.pprint(r.content)
+    else:
+        pp.pprint("  ->Test SUCCEDED")
+        pp.pprint(r.json())
+    assert r.status_code == 200, f'Received wrong status code {r.status_code} instead of 200'
+    all_users =  r.json()["data"]
+    assert type(all_users).__name__ in ('list', 'tuple'), f'Received data for all users is not an array'
+    for a_user in all_users:
+        assert a_user["uuid"].startswith("usr") == True , f'Received an object which is not a user UUID' 
+        user_tokens = a_user.get("tokens", None)
+        assert user_tokens != None , f'Received data does not contain tokens array'
+        assert type(user_tokens).__name__ in ('list', 'tuple'), f'Received tokens is not a proper array type'
+
+        for a_token in user_tokens:
+            assert a_token["uuid"].startswith("tok") == True , f'Received a subobject object which is not a token UUID' 
+
 
 
 
@@ -67,8 +89,7 @@ def test_v1_users_postone_unmatchparams(endpoint="/users", context=context) -> N
     assert err_uuid.startswith("err") == True, f'Received an object which is not a error UUID' 
 
 
-
-def test_v1_users_postone_newonereceivingasplainentity(endpoint="/users", context=context) -> None:
+def test_v1_users_postone_plain(endpoint="/users", context=context) -> None:
     pp.pprint("== Test POST one user - good parameters")
     r=requests.post(core_url + endpoint, headers = h, json= {"display_name":"paul", "password":"yesterday","confirm_password":"yesterday","phone_number":"+33687853132"})
     if r.status_code != 201 and  r.status_code != 200:
@@ -86,24 +107,7 @@ def test_v1_users_postone_newonereceivingasplainentity(endpoint="/users", contex
 
 
 
-def test_v1_users_postone_conflictonexisting(endpoint="/users", context=context) -> None:
-    pp.pprint("== Test POST one user - conflicting passwords")
-    r=requests.post(core_url+endpoint, headers = h, json= {"display_name":"paul", "password":"sergeantpepper","confirm_password":"sergeantpepper","phone_number":"+33687853132"})
-    
-    if r.status_code != 409:
-        pp.pprint("  ->Test FAILED  " + str(r.status_code)+ "\n")
-        pp.pprint(r.content)
-    else:
-        pp.pprint("  ->Test SUCCEEDED")
-        pp.pprint(r.json())
-
-    assert r.status_code == 409, f'Received wrong status code {r.status_code} instead of 409' 
-    err_uuid = r.json()["data"]["uuid"]
-    assert err_uuid.startswith("err") == True, f'Received an object which is not a error UUID' 
-
-
-
-def test_v1_users_postone_newonereceivetokens(endpoint="/users", context=context) -> None:
+def test_v1_users_postone_withtokens(endpoint="/users", context=context) -> None:
     pp.pprint("== Test POST one user - good parameters with tokens")
     r= requests.post(core_url+ "/users?withSubObjects=tokens", headers = h, json={"display_name":"john", "password":"yerblues","confirm_password":"yerblues","phone_number":"+33687853133"})
     
@@ -126,6 +130,24 @@ def test_v1_users_postone_newonereceivetokens(endpoint="/users", context=context
   
 
 
+def test_v1_users_postone_conflictonexisting(endpoint="/users", context=context) -> None:
+    pp.pprint("== Test POST one user - conflicting passwords")
+    r=requests.post(core_url+endpoint, headers = h, json= {"display_name":"paul", "password":"sergeantpepper","confirm_password":"sergeantpepper","phone_number":"+33687853132"})
+    
+    if r.status_code != 409:
+        pp.pprint("  ->Test FAILED  " + str(r.status_code)+ "\n")
+        pp.pprint(r.content)
+    else:
+        pp.pprint("  ->Test SUCCEEDED")
+        pp.pprint(r.json())
+
+    assert r.status_code == 409, f'Received wrong status code {r.status_code} instead of 409' 
+    err_uuid = r.json()["data"]["uuid"]
+    assert err_uuid.startswith("err") == True, f'Received an object which is not a error UUID' 
+
+
+
+
 def test_v1_users_getone_nonexisting(endpoint="/users", context=context) -> None:
     pp.pprint("Test GET one user: not existing")
     r=requests.get(core_url+ "/users/usr-ewklewlkewkwekelwk222kl")
@@ -143,7 +165,7 @@ def test_v1_users_getone_nonexisting(endpoint="/users", context=context) -> None
 
 
 
-def test_v1_users_getone_existing(endpoint="/users", context=context) -> None:
+def test_v1_users_getone_existing_plain(endpoint="/users", context=context) -> None:
     pp.pprint("== Test GET one user simple version " + context["user_uuid"])
     pp.pprint(context)
     r=requests.get(core_url+ "/users/"+context["user_uuid"])
@@ -159,7 +181,7 @@ def test_v1_users_getone_existing(endpoint="/users", context=context) -> None:
  
 
 
-def test_v1_users_getone_existingwihtokens(endpoint="/users") -> None:
+def test_v1_users_getone_existing_wihtokens(endpoint="/users") -> None:
     pp.pprint("== Test GET one user with their tokens")
     r=requests.get(core_url+ "/users/"+context["user_uuid"]+"?withSubObjects=tokens")
     if r.status_code != 200:
@@ -180,7 +202,7 @@ def test_v1_users_getone_existingwihtokens(endpoint="/users") -> None:
 
 
 def test_v1_users_getonetokens_existing(endpoint="/users") -> None:
-    pp.pprint("== Test GET tokens for a existing user")
+    pp.pprint("== Test GET tokens for a existing user - " + context["user_uuid"])
     r=requests.get(core_url+ "/users/"+context["user_uuid"]+"/tokens")
     if r.status_code != 200:
         pp.pprint("  ->Test FAILED  " + str(r.status_code)+ "\n")
@@ -190,7 +212,7 @@ def test_v1_users_getonetokens_existing(endpoint="/users") -> None:
         pp.pprint(r.json())
     assert r.status_code == 200, f'Received wrong status code {r.status_code} instead of 200' 
     all_tokens =  r.json()["data"]
-    assert type(all_tokens).__name__ in ('list', 'tuple'), f'Received data for all users is not an array'
+    assert type(all_tokens).__name__ in ('list', 'tuple'), f'Received data for all tokens for a users is not an array'
     for a_token in all_tokens:
         assert a_token["uuid"].startswith("tok") == True , f'Received an object which is not a token UUID' 
 
@@ -211,7 +233,7 @@ def test_v1_users_getonetokens_nonexistinguser(endpoint="/users") -> None:
 
 
 
-def test_v1_users_addonetokens_existinguser(endpoint="/users") -> None:
+def test_v1_users_addonetoken_existinguser(endpoint="/users") -> None:
     pp.pprint("== POST new token on user")
     r=requests.post(core_url+ "/users/"+context["user_uuid"]+"/tokens")
     if r.status_code != 201:
@@ -223,11 +245,12 @@ def test_v1_users_addonetokens_existinguser(endpoint="/users") -> None:
     assert  r.status_code == 201, f'Received wrong status code {r.status_code} or 201' 
     tok_uuid = r.json()["data"]["uuid"]
     context["tok_uuid"] = tok_uuid
-    assert err_uuid.startswith("tok") == True, f'Received an object which is not a error UUID' 
+    pp.pprint(context)
+    assert tok_uuid.startswith("tok") == True, f'Received an object which is not a error UUID' 
 
 
 
-def test_v1_users_addonetokens_nonexistinguser(endpoint="/users") -> None:
+def test_v1_users_addonetoken_nonexistinguser(endpoint="/users") -> None:
     pp.pprint("== POST new token on non existing user")
     r=requests.post(core_url+ "/users/"+"usr-lalalalala/tokens")
     if r.status_code != 404:
@@ -244,8 +267,9 @@ def test_v1_users_addonetokens_nonexistinguser(endpoint="/users") -> None:
 
 
 def test_v1_users_deleteonetoken_nonexistinguser(endpoint="/users", context=context) -> None:
-    pp.pprint("== Test DELETE user : not existing")
-    r=requests.delete(core_url+ "/users/u-aaaaaaaaaaaaaaaa/tokens"+context["tok_uuid"])
+    pp.pprint("== Test DELETE token for a non existing user")
+    pp.pprint(context)
+    r=requests.delete(core_url+ "/users/u-aaaaaaaaaaaaaaaa/tokens/"+context["tok_uuid"])
     if r.status_code != 404:
         pp.pprint("  ->Test FAILED  " + str(r.status_code)+ "\n")
         pp.pprint(r.content)
@@ -289,11 +313,11 @@ def test_v1_users_deleteonetoken_existinguser(endpoint="/users") -> None:
 
     assert r.status_code == 200, f'Received wrong status code {r.status_code} instead of 200' 
     tok_uuid = r.json()["data"]["uuid"]
-    assert err_uuid.startswith("tok") == True, f'Received an object which is not a token UUID' 
+    assert tok_uuid.startswith("tok") == True, f'Received an object which is not a token UUID' 
 
 
 
-def test_v1_users_deleteoneuser_existing(endpoint="/users", context=context) -> None:
+def test_v1_users_deleteone_nonexisting(endpoint="/users", context=context) -> None:
     pp.pprint("== Test DELETE one user: non existing")
     r=requests.delete(core_url+ "/users/usr-lalalalala")
     if r.status_code != 404:
@@ -309,7 +333,7 @@ def test_v1_users_deleteoneuser_existing(endpoint="/users", context=context) -> 
 
 
 
-def test_v1_users_deleteoneuser_existing(endpoint="/users", context=context) -> None:
+def test_v1_users_deleteone_existing(endpoint="/users", context=context) -> None:
     pp.pprint("== Test DELETE one user: existing")
     r=requests.delete(core_url+ "/users/"+context["user_uuid"])
     if r.status_code != 200:
@@ -321,7 +345,7 @@ def test_v1_users_deleteoneuser_existing(endpoint="/users", context=context) -> 
     
     assert r.status_code == 200, f'Received wrong status code {r.status_code} instead of 200' 
     usr_uuid = r.json()["data"]["uuid"]
-    assert err_uuid.startswith("usr") == True, f'Received an object which is not a user UUID' 
+    assert usr_uuid.startswith("usr") == True, f'Received an object which is not a user UUID' 
 
 
 

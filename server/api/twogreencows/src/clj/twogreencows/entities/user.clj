@@ -49,7 +49,12 @@
 )
 
 
-(defn user-list [] (db/execute-query ["select * from users"]))
+(defn user-list [subobjects] 
+  (let [users (db/execute-query ["select * from users"])]
+     (if (empty? subobjects) 
+       users
+       (map (fn [u] (format-with-subobjects u subobjects)) users) 
+    )))
 
 (defn new-user! [params subobjects]
      (let [newuuid (str user-prefix "-" (clojure.string/replace (.toString (java.util.UUID/randomUUID)) #"-" "")) 
@@ -67,11 +72,7 @@
   (let [userquery "select * from users where uuid= ?"
         existing-users (db/execute-query [userquery uuid])]
       (if (not-empty existing-users)
-        (do
-          (prn subobjects)
-          (prn existing-users)
-          (format-with-subobjects (get existing-users 0) subobjects)
-        )
+        (format-with-subobjects (get existing-users 0) subobjects)
         nil)
     ))
 
