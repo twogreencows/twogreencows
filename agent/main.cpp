@@ -46,6 +46,7 @@ int main(int argc, char *argv[]) {
         cerr << "== No path to TGC file descriptor found. Will use last one stored or bail out if not" << endl;
         LastActiveGrowboxIdentifier = GrowboxManager::GetSharedManager()->GetLastActiveGrowboxIdentifier();
         cout << "> Last identifier is " << LastActiveGrowboxIdentifier << endl;
+        
         if (LastActiveGrowboxIdentifier.empty()) {
             cerr << "No growbox descriptor file found" << endl;
             return 0;

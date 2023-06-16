@@ -33,12 +33,12 @@ namespace twogreencows_core
         }
 
         unordered_map<DataPoint::DataPointKey, std::any> result =  unordered_map<DataPoint::DataPointKey, std::any>(
-                 {{DataPoint::SUBJECT_NAME, tmpTrigger->GetName()},
-                 {DataPoint::SENSOR_KIND, string("relay")},
-                 {DataPoint::SENSOR_BRAND, string("none")},
-                 {DataPoint::SENSOR_MODEL, string("generic")},
-                 {DataPoint::SENSOR_VALUE, value},
-                 {DataPoint::SENSOR_UNIT, string("bit")}}); 
+                 { {DataPoint::SUBJECT_NAME, tmpTrigger->GetName()},
+                   {DataPoint::SENSOR_KIND, string("relay")},
+                   {DataPoint::SENSOR_BRAND, string("none")},
+                   {DataPoint::SENSOR_MODEL, string("generic")},
+                   {DataPoint::SENSOR_VALUE, value},
+                   {DataPoint::SENSOR_UNIT, string("bit")}}); 
         return result;
     }
 }    

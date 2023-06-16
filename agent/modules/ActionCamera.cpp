@@ -17,10 +17,46 @@ namespace twogreencows_core
     {
             Growbox *owningGrowBox = static_cast<twogreencows_core::Growbox*>(Base::ObjectWithIdentifier(this->GetOwnerIdentifier()));
             struct stat st = {0};
+            string PathToGlobalDataFolder = owningGrowBox->GetDataFolderPath()+"Data/";
+
+            if (stat((PathToGlobalDataFolder).c_str(), &st) == -1) {
+                mkdir((PathToGlobalDataFolder).c_str(), 0744);
+            }
             this->PathToDataFolder= owningGrowBox->GetDataFolderPath()+"Data/"+this->GetIdentifier()+"/";
             if (stat((this->PathToDataFolder).c_str(), &st) == -1) {
                 mkdir((this->PathToDataFolder).c_str(), 0744);
             }
+
+
+            MMAL_COMPONENT_T *camera_info;
+            MMAL_STATUS_T status = MMAL_SUCCESS ;
+            MMAL_PARAMETER_CAMERA_INFO_T param;
+            param.hdr.id = MMAL_PARAMETER_CAMERA_INFO;
+            param.hdr.size = sizeof(param)-4;  // Deliberately undersize to check firmware veresion
+
+            status = mmal_port_parameter_get(camera_info->control, &param.hdr);
+            /*mmal_port_parameter_get(camera_info->control, &param.hdr);
+            char camera_name[MMAL_PARAMETER_CAMERA_INFO_MAX_STR_LEN]
+            status = mmal_component_create(MMAL_COMPONENT_DEFAULT_CAMERA_INFO, &camera_info);
+            if (status == MMAL_SUCCESS)
+            {
+                MMAL_PARAMETER_CAMERA_INFO_T param;
+                param.hdr.id = MMAL_PARAMETER_CAMERA_INFO;
+                param.hdr.size = sizeof(param)-4;  // Deliberately undersize to check firmware veresion
+                status = mmal_port_parameter_get(camera_info->control, &param.hdr);
+                if (status != MMAL_SUCCESS)
+                {
+                    param.hdr.size = sizeof(param);
+                    status = mmal_port_parameter_get(camera_info->control, &param.hdr);
+                    if (status == MMAL_SUCCESS && param.num_cameras > 0)
+                    {
+            // Take the parameters from the first camera listed.
+                        cerr << param.cameras[0].max_width << endl;
+                        cerr << param.cameras[0].max_height << endl;
+                        cerr << param.cameras[0].camera_name << endl;
+                    }
+                }
+            }*/
     }
     
         

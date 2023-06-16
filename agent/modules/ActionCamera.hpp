@@ -13,7 +13,6 @@
 #include "interface/mmal/util/mmal_default_components.h"
 #include "interface/mmal/util/mmal_connection.h"
 #include "interface/mmal/mmal_parameters_camera.h"
-#include "RaspiCamControl.h"
 
 #define MMAL_CAMERA_PREVIEW_PORT 0
 #define MMAL_CAMERA_VIDEO_PORT 1
@@ -35,7 +34,7 @@ namespace twogreencows_core
             int quality = 90;
 #ifdef __MACH__
 #else            
-            RASPICAM_CAMERA_PARAMETERS camera_parameters;
+            //RASPICAM_CAMERA_PARAMETERS camera_parameters;
 #endif
     public:
         

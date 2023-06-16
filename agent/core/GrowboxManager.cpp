@@ -214,7 +214,6 @@ namespace twogreencows_core
         for(std::vector<std::string>::iterator it = SQLStatements.begin(); it != SQLStatements.end(); ++it) {
             char *err_msg = NULL;
             rc = sqlite3_exec(db, (*it).c_str(), 0, 0, &err_msg); 
-            //cout << (*it) << " " << rc << endl;
             if (rc != SQLITE_OK ) {
                 cerr <<  "SQL error: " << (*it) << " " << err_msg <<endl;
                 sqlite3_free(err_msg);        

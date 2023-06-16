@@ -9,9 +9,12 @@ HEADER_PATH2="./third_parties/mdns/include"
 ifeq ($(shell uname -s), Darwin)
     libs = 
     libsposts = 
+    PLATFORM_HEADER_PATH =
 else
-    libs = -luuid 
+    libs = -luuid -lmmal -lmmal_core -lmmal_util 
     libsposts = -lstdc++fs
+    PLATFORM_HEADER_PATH = "/opt/vc/include/"
+    PLATFORM_LIB_PATH = "/opt/vc/lib/"
 endif
 
 
@@ -33,12 +36,12 @@ OBJ_FILES = $(patsubst %cpp, %o,$(SRC))
 #this target will create the software
 
 all:compile
-	$(CC)  $(LDFLAGS) -v $(OBJ_DIR)/*.o  -o twogreencows_agent $(LDFLAGSPOST) 
+	$(CC)  $(LDFLAGS) -v $(OBJ_DIR)/*.o  -L$(PLATFORM_LIB_PATH) -o twogreencows_agent $(LDFLAGSPOST) 
 
 #this target will compile only
 
 compile:buildstructure
-	$(CC) $(CFLAGS) -I$(COREDIR) -I$(MODULEDIR) -I$(UTILDIR) -I$(HEADER_PATH) -I$(HEADER_PATH2) $(SRC) 
+	$(CC) $(CFLAGS) -I$(COREDIR) -I$(MODULEDIR) -I$(UTILDIR) -I$(HEADER_PATH) -I$(HEADER_PATH2)  -I$(PLATFORM_HEADER_PATH) $(SRC) 
 	mv *.o $(OBJ_DIR)
 
 buildstructure:
