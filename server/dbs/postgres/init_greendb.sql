@@ -21,6 +21,8 @@ CREATE TABLE IF NOT EXISTS users (
     password VARCHAR(256) NOT NULL,
     country CHAR(3) NOT NULL,
     phone_number VARCHAR(32)
+    email VARCHAR(320),
+    user_level SMALLINT DEFAULT 0
 );
 
 
