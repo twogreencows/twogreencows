@@ -6,8 +6,6 @@
     [cheshire.core :refer [generate-string parse-string]]
     [next.jdbc :as jdbc]
     [clojure.tools.logging :as log]
-    [conman.core :as conman]
-    ;[twogreencows.entities.environment :as tgc-environment]
     [java-time :as jt]
     [twogreencows.config :refer [env]]
     [mount.core :refer [defstate]])
@@ -22,13 +20,15 @@
 (defstate ^:dynamic *db*
   :start (if-let [jdbc-url (env :database-sql-url)] 
            (let [*db* (jdbc/get-datasource jdbc-url)]
-             (identity *db*))))
+             (do
+             (log/info (str "=[twogreencows] DB postgres started successfully " *db*))
+             (identity *db*)))))
 
 (defn execute-query 
   ([query_array] (execute-query query_array false))
   ([query_array with_transaction]
   (do
-   (println (apply str query_array))
+   (log/info (apply str query_array))
    (jdbc/execute! *db* query_array {:return-keys true :builder-fn rs/as-unqualified-lower-maps}))))
 
 (jdt/read-as-instant)

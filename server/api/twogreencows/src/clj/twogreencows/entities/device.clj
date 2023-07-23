@@ -1,6 +1,7 @@
 (ns twogreencows.entities.device
   (:require
     [twogreencows.db.core :as db]
+    [twogreencows.db.corecassandra :as dbcassandra]
     [twogreencows.middleware :as middleware]
     ))
 

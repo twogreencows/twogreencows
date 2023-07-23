@@ -3,8 +3,9 @@ CC=g++
 CFLAGS=-c -Wall -std=c++17 
 LDFLAGS= $(libs) -luv -lsqlite3
 LDFLAGSPOST = $(libsposts)
-HEADER_PATH="./third_parties/rapidjson-master/include"
-HEADER_PATH2="./third_parties/mdns/include"
+HEADER_PATH_RJSON="./third_parties/rapidjson-master/include"
+HEADER_PATH_MDNS="./third_parties/mdns/include"
+HEADER_PATH_LIBUV="./third_parties/libuv/include"
 
 ifeq ($(shell uname -s), Darwin)
     libs = 
@@ -41,7 +42,7 @@ all:compile
 #this target will compile only
 
 compile:buildstructure
-	$(CC) $(CFLAGS) -I$(COREDIR) -I$(MODULEDIR) -I$(UTILDIR) -I$(HEADER_PATH) -I$(HEADER_PATH2)  -I$(PLATFORM_HEADER_PATH) $(SRC) 
+	$(CC) $(CFLAGS) -I$(COREDIR) -I$(MODULEDIR) -I$(UTILDIR) -I$(HEADER_PATH_RJSON) -I$(HEADER_PATH_MDNS) -I$(HEADER_PATH_LIBUV) -I$(PLATFORM_HEADER_PATH) $(SRC) 
 	mv *.o $(OBJ_DIR)
 
 buildstructure:

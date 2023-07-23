@@ -13,17 +13,40 @@
 (def user-data-version 1)
 (def user-prefix "usr")
 
+(def user-level-none 0)
+(def user-level-grower 4)
+(def user-level-housesadmin 32)
+(def user-level-superadmin 128)
+
+(def user-admin-data {:display_name "admin" :password "admin" :phone_number "+3300000000" :user_level user-level-superadmin :country "FRA" :email "admin@twogreencows.local"})
+
+(def userwords_1 ["little" "big" "nice" "grumpy" "sad" "funny" "sleepy" "laughing" "joyous" "crying" "maniac" "fighting" "cheerful" "gloomy" "calm"])
+(def userwords_2  ["joe" "angela" "lucy" "bob" "jack" "mary" "desmond" "stella" "harry" "tilda" "bill" "scarlett"])
+
+(defn generate-user-name []
+  (str (rand-nth userwords_1) "-" (rand-nth userwords_2) (int (rand 27130410))))
+
+
 (def user-post-description
   [:and 
-   [:map {:closed true}
-              [:display_name [:string {:min 1}]]
+   [:map 
+              [:display_name [:string {:min 1 :optional true}]]
               [:password [:string {:min 8}]]
               [:confirm_password :string]
-              [:phone_number :string]]
-        [:fn {:error/message "confirmation password does not match"
+              [:phone_number [:string {:optional true}]]
+              [:email [:string {:optional true}]]]
+        
+     [:fn {:error/message "Missing an identifier"
+              :error/path [:email :display_name :phone_number]}
+         (fn [{:keys [email phone_number display_name]}]
+         (or (empty? email) (empty? phone_number) (empty? display_name)))]
+       
+      [:fn {:error/message "confirmation password does not match"
               :error/path [:confirm_password]}
          (fn [{:keys [password confirm_password]}]
-         (= password confirm_password))]]
+         (= password confirm_password))]
+        
+        ]
      )
 
 (def user-description
@@ -31,6 +54,8 @@
                                                          [:display_name string?] 
                                                          [:country string?] 
                                                          [:phone_number string?]
+                                                         [:email string?]
+                                                         [:user_level int?] 
                                                          [:tokens {:optional true} [:vector tgc-token/token-description]]])))
 
 (def user-subobjects {:tokens "owner_uuid" :devices "owner_uuid"})
@@ -51,17 +76,22 @@
 
 (defn user-list [subobjects] 
   (let [users (db/execute-query ["select * from users"])]
+    (do
+      (println "lala")
      (if (empty? subobjects) 
        users
        (map (fn [u] (format-with-subobjects u subobjects)) users) 
-    )))
+    ))))
 
 (defn new-user! [params subobjects]
      (let [newuuid (str user-prefix "-" (clojure.string/replace (.toString (java.util.UUID/randomUUID)) #"-" "")) 
            tnow (java.time.LocalDateTime/now)
+           display_name (get params :display_name (generate-user-name))
+           phone_number (get params :phone_number)
+           email (get params :email)
            [hsalt hpassword] (tgc-util/tgc-hash-password (params :password)) 
-           newuser (db/execute-query ["insert into users (uuid, created_at, updated_at, data_version, object_version, country, phone_number, display_name, salt, password) 
-                  values (?,?,?,?,?,?,?,?,?,?)", newuuid tnow tnow user-data-version 1 "FRA" (params :phone_number) (params :display_name) hsalt hpassword])
+           newuser (db/execute-query ["insert into users (uuid, created_at, updated_at, data_version, object_version, country, phone_number, display_name, email, salt, password) 
+                  values (?,?,?,?,?,?,?,?,?,?,?)", newuuid tnow tnow user-data-version 1 "FRA" phone_number display_name email hsalt hpassword])
            u (get newuser 0)
            tmptoken (tgc-token/new-token! {:owner_uuid newuuid})]
                 (format-with-subobjects u subobjects)

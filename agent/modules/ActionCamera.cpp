@@ -4,9 +4,13 @@
 #include "Growbox.hpp"
 #include "Action.hpp"
 #include "ActionCamera.hpp"
-#include  "DataPoint.hpp"
-#include  "Trigger.hpp"
+#include "DataPoint.hpp"
+#include "Trigger.hpp"
 #include "Timeline.hpp"
+
+#ifdef __arm__
+#include <mmal.h>
+#endif
 
 using namespace std;
 
@@ -27,7 +31,7 @@ namespace twogreencows_core
                 mkdir((this->PathToDataFolder).c_str(), 0744);
             }
 
-
+#ifdef __arm__
             MMAL_COMPONENT_T *camera_info;
             MMAL_STATUS_T status = MMAL_SUCCESS ;
             MMAL_PARAMETER_CAMERA_INFO_T param;
@@ -57,8 +61,8 @@ namespace twogreencows_core
                     }
                 }
             }*/
+#endif 
     }
-    
         
     ActionCamera::~ActionCamera()
     {

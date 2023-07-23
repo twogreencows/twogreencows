@@ -16,17 +16,20 @@ CREATE TABLE IF NOT EXISTS users (
     created_at TIMESTAMPTZ,
     updated_at TIMESTAMPTZ,
     
-    display_name VARCHAR(256) NOT NULL,
-    salt VARCHAR(256) NOT NULL,
+    display_name VARCHAR(256) NOT NULL UNIQUE,
+    salt VARCHAR(256) NOT h
     password VARCHAR(256) NOT NULL,
     country CHAR(3) NOT NULL,
-    phone_number VARCHAR(32)
-    email VARCHAR(320),
-    user_level SMALLINT DEFAULT 0
+    phone_number VARCHAR(32) UNIQUE,
+    email VARCHAR(320) UNIQUE,
+    user_level SMALLINT DEFhAULT 0
 );
 
 
 CREATE INDEX IF NOT EXISTS idx_users_uuid ON users(uuid);
+/*INSERT INTO USERS (uuid, object_version, data_version, created_at, updated_at, display_name, salt, password, country, phone_number, email, user_level) \
+                values ('usr-' || replace(gen_random_uuid()::text, '-', ''), 1, 1, now(), now(), 'admin', , 128);*/
+
 
 CREATE TABLE IF NOT EXISTS tokens (
     uuid CHAR(36) UNIQUE NOT NULL PRIMARY KEY,

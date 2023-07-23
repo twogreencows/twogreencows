@@ -6,19 +6,19 @@ services:
             dockerfile: DockerfileDB_PG
         ports:
             - "5432:5432"
-    tgc_db_cassandra:
-        build: 
-          context: ./dbs/cassandra
-          dockerfile: DockerfileDB_CAS
-        ports:
-            - "9042:9042"
-              #    db_elasticsearch:
-              #        build:
-              #    context: ./dbs/elasticsearch
-              # dockerfile: DockerfileDB_ES
-              #        ulimits:
-#          memlock:
-#            soft: -1
+              #    tgc_db_cassandra:
+              #        build: 
+              #          context: ./dbs/cassandra
+              #          dockerfile: DockerfileDB_CAS
+              #        ports:
+              #            - "9042:9042"
+              #              #    db_elasticsearch:
+              #              #        build:
+              #              #    context: ./dbs/elasticsearch
+              #              # dockerfile: DockerfileDB_ES
+              #              #        ulimits:
+              ##          memlock:
+              ##            soft: -1
 #            hard: -1
 #        environment:
 #          - node.name=es01

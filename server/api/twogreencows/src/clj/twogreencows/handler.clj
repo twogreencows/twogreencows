@@ -4,6 +4,9 @@
     [twogreencows.layout :refer [error-page]]
     [twogreencows.routes.home :refer [home-routes]]
     [twogreencows.routes.services :refer [service-routes]]
+    [twogreencows.entities.user :as tgc-user]
+    [twogreencows.entities.environment :as tgc-environment]
+    [clojure.tools.logging :as log]
     [reitit.ring :as reitit]
     [ring.middleware.content-type :refer [wrap-content-type]]
     [ring.middleware.webjars :refer [wrap-webjars]]
@@ -15,6 +18,13 @@
 (mount/defstate init-app
   :start ((or (:init defaults) (fn [])))
   :stop  ((or (:stop defaults) (fn []))))
+
+(mount/defstate postinit-app
+  ;:init (log/info "postinit init")
+  :start  (let [allusers (tgc-user/user-list []) t (tgc-environment/unique-environment)] 
+              (if (= 0 (count allusers)) (tgc-user/new-user! tgc-user/user-admin-data []) ))                             
+  :stop (fn [] (println "postinit stop")))
+
 
 
 (mount/defstate app-routes

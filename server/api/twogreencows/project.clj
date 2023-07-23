@@ -48,6 +48,7 @@
                  [ring-webjars "0.2.0"]
                  [ring/ring-core "1.8.2"]
                  [ring/ring-defaults "0.3.2"]
+                 [com.googlecode.libphonenumber/libphonenumber "8.13.16"]
                  [selmer "1.12.31"]
                  [com.taoensso/sente "1.16.2"]]
 

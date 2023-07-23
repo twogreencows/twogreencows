@@ -37,5 +37,9 @@
           (get envs 0))))
 
 
+(defn count-environment []
+  (let [envs (db/execute-query ["select * from environments"])]
+    (count envs)))
+
 (defn unique-environment [] 
   (get-environment!))

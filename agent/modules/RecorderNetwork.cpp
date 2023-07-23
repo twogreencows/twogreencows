@@ -18,12 +18,13 @@ using namespace std;
 #include <ifaddrs.h>
 #include "mdns.h"
 
-
+#if 0
 #include <boost/beast/core.hpp>
 #include <boost/beast/http.hpp>
 #include <boost/beast/version.hpp>
 #include <boost/asio/connect.hpp>
 #include <boost/asio/ip/tcp.hpp>
+#endif
 
 namespace twogreencows_core
 {
