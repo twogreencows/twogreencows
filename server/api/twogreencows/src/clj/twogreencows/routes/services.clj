@@ -133,6 +133,7 @@
                     (let [subobjects (if (= (qparams "withSubObjects") "tokens") [:tokens] [])
                           tmpuser (tgc-user/check-for-user params subobjects )]
                       (do
+                        (prn tmpuser)
                         (cond 
                             (nil? tmpuser)  (let [newuser (tgc-user/new-user! params subobjects)] (response/created (str "/api/V1/users/" (newuser :uuid)) newuser))
                             (false? tmpuser)  (response/conflict (tgc-error/create-error 409 "tgc.error.conflict.user_already_exists"))

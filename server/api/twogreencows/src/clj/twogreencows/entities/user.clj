@@ -24,22 +24,22 @@
 (def userwords_2  ["joe" "angela" "lucy" "bob" "jack" "mary" "desmond" "stella" "harry" "tilda" "bill" "scarlett"])
 
 (defn generate-user-name []
-  (str (rand-nth userwords_1) "-" (rand-nth userwords_2) (int (rand 27130410))))
+  (str (rand-nth userwords_1) "-" (rand-nth userwords_2) "-" (int (rand 27130410))))
 
 
 (def user-post-description
   [:and 
    [:map 
-              [:display_name [:string {:min 1 :optional true}]]
-              [:password [:string {:min 8}]]
+              [:display_name {:min 1 :optional true} :string]
+              [:password {:min 8} :string]
               [:confirm_password :string]
-              [:phone_number [:string {:optional true}]]
-              [:email [:string {:optional true}]]]
+              [:phone_number {:optional true} :string]
+              [:email {:optional true} :string]]
         
-     [:fn {:error/message "Missing an identifier"
-              :error/path [:email :display_name :phone_number]}
+      [:fn {:error/message "Missing one of the needed identifier"
+            :error/path [:email :display_name :phone_number]}
          (fn [{:keys [email phone_number display_name]}]
-         (or (empty? email) (empty? phone_number) (empty? display_name)))]
+          (or (some? email) (some? phone_number) (some? display_name)))]
        
       [:fn {:error/message "confirmation password does not match"
               :error/path [:confirm_password]}
@@ -53,8 +53,8 @@
     (mu/merge tgc-util/tgc-entity-description (m/schema [:map 
                                                          [:display_name string?] 
                                                          [:country string?] 
-                                                         [:phone_number string?]
-                                                         [:email string?]
+                                                         [:phone_number {:optional true} string?]
+                                                         [:email {:optional true} string?]
                                                          [:user_level int?] 
                                                          [:tokens {:optional true} [:vector tgc-token/token-description]]])))
 
@@ -69,19 +69,18 @@
 
 (defn format-with-subobjects [user subobjects]
   (let [real_subobjects (filter #(contains? user-subobjects %) subobjects)]
-    (merge user (reduce conj {} (zipmap real_subobjects (map (fn [u] (get-user-subobjects (user :uuid) u)) real_subobjects))))
+    (merge (into {} (remove (fn [[k v]] (nil? v)) user )) (reduce conj {} (zipmap real_subobjects (map (fn [u] (get-user-subobjects (user :uuid) u)) real_subobjects))))
   )
 )
 
 
 (defn user-list [subobjects] 
   (let [users (db/execute-query ["select * from users"])]
-    (do
-      (println "lala")
-     (if (empty? subobjects) 
-       users
+    ;;(do
+     ;;(if (empty? subobjects) 
+       ;;users
        (map (fn [u] (format-with-subobjects u subobjects)) users) 
-    ))))
+    ));;))
 
 (defn new-user! [params subobjects]
      (let [newuuid (str user-prefix "-" (clojure.string/replace (.toString (java.util.UUID/randomUUID)) #"-" "")) 
@@ -102,7 +101,9 @@
   (let [userquery "select * from users where uuid= ?"
         existing-users (db/execute-query [userquery uuid])]
       (if (not-empty existing-users)
-        (format-with-subobjects (get existing-users 0) subobjects)
+        (do
+          (prn (get existing-users 0))
+        (format-with-subobjects (get existing-users 0) subobjects))
         nil)
     ))
 
