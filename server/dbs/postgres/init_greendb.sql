@@ -17,12 +17,12 @@ CREATE TABLE IF NOT EXISTS users (
     updated_at TIMESTAMPTZ,
     
     display_name VARCHAR(256) NOT NULL UNIQUE,
-    salt VARCHAR(256) NOT h
+    salt VARCHAR(256) NOT NULL, 
     password VARCHAR(256) NOT NULL,
     country CHAR(3) NOT NULL,
     phone_number VARCHAR(32) UNIQUE,
     email VARCHAR(320) UNIQUE,
-    user_level SMALLINT DEFhAULT 0
+    user_level SMALLINT DEFAULT 0
 );
 
 

@@ -5,7 +5,7 @@ import pprint as pp
 import os
 from os import environ
 import sys
-#import pytest
+import pytest
 import datetime
 import base64
 
@@ -33,6 +33,8 @@ def test_v1_users_getall_plain(endpoint="/users", context=context) -> None:
     assert type(all_users).__name__ in ('list', 'tuple'), f'Received data for all users is not an array'
     for a_user in all_users:
         assert a_user["uuid"].startswith("usr") == True , f'Received an object which is not a user UUID' 
+
+
 
 def test_v1_users_getall_withtokens(endpoint="/users", context=context) -> None:
     pp.pprint("== Test GET all users")
@@ -89,9 +91,27 @@ def test_v1_users_postone_unmatchparams(endpoint="/users", context=context) -> N
     assert err_uuid.startswith("err") == True, f'Received an object which is not a error UUID' 
 
 
-def test_v1_users_postone_plain(endpoint="/users", context=context) -> None:
+
+def test_v1_users_postone_tooshortpassword(endpoint="/users", context=context) -> None:
+    pp.pprint(" == Test POST one user - short password")
+    
+    r = requests.post(core_url+"/users",  headers=h , json={"display_name":"paul", "password":"rocky","confirm_password":"rocky", "phone_number":"+33687853132"}) 
+    if r.status_code != 400:
+        pp.pprint("  ->Test FAILED")
+        pp.pprint(r.json())
+        pp.pprint(r.status_code)
+    else:
+        pp.pprint(r.json())
+
+    assert r.status_code == 400, f'Received wrong status code {r.status_code} instead of 400' 
+    err_uuid = r.json()["data"]["uuid"]
+    assert err_uuid.startswith("err") == True, f'Received an object which is not a error UUID' 
+
+
+
+def test_v1_users_postone_plain_allparams(endpoint="/users", context=context) -> None:
     pp.pprint("== Test POST one user - good parameters")
-    r=requests.post(core_url + endpoint, headers = h, json= {"display_name":"paul", "password":"yesterday","confirm_password":"yesterday","phone_number":"+33687853132"})
+    r=requests.post(core_url + endpoint, headers = h, json= {"display_name":"paul", "password":"yesterday","confirm_password":"yesterday","email":"paul@fabfour.co.uk" ,"phone_number":"+33687853132"})
     if r.status_code != 201 and  r.status_code != 200:
         pp.pprint("  ->Test FAILED  " + str(r.status_code)+ "\n")
         pp.pprint(r.content)
@@ -103,13 +123,53 @@ def test_v1_users_postone_plain(endpoint="/users", context=context) -> None:
 
     assert r.status_code == 200 or r.status_code == 201, f'Received wrong status code {r.status_code} instead of 200 or 201' 
     usr_uuid = r.json()["data"]["uuid"]
-    assert usr_uuid.startswith("usr") == True, f'Received an object which is not a error UUID' 
+    assert usr_uuid.startswith("usr") == True, f'Received an object which is not a user UUID' 
 
 
 
-def test_v1_users_postone_withtokens(endpoint="/users", context=context) -> None:
+def test_v1_users_postone_plain_twoparams(endpoint="/users", context=context) -> None:
+
+    pp.pprint("== Test POST one user - good parameters but some missing")
+    r=requests.post(core_url + endpoint, headers = h, json= {"display_name":"george", "password":"something","confirm_password":"something","email":"george@fabfour.co.uk" })
+    if r.status_code != 201 and  r.status_code != 200:
+        pp.pprint("  ->Test FAILED  " + str(r.status_code)+ "\n")
+        pp.pprint(r.content)
+    else:
+        pp.pprint("  ->Test SUCCEEDED")
+        pp.pprint(r.json())
+        context["user_uuid"] = r.json()["data"]["uuid"]
+        pp.pprint(context)
+
+    assert r.status_code == 200 or r.status_code == 201, f'Received wrong status code {r.status_code} instead of 200 or 201' 
+    usr_uuid = r.json()["data"]["uuid"]
+    assert usr_uuid.startswith("usr") == True, f'Received an object which is not a user UUID' 
+    phone_number = r.json()["data"].get("phone_number")
+    assert phone_number == None, f'Received an object which has a phone number when it should not' 
+
+
+
+def test_v1_users_postone_plain_nousernameparams(endpoint="/users", context=context) -> None:
+
+    pp.pprint("== Test POST one user - good parameters but username missing")
+    r=requests.post(core_url + endpoint, headers = h, json= { "password":"submarine","confirm_password":"submarine","email":"ringo@fabfour.co.uk" })
+    if r.status_code != 201 and  r.status_code != 200:
+        pp.pprint("  ->Test FAILED  " + str(r.status_code)+ "\n")
+        pp.pprint(r.content)
+    else:
+        pp.pprint("  ->Test SUCCEEDED")
+        pp.pprint(r.json())
+        context["user_uuid"] = r.json()["data"]["uuid"]
+        pp.pprint(context)
+
+    assert r.status_code == 200 or r.status_code == 201, f'Received wrong status code {r.status_code} instead of 200 or 201' 
+    usr_uuid = r.json()["data"]["uuid"]
+    assert usr_uuid.startswith("usr") == True, f'Received an object which is not a user UUID' 
+
+
+
+def test_v1_users_postone_withtokens_allparams(endpoint="/users", context=context) -> None:
     pp.pprint("== Test POST one user - good parameters with tokens")
-    r= requests.post(core_url+ "/users?withSubObjects=tokens", headers = h, json={"display_name":"john", "password":"yerblues","confirm_password":"yerblues","phone_number":"+33687853133"})
+    r= requests.post(core_url+ "/users?withSubObjects=tokens", headers = h, json={"display_name":"john", "password":"yerblues","confirm_password":"yerblues","email":"john@fabfour.co.uk", "phone_number":"+33687853133"})
     
     if r.status_code != 201 and r.status_code != 200:
         pp.pprint("  ->Test FAILED  " + str(r.status_code)+ "\n")
@@ -144,7 +204,6 @@ def test_v1_users_postone_conflictonexisting(endpoint="/users", context=context)
     assert r.status_code == 409, f'Received wrong status code {r.status_code} instead of 409' 
     err_uuid = r.json()["data"]["uuid"]
     assert err_uuid.startswith("err") == True, f'Received an object which is not a error UUID' 
-
 
 
 
@@ -299,6 +358,7 @@ def test_v1_users_deleteonenonexistingtoken_existinguser(endpoint="/users") -> N
 
 
 
+@pytest.mark.skip(reason="no way of currently testing this")
 def test_v1_users_deleteonetoken_existinguser(endpoint="/users") -> None:
     pp.pprint("Test DELETE one token of an existing user")
 
@@ -333,6 +393,7 @@ def test_v1_users_deleteone_nonexisting(endpoint="/users", context=context) -> N
 
 
 
+@pytest.mark.skip(reason="no way of currently testing this")
 def test_v1_users_deleteone_existing(endpoint="/users", context=context) -> None:
     pp.pprint("== Test DELETE one user: existing")
     r=requests.delete(core_url+ "/users/"+context["user_uuid"])

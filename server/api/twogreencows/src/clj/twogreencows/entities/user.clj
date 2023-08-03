@@ -41,11 +41,15 @@
          (fn [{:keys [email phone_number display_name]}]
           (or (some? email) (some? phone_number) (some? display_name)))]
        
+      [:fn {:error/message "password is too short"
+              :error/path [:password]}
+         (fn [{:keys [password]}]
+          (>= (count password) 8 ))]
+ 
       [:fn {:error/message "confirmation password does not match"
               :error/path [:confirm_password]}
          (fn [{:keys [password confirm_password]}]
          (= password confirm_password))]
-        
         ]
      )
 
@@ -67,20 +71,19 @@
       (identity subobjects)
   ))
 
-(defn format-with-subobjects [user subobjects]
+(defn format-with-subobjects 
+  ([user] (format-with-subobjects user []))
+  ([user subobjects]
   (let [real_subobjects (filter #(contains? user-subobjects %) subobjects)]
     (merge (into {} (remove (fn [[k v]] (nil? v)) user )) (reduce conj {} (zipmap real_subobjects (map (fn [u] (get-user-subobjects (user :uuid) u)) real_subobjects))))
-  )
+  ))
 )
 
 
 (defn user-list [subobjects] 
   (let [users (db/execute-query ["select * from users"])]
-    ;;(do
-     ;;(if (empty? subobjects) 
-       ;;users
        (map (fn [u] (format-with-subobjects u subobjects)) users) 
-    ));;))
+    ))
 
 (defn new-user! [params subobjects]
      (let [newuuid (str user-prefix "-" (clojure.string/replace (.toString (java.util.UUID/randomUUID)) #"-" "")) 
@@ -88,9 +91,10 @@
            display_name (get params :display_name (generate-user-name))
            phone_number (get params :phone_number)
            email (get params :email)
+           user_level (get params :user_level user-level-none)
            [hsalt hpassword] (tgc-util/tgc-hash-password (params :password)) 
-           newuser (db/execute-query ["insert into users (uuid, created_at, updated_at, data_version, object_version, country, phone_number, display_name, email, salt, password) 
-                  values (?,?,?,?,?,?,?,?,?,?,?)", newuuid tnow tnow user-data-version 1 "FRA" phone_number display_name email hsalt hpassword])
+           newuser (db/execute-query ["insert into users (uuid, created_at, updated_at, data_version, object_version, country, phone_number, display_name, email, user_level, salt, password) 
+                  values (?,?,?,?,?,?,?,?,?,?,?,?)", newuuid tnow tnow user-data-version 1 "FRA" phone_number display_name email user_level hsalt hpassword])
            u (get newuser 0)
            tmptoken (tgc-token/new-token! {:owner_uuid newuuid})]
                 (format-with-subobjects u subobjects)
@@ -101,9 +105,7 @@
   (let [userquery "select * from users where uuid= ?"
         existing-users (db/execute-query [userquery uuid])]
       (if (not-empty existing-users)
-        (do
-          (prn (get existing-users 0))
-        (format-with-subobjects (get existing-users 0) subobjects))
+        (format-with-subobjects (get existing-users 0) subobjects)
         nil)
     ))
 
@@ -112,13 +114,13 @@
 
 
 (defn check-for-user [params subobjects]
-  (let [userquery "select * from users where phone_number= ?"
-        existing-users (db/execute-query [userquery (params :phone_number)])]
+ (let [userquerykey (if (some? (params :phone_number)) :phone_number (if (some? (params :email)) :email :display_name ))
+       userquery  (str "select * from users where " (name userquerykey)  "= ?")
+       existing-users (db/execute-query [userquery (params userquerykey)])]
       (if (not-empty existing-users)
           (let [tmpuser (get existing-users 0)
-                proposed-display-name (params :display_name)
                 proposed-hashed-password (nth (tgc-util/tgc-hash-password (params :password) (tmpuser :salt)) 1)]
-                   (if (and (= 0 (compare proposed-display-name (tmpuser :display_name))) (= 0 (compare proposed-hashed-password (tmpuser :password))))
+                   (if (= 0 (compare proposed-hashed-password (tmpuser :password)))
                         (format-with-subobjects tmpuser subobjects)                        
                         false )) 
            nil)))
