@@ -43,10 +43,8 @@
         (let [xt-in (System/currentTimeMillis) w (handler request) xt-out (System/currentTimeMillis)] 
               (let [data (get w :body) server {:server_duration (- xt-out xt-in) :status (get w :status)}]
                 (if (= 400 (server :status))
-                  (do
-                    (prn "====")
-                    (prn data)
-                  (merge w {:body  (assoc {} :data (tgc-error/create-error 400 "tgc.error.parameter") :server server)}))
+                    (let [desc (apply str (map  (fn [[k v]] (str (name k) ": " (apply str (interpose ", " v)))) (data :humanized)))]
+                      (merge w {:body  (assoc {} :data (tgc-error/create-error 400 "tgc.error.parameter" desc) :server server)}) )
                   (identity w)
                   )))))
  
