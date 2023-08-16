@@ -75,7 +75,26 @@
     :coercion  malli-coercion/coercion
     :swagger {:id ::api}}
 
-   ["" {:no-doc true}
+   ["" {:no-doc true
+        :middleware [
+                 ;;query-params & form-params
+                 parameters/parameters-middleware
+                 ;;content negotiation
+                 muuntaja/format-negotiate-middleware
+                 ;;encoding respond body
+                 muuntaja/format-response-middleware
+                 ;;exception handling
+                 exception/exception-middleware
+                 ;;decoding request bodys
+                 muuntaja/format-request-middleware
+                 ;;coercing response bodys
+                 coercion/coerce-response-middleware
+                 ;;coercing request parameters
+                 coercion/coerce-request-middleware
+                 ;;multipart params
+                 multipart/multipart-middleware
+                 ]
+        }
     ["/swagger.json" {:get (swagger/create-swagger-handler)}]
     ["/swagger-ui*" {:get (swagger-ui/create-swagger-ui-handler {:url "/api/swagger.json"})}]
 
@@ -106,16 +125,51 @@
      {:get
       { :summary "Get information about the server"
         :responses {200 {:body  (tgc-util/tgc-httpanswer-metadescription tgc-environment/environment-description) }}
-        :handler (fn [_] (let [r (tgc-environment/unique-environment)] (response/ok r)))  }}] ; environment
+        :handler (fn [_] (let [r (tgc-environment/unique-environment)] (response/ok r))) }
+     }
+    ] ; environment
     ["/sessions"
      {:get  
       {:summary "Get all sessions"
-       :responses {200 {:body (tgc-util/tgc-httpanswer-metadescription [:vector tgc-session/session-description]) }}
-       :handler (fn [_] (let [r (tgc-session/session-list)] (response/ok r)) ) }}] ; session
+       :responses {200 {:body (tgc-util/tgc-httpanswer-metadescription [:vector tgc-session/session-description]) }
+                   401 {:body (tgc-util/tgc-httpanswer-metadescription tgc-error/error-description) }
+                   }
+       :handler (fn [_] (let [r (tgc-session/session-list)] (response/ok [])) ) 
+      }
+      :post
+      {:summary "Create a session"
+       :response {200 {:body (tgc-util/tgc-httpanswer-metadescription tgc-session/session-description)}
+                  401 {:body (tgc-util/tgc-httpanswer-metadescription tgc-error/error-description) }
+                  }
+       :handler (fn [_] (response/ok {})) 
+      }
+     }
+    ] ; session
+    ["/sessions/:uuid"
+     {:get
+      {:summary "Get a specific session"
+       :responses {200 {:body (tgc-util/tgc-httpanswer-metadescription tgc-session/session-description)}
+                   401 {:body (tgc-util/tgc-httpanswer-metadescription tgc-error/error-description) }
+                   404 {:body (tgc-util/tgc-httpanswer-metadescription tgc-error/error-description) }
+                }
+       :handler (fn [_] (response/ok {})) 
+       }
+      :delete
+      {:summary "Close/delete a specific session"
+       :responses {200 {:body (tgc-util/tgc-httpanswer-metadescription tgc-session/session-description)}
+                   401 {:body (tgc-util/tgc-httpanswer-metadescription tgc-error/error-description) }
+                   404 {:body (tgc-util/tgc-httpanswer-metadescription tgc-error/error-description) }
+                }
+       :handler (fn [_] (response/ok {})) 
+      }
+     }
+    ]
     ["/users"
      {:get
-        {:summary "Get lists of all users. For Admin only" 
-         :responses {200 {:body (tgc-util/tgc-httpanswer-metadescription [:vector tgc-user/user-description]) }} 
+        {:summary "Get lists of all users. admin gets all, user gets themselves, or nothing if unauthorized" 
+         :responses {200 {:body (tgc-util/tgc-httpanswer-metadescription [:vector tgc-user/user-description]) }
+                     401 {:body (tgc-util/tgc-httpanswer-metadescription tgc-error/error-description)}                     
+                     } 
          :handler (fn [{qparams :query-params}] 
                     (let [subobjects (if (= (qparams "withSubObjects") "tokens") [:tokens] [])
                           r (tgc-user/user-list subobjects)] 
@@ -133,13 +187,11 @@
          :handler (fn [{params :body-params qparams :query-params}]
                     (let [subobjects (if (= (qparams "withSubObjects") "tokens") [:tokens] [])
                           tmpuser (tgc-user/check-for-user params subobjects )]
-                      (do
-                        (prn tmpuser)
                         (cond 
                             (nil? tmpuser)  (let [newuser (tgc-user/new-user! params subobjects)] (response/created (str "/api/V1/users/" (newuser :uuid)) newuser))
                             (false? tmpuser)  (response/conflict (tgc-error/create-error 409 "tgc.error.conflict.user_already_exists"))
                             :else (response/ok tmpuser))
-                        )))
+                        ))
             }
         }
      ];users
@@ -157,7 +209,7 @@
                               (response/ok tmpuser)
                            )))
             }
-          :delete 
+         :delete 
            {:summary "Delete a specific user"
             :responses 
             { 404 {:body (tgc-util/tgc-httpanswer-metadescription tgc-error/error-description) }
@@ -183,10 +235,8 @@
                               (if (nil? tmpuser)
                                  (response/not-found (tgc-error/create-error 404 "tgc.error.notfound.user_notexists"))
                                  (let [tmptoken (filter (fn [tk] (= (tk :uuid) token_uuid)) (tmpuser :tokens))]
-                                   (do 
                                      (print tmptoken) 
-                                     (response/ok tmptoken)
-                                     ))))
+                                     )))
                          )
               
             }
@@ -253,28 +303,6 @@
     ];v1
    ];api
   )
-
-
-;(comment     {:post
-;        {:summary "Create a new user"
-        ;{:parameters {:body (tgc-user/user-post-description) }
-;
-;          :handler
-;          (fn [{{params :body} :parameters}]
-;            (try
-;              (do
-;                (let [newuser (tgc-user/new-user! params)]
-;               (response/ok (assoc {:status :ok} :user newuser))))
-;               (catch Exception e
-;                  (println e)
-;                  (let [{id :twogreencows/error-id errors :errors} (ex-data e)]
-;                  (case id
-;                    :validation
-;                        (response/bad-request {:errors  errors})
-;                    ;;else
-;                        (response/internal-server-error 
-;                            {:errors {:server-error ["Failed to create user!"]}}))))))}}
- ;    )
 
     ;["/device"
      ; {:post

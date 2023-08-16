@@ -1,14 +1,16 @@
 (ns twogreencows.entities.user
     (:require 
     [twogreencows.db.core :as db]
-    ;;[buddy.hashers :as hashers]
     [malli.core :as m]
     [malli.error :as me]
     [malli.util :as mu]
     [malli.experimental.time :as mt]
     [twogreencows.entities.error :as tgc-error]
     [twogreencows.entities.token :as tgc-token]
-    [twogreencows.entities.util :as tgc-util]))
+    [twogreencows.entities.util :as tgc-util])
+    (:import 
+      [com.google.i18n.phonenumbers PhoneNumberUtil]) 
+    )
 
 (def user-data-version 1)
 (def user-prefix "usr")

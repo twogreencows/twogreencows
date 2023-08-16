@@ -1,7 +1,7 @@
 (ns twogreencows.entities.token
   (:require
     [twogreencows.db.core :as db]
-   [clojure.java.io :as io]    
+    [clojure.java.io :as io]    
     [malli.core :as m]
     [malli.error :as me]
     [malli.util :as mu]
@@ -19,6 +19,7 @@
                                                          [:expires_at :time/instant] 
                                                          [:is_valid boolean?] 
                                                          [:value string?]
+                                                         [:device_uuid string?]
                                                          [:owner_uuid string?]])))
 
 
