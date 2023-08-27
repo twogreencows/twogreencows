@@ -61,7 +61,12 @@
         ))
              
               
-            
+(defn wrap-server-allowcors [handler]
+  (fn [request]
+    (let [w (handler request)]
+      (assoc-in  w [:headers "Access-Control-Allow-Origin"] "http://127.0.0.1:5173")
+    ;;(-> request handler) ;(assoc-in [:headers "Access-Control-Allow-Origin"] "http://127.0.0.1:5173"))
+    )))  
               
 
 

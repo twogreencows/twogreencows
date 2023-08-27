@@ -100,6 +100,8 @@
 
    ]
    ["/V1" {:middleware [     
+                        ;;cors for dev 
+                        middleware/wrap-server-allowcors
                         ;;query-params & form-params
                         parameters/parameters-middleware
                         ;;content negotiation
