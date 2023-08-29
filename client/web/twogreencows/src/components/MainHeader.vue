@@ -1,68 +1,74 @@
 
 
 <template>
-  <div>
-    <h1>List of Users</h1>
-    <table>
-      <thead>
-        <tr>
-          <th>UUID</th>
-          <th>Display Name</th>
-          <th>Email</th>
-          <th>Phone Number</th>
-          <th>Country</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr v-for="object in objects" :key="object.id">
-          <td>{{ object.uuid }}</td>
-          <td>{{ object.display_name }}</td>
-          <td>{{ object.email }}</td>
-          <td>{{ object.phone_number }}</td>
-          <td>{{ object.country }}</td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
+    <section id="hcontainer">
+            <div id="htitle"> Twogreencows </div>
+            <div id="hserver">{{server.name}} - {{server.version}}</div>
+    </section>
 </template>
 
 <script>
-    import { ref, onMounted } from 'vue'
+    import { ref, reactive, onMounted } from 'vue'
 
     export default {
     setup() {
-    const objects = ref([]);
+    const server = reactive({
+        name : '--',
+        version :'0.0.0',
+    }) 
 
     const fetchObjects = async () => {
       try {
-        const response = await fetch('http://localhost:3000/api/V1/users'); // Replace with your API endpoint
+        const response = await fetch('http://localhost:3000/api/V1/environment'); // Replace with your API endpoint
           
         const data = await response.json();
-        console.log(data["data"])
-        objects.value = data["data"];
+        server.name = data["data"]["name"];
+        server.version = data["data"]["sem_version"];
       } catch (error) {
-        console.error('Error fetching objects:', error);
+        console.error('Error fetching environment:', error);
       }
     };
 
     onMounted(fetchObjects);
 
     return {
-      objects,
+      server,
     };
   },
 };
 </script>
 
-<style>
-table {
-  width: 100%;
-  border-collapse: collapse;
+<style scoped>
+
+#hcontainer{
+    display:flex;
+    padding-left:32px;
+    padding-right:32px;
+    flex-direction:row;
+    align-items: center;
+    height:100%;
+    justify-content: space-between;
 }
 
-th,
-td {
-  border: 1px solid black;
-  padding: 8px;
+#htitle{
+    text-align:left;
+    color:white;
+    font-size:24px;
+    font-weight:bold;
+    font-family: 'lato';
+    order: 1;
 }
+
+
+#hserver{
+    text-align:left;
+    color:white;
+    font-size:16px;
+    font-weight:thin;
+    font-family: 'lato';
+    order: 2;
+}
+
+
+
 </style>

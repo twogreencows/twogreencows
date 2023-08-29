@@ -1,6 +1,8 @@
 <template>
     <div class="mainpage">
-    <header class="header">Header</header>
+    <header class="header">
+        <main-header></main-header>
+    </header>
     <div class="content">
       <div class="left-column">Left Column</div>
       
@@ -13,10 +15,12 @@
 
 <script>
 import Users from './Users.vue'
+import MainHeader from './MainHeader.vue'
 
 export default {
     components: {
         Users,
+        MainHeader,
     }
 }
 
@@ -31,7 +35,9 @@ export default {
 }
 
 .header {
-  background-color: lightgray;
+  background-color: green;
+  height:64px;
+  align-items: center;
 }
 
 .content {
