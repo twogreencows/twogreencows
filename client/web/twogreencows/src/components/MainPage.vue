@@ -4,8 +4,9 @@
         <main-header></main-header>
     </header>
     <div class="content">
-      <div class="left-column">Left Column</div>
-      
+      <nav class="left-column">
+        <main-navigation></main-navigation>
+      </nav>
       <div class="main-zone">
           <users></users> 
       </div>
@@ -16,11 +17,13 @@
 <script>
 import Users from './Users.vue'
 import MainHeader from './MainHeader.vue'
+import MainNavigation from './MainNavigation.vue'
 
 export default {
     components: {
         Users,
         MainHeader,
+        MainNavigation,
     }
 }
 
