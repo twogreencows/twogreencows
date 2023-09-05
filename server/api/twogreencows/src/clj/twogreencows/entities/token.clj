@@ -19,7 +19,7 @@
                                                          [:expires_at :time/instant] 
                                                          [:is_valid boolean?] 
                                                          [:value string?]
-                                                         [:device_uuid string?]
+                                                         [:kind string?]
                                                          [:owner_uuid string?]])))
 
 
@@ -28,12 +28,18 @@
            tnow (java.time.LocalDateTime/now)
            texpiration (.plusDays tnow 182)
            token_value (tgc-util/tobase64 (tgc-util/tgc-hash-generate-salt 8))
-           newtoken (db/execute-query ["insert into tokens (uuid, created_at, updated_at, data_version, object_version, expires_at, is_valid, value, owner_uuid ) 
-                  values (?, ?, ?, ?, ?, ?, ?, ?, ?)" newuuid tnow tnow token-data-version 1 texpiration true token_value (params :owner_uuid)])]
+           kind (get params :kind "----")
+           newtoken (db/execute-query ["insert into tokens (uuid, created_at, updated_at, data_version, object_version, expires_at, is_valid, value, owner_uuid,kind ) 
+                  values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)" newuuid tnow tnow token-data-version 1 texpiration true token_value (params :owner_uuid) kind])]
              (get newtoken 0) 
           )) 
       
-  
+
+(defn token-list [subobjects] 
+  (let [tokens (db/execute-query ["select * from tokens"])]
+   (identity tokens) 
+    ))
+
 
 (defn get-token [uuid]
   (db/execute-query [(str "select * from tokens where uuid="  uuid)]))

@@ -41,6 +41,7 @@ CREATE TABLE IF NOT EXISTS tokens (
     owner_uuid CHAR(36),
     expires_at TIMESTAMPTZ,
     is_valid BOOL,
+    kind VARCHAR(4),
     value VARCHAR(256),
     CONSTRAINT fk_owner FOREIGN KEY(owner_uuid) REFERENCES users(uuid) ON DELETE CASCADE 
 );
@@ -57,6 +58,7 @@ CREATE TABLE IF NOT EXISTS devices (
     owner_uuid CHAR(36),
     
     kind VARCHAR(8),
+    display_name VARCHAR(256) NOT NULL,
     vendor_uuid CHAR(36),
     platform VARCHAR(8),  
     os_version VARCHAR(16),

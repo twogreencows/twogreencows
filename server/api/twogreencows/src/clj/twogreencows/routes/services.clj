@@ -136,7 +136,7 @@
        :responses {200 {:body (tgc-util/tgc-httpanswer-metadescription [:vector tgc-session/session-description]) }
                    401 {:body (tgc-util/tgc-httpanswer-metadescription tgc-error/error-description) }
                    }
-       :handler (fn [_] (let [r (tgc-session/session-list)] (response/ok [])) ) 
+       :handler (fn [_] (let [r (tgc-session/session-list [])] (response/ok r)) ) 
       }
       :post
       {:summary "Create a session"
@@ -146,7 +146,7 @@
        :handler (fn [_] (response/ok {})) 
       }
      }
-    ] ; session
+    ] ; sessions
     ["/sessions/:uuid"
      {:get
       {:summary "Get a specific session"
@@ -165,6 +165,16 @@
        :handler (fn [_] (response/ok {})) 
       }
      }
+    ] ; sessions/:uuid
+    ["/tokens"
+     {:get
+      {:summary "Get list of all tokens" 
+       :responses {200 {:body (tgc-util/tgc-httpanswer-metadescription [:vector tgc-token/token-description]) }
+                   401 {:body (tgc-util/tgc-httpanswer-metadescription tgc-error/error-description) }
+                   }
+       :handler (fn [_] (let [r (tgc-token/token-list [])] (response/ok r)) ) 
+      }
+      }
     ]
     ["/users"
      {:get
@@ -284,7 +294,7 @@
                     (let [tmpuser (tgc-user/get-user uuid [])]
                         (if (nil? tmpuser)
                            (response/not-found (tgc-error/create-error 404 "tgc.error.notfound.user_notexists"))
-                           (let [newtoken (tgc-token/new-token! {:owner_uuid uuid})] 
+                           (let [newtoken (tgc-token/new-token! {:owner_uuid uuid :kind "devc"})] 
                               (response/created (str "/api/V1/users/" uuid "/tokens/" (newtoken :uuid)) newtoken)
                               )))) 
             }
@@ -302,6 +312,43 @@
            }
          }
       ]; user/uuid
+      ["/devices"
+      {:get  
+       {:summary "Get all devices"
+        :responses {200 {:body (tgc-util/tgc-httpanswer-metadescription [:vector tgc-device/device-description]) }
+                   401 {:body (tgc-util/tgc-httpanswer-metadescription tgc-error/error-description) }
+                   }
+       :handler (fn [_] (let [r (tgc-device/device-list)] (response/ok [])) ) 
+      }
+      :post
+      {:summary "Create a device"
+       :response {200 {:body (tgc-util/tgc-httpanswer-metadescription tgc-device/device-description)}
+                  401 {:body (tgc-util/tgc-httpanswer-metadescription tgc-error/error-description) }
+                  }
+       :handler (fn [_] (response/ok {})) 
+      }
+     }
+    ] ; devicess
+    ["/devices/:uuid"
+     {:get
+      {:summary "Get a specific device"
+       :responses {200 {:body (tgc-util/tgc-httpanswer-metadescription tgc-device/device-description)}
+                   401 {:body (tgc-util/tgc-httpanswer-metadescription tgc-error/error-description) }
+                   404 {:body (tgc-util/tgc-httpanswer-metadescription tgc-error/error-description) }
+                }
+       :handler (fn [_] (response/ok {})) 
+       }
+      :delete
+      {:summary "Ddelete a specific device"
+       :responses {200 {:body (tgc-util/tgc-httpanswer-metadescription tgc-device/device-description)}
+                   401 {:body (tgc-util/tgc-httpanswer-metadescription tgc-error/error-description) }
+                   404 {:body (tgc-util/tgc-httpanswer-metadescription tgc-error/error-description) }
+                }
+       :handler (fn [_] (response/ok {})) 
+      }
+     }
+    ]
+
     ];v1
    ];api
   )

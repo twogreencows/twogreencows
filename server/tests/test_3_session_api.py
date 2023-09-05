@@ -15,7 +15,7 @@ h = {"Content-Type":"application/json"}
 
 
 def test_v1_sessions_post_existinguser(endpoint="/sessions", context=context) -> None:
-    json= {"user":{"display_name":"paul", "password":"yesterday","confirm_password":"yesterday"}
+    json= {"user":{"display_name":"paul", "password":"yesterday","confirm_password":"yesterday"},
            "device": {}}
 
     pp.pprint("== Test POST one session")
@@ -31,7 +31,7 @@ def test_v1_sessions_post_existinguser(endpoint="/sessions", context=context) ->
 
 def test_v1_sessions_post_existinguser_reusefull(endpoint="/sessions", context=context) -> None:
 
-    json= {"user":{"display_name":"paul", "password":"yesterday","confirm_password":"yesterday"}
+    json= {"user":{"display_name":"paul", "password":"yesterday","confirm_password":"yesterday"},
            "device": {}}
 
     pp.pprint("== Test POST one session")
@@ -47,7 +47,7 @@ def test_v1_sessions_post_existinguser_reusefull(endpoint="/sessions", context=c
 
 def test_v1_sessions_post_existinguser_newdevice(endpoint="/sessions", context=context) -> None:
 
-    json= {"user":{"display_name":"paul", "password":"yesterday","confirm_password":"yesterday"}
+    json= {"user":{"display_name":"paul", "password":"yesterday","confirm_password":"yesterday"},
            "device": {}}
 
     pp.pprint("== Test POST one session")
@@ -63,7 +63,7 @@ def test_v1_sessions_post_existinguser_newdevice(endpoint="/sessions", context=c
 
 def test_v1_sessions_post_newuser_newdevice(endpoint="/sessions", context=context) -> None:
 
-    json= {"user":{"display_name":"brian", "password":"babyrichman","confirm_password":"babyrichman"}
+    json= {"user":{"display_name":"brian", "password":"babyrichman","confirm_password":"babyrichman"},
            "device": {}}
 
     pp.pprint("== Test POST one session")

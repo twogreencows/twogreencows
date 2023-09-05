@@ -37,7 +37,7 @@ def test_v1_users_getall_plain(endpoint="/users", context=context) -> None:
 
 
 def test_v1_users_getall_withtokens(endpoint="/users", context=context) -> None:
-    pp.pprint("== Test GET all users")
+    pp.pprint("== Test GET all users with tokens")
     r= requests.get( core_url+ endpoint+"?withSubObjects=tokens" )
     if r.status_code != 200:
         pp.pprint("  ->Test FAILED  " + str(r.status_code)+ "\n")

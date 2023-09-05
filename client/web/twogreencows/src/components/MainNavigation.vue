@@ -3,14 +3,14 @@
 <template>
     <section id="ncontainer">
         <ul>
-            <li class="nitem"><a>Users</a></li>
-            <li class="nitem"><a>Sessions</a></li>
-            <li class="nitem"><a>Tokens</a></li>
-            <li class="nitem"><a>Devices</a></li>
-            <li class="nitem"><a>Greenhouses</a></li>
-            <li class="nitem"><a>Growboxes</a></li>
-            <li class="nitem"><a>Plants</a></li>
-            <li class="nitem"><a>Stems</a></li>
+            <li class="nitem"> <router-link to="/Users">Users</router-link></li>
+            <li class="nitem"><router-link to="/Sessions">Sessions</router-link></li>
+            <li class="nitem"><router-link to="/Tokens">Tokens</router-link></li>
+            <li class="nitem"><router-link to="/Devices">Devices</router-link></li>
+            <li class="nitem"><router-link to="/Greenhouses">Greenhouses</router-link></li>
+            <li class="nitem"><router-link to="/Growboxes">Growboxes</router-link></li>
+            <li class="nitem"><router-link to="/Plants">Plants</router-link></li>
+            <li class="nitem"><router-link to="/Stems">Stems</router-link></li>
         </ul>
     </section>
 </template>
@@ -54,6 +54,11 @@ li a{
   font-size:18px;
   font-family: 'lato';
   text-align:left;
+}
+
+li a :hover {
+  background-color: #555;
+  color: white;
 }
 
 </style>

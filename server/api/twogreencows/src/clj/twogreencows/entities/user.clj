@@ -64,28 +64,31 @@
                                                          [:user_level int?] 
                                                          [:tokens {:optional true} [:vector tgc-token/token-description]]])))
 
-(def user-subobjects {:tokens "owner_uuid" :devices "owner_uuid"})
+(def user-subobjects  {:tokens  "owner_uuid" :devices "owner_uuid"})
 
 
 (defn get-user-subobjects [user_uuid subobjectkeyword]
   (let [query (str "select * from " (name subobjectkeyword) " where " (str (user-subobjects subobjectkeyword)) "=?") 
         subobjects (db/execute-query [query user_uuid])]
       (identity subobjects)
+      
   ))
 
 (defn format-with-subobjects 
   ([user] (format-with-subobjects user []))
   ([user subobjects]
   (let [real_subobjects (filter #(contains? user-subobjects %) subobjects)]
-    (merge (into {} (remove (fn [[k v]] (nil? v)) user )) (reduce conj {} (zipmap real_subobjects (map (fn [u] (get-user-subobjects (user :uuid) u)) real_subobjects))))
-  ))
+    (merge (into {} (remove (fn [[k v]] (nil? v)) user )) (reduce conj {} (zipmap real_subobjects (map (fn [u] (get-user-subobjects (user :uuid) u)) real_subobjects)))
+  )))
 )
 
 
 (defn user-list [subobjects] 
   (let [users (db/execute-query ["select * from users"])]
-       (map (fn [u] (format-with-subobjects u subobjects)) users) 
-    ))
+    (do
+      (prn subobjects)
+      (map (fn [u] (format-with-subobjects u subobjects)) users) 
+    )))
 
 (defn new-user! [params subobjects]
      (let [newuuid (str user-prefix "-" (clojure.string/replace (.toString (java.util.UUID/randomUUID)) #"-" "")) 
@@ -98,7 +101,7 @@
            newuser (db/execute-query ["insert into users (uuid, created_at, updated_at, data_version, object_version, country, phone_number, display_name, email, user_level, salt, password) 
                   values (?,?,?,?,?,?,?,?,?,?,?,?)", newuuid tnow tnow user-data-version 1 "FRA" phone_number display_name email user_level hsalt hpassword])
            u (get newuser 0)
-           tmptoken (tgc-token/new-token! {:owner_uuid newuuid})]
+           tmptoken (tgc-token/new-token! {:owner_uuid newuuid :kind "devc"})]
                 (format-with-subobjects u subobjects)
                 ))
 

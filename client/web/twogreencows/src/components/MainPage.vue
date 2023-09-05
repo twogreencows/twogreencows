@@ -8,7 +8,7 @@
         <main-navigation></main-navigation>
       </nav>
       <div class="main-zone">
-          <users></users> 
+          <router-view></router-view>
       </div>
     </div>
     </div>
@@ -16,12 +16,18 @@
 
 <script>
 import Users from './Users.vue'
+import Tokens from './Tokens.vue'
+import Sessions from './Sessions.vue'
+import Devices from './Devices.vue'
 import MainHeader from './MainHeader.vue'
 import MainNavigation from './MainNavigation.vue'
 
 export default {
     components: {
         Users,
+        Tokens,
+        Sessions,
+        Devices,
         MainHeader,
         MainNavigation,
     }
