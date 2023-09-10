@@ -7,13 +7,23 @@
       <thead>
         <tr>
           <th>UUID</th>
+          <th>Kind</th>
           <th>Display Name</th>
+          <th>Platform</th>
+          <th>OS Version</th>
+          <th>Vendor UUID</th>
+          <th>OwnerUUID</th>
         </tr>
       </thead>
       <tbody>
         <tr v-for="object in objects" :key="object.id">
           <td>{{ object.uuid }}</td>
+          <td>{{ object.kind}}</td>
           <td>{{ object.display_name }}</td>
+          <td>{{ object.platform }}</td>
+          <td>{{ object.os_version }}</td>
+          <td>{{ object.vendor_uuid }}</td>
+          <td>{{ object.owner_uuid}}</td>
         </tr>
       </tbody>
     </table>

@@ -8,6 +8,7 @@
     [malli.experimental.time :as mt]
     [twogreencows.entities.error :as tgc-error]
     [twogreencows.entities.util :as tgc-util]
+    [twogreencows.entities.token :as tgc-token]
     [twogreencows.middleware :as middleware]
     ))
 
@@ -18,10 +19,10 @@
 (def device-post-description
   [:and 
    [:map 
-              [:kind {:min 4 } :string]
-              [:vendor {:min 1} :string]
+              [:kind {:min 4 :max 4} :string]
               [:platform {:min 1} :string]
               [:vendor_uuid :string]
+              [:os_version :string]
               [:display_name :string]
               ]
         
@@ -34,12 +35,14 @@
 
 (def device-description
     (mu/merge tgc-util/tgc-entity-description (m/schema [:map 
-                                                         [:kind string?] 
-                                                         [:vendor_uuid string?] 
-                                                         [:display_name string?] 
-                                                         [:vendor string?]
-                                                         [:platform string?]
-                                                         [:owner_uuid string?] 
+                                                         [:kind :string] 
+                                                         [:vendor_uuid :string] 
+                                                         [:display_name :string] 
+                                                         [:os_version :string]
+                                                         [:platform :string]
+                                                         [:last_connection_date :time/instant]
+                                                         [:token {:optional true} tgc-token/token-description]                                          
+                                                         [:owner_uuid :string] 
                                                          ])))
 
 (defn get-device-subobjects [device_uuid subobjectkeyword]
@@ -67,11 +70,12 @@
            tnow (java.time.LocalDateTime/now)
            display_name (get params :display_name)
            kind (get params :kind "web*")
-           vendor (get params :vendor)
+           os_version (get params :os_version)
+           owner_uuid (get params :owner_uuid)
            platform (get params :platform)
-           vendor_uuid (get params :vendor_uuid)
-           tusage (get params :last_usage_date tnow)
-           newdevice (db/execute-query ["insert into devices (uuid, created_at, updated_at, data_version, object_version, display_name, kind, vendor, platform, vendor_uuid, tusage ) values (?,?,?,?,?,?,?,?,?,?,?)", newuuid tnow tnow 1 device-object-version display_name kind vendor platform vendor_uuid tusage])
+           vendor_uuid (get params :vendor_uuid "---")
+           tusage (get params :last_connection_date (java.time.LocalDateTime/ofEpochSecond 0,0, java.time.ZoneOffset/UTC))
+           newdevice (db/execute-query ["insert into devices (uuid, created_at, updated_at, data_version, object_version, owner_uuid, display_name, kind, os_version, platform, vendor_uuid, last_connection_date ) values (?,?,?,?,?,?,?,?,?,?,?,?)", newuuid tnow tnow 1 device-object-version owner_uuid display_name kind os_version platform vendor_uuid tusage])
            d (get newdevice 0)]
                 (format-with-subobjects d subobjects)
                 ))
