@@ -63,7 +63,7 @@ CREATE TABLE IF NOT EXISTS devices (
     platform VARCHAR(8),  
     os_version VARCHAR(16),
     last_connection_date TIMESTAMPTZ,
-    CONSTRAINT fk_owner FOREIGN KEY(owner_uuid) REFERENCES users(uuid) 
+    CONSTRAINT fk_owner FOREIGN KEY(owner_uuid) REFERENCES users(uuid) ON DELETE CASCADE  
 );
 
 CREATE INDEX IF NOT EXISTS idx_devices_uuid ON devices(uuid);

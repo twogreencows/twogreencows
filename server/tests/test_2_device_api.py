@@ -49,7 +49,7 @@ def test_v1_devices_getall_withtokens(endpoint="/devices", context=context) -> N
     assert r.status_code == 200, f'Received wrong status code {r.status_code} instead of 200'
     all_devices =  r.json()["data"]
     assert type(all_devices).__name__ in ('list', 'tuple'), f'Received data for all devices is not an array'
-    for a_user in all_users:
+    for a_user in all_devices:
         assert a_user["uuid"].startswith("dev") == True , f'Received an object which is not a deviceUUID' 
         device_token = a_user.get("token", None)
         assert device_token != None , f'Received data does not contain a token'
@@ -154,7 +154,7 @@ def test_v1_devices_getone_existing_plain(endpoint="/users", context=context) ->
 
 def test_v1_users_getone_existing_wihtoken(endpoint="/devices") -> None:
     pp.pprint("== Test GET one device  with its token")
-    r=requests.get(core_url+ "/devices/"+context["device__uuid"]+"?withSubObjects=tokens")
+    r=requests.get(core_url+ "/devices/"+context["device_uuid"]+"?withSubObjects=tokens")
     if r.status_code != 200:
         pp.pprint("  ->Test FAILED  " + str(r.status_code)+ "\n")
         pp.pprint(r.content)
