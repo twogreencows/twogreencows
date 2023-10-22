@@ -14,11 +14,38 @@
 (def session-prefix "ses")
 (def current-version "0.0.8")
 
+
+(def session-post-description 
+  [:and 
+    [:map   
+         [:user 
+            [:map
+              [:display_name {:min 1 :optional true} :string]
+              [:password {:min 8} :string]
+              [:confirm_password {:optional true} :string]
+              [:phone_number {:optional true} :string]
+              [:email {:optional true} :string]]]
+          [:device
+            [:map
+              [:kind {:min 4 :max 4} :string]
+              [:platform {:min 1} :string]
+              [:vendor_uuid :string]
+              [:os_version :string]
+              [:display_name :string] ]]]
+ 
+        
+      [:fn {:error/message "Missing one of the needed identifier"
+            :error/path [:email :display_name :phone_number]}
+         (fn [{:keys [email phone_number display_name]}]
+          (or (some? email) (some? phone_number) (some? display_name)))]
+ ] 
+)
+
 (def session-description
     (mu/merge tgc-util/tgc-entity-description (m/schema [:map 
-                                                         [:user_uuid string?] 
+                                                         [:user string?] 
                                                          [:terminated_at string?] 
-                                                         [:device_uuid string?] 
+                                                         [:deviceh string?] 
                                                          [:token_uuid string?] 
                                                          [:is_new_user boolean?]
                                                          [:is_new_device boolean?]

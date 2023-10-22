@@ -21,7 +21,7 @@
    [:map 
               [:kind {:min 4 :max 4} :string]
               [:platform {:min 1} :string]
-              [:vendor_uuid :string]
+              [:vendor_uuid {:optional true}:string]
               [:os_version :string]
               [:display_name :string]
               ]
@@ -30,7 +30,13 @@
             :error/path [:kind]}
          (fn [{:keys [kind]}]
           (contains? #{"desk" "mobi" "web*" "embd"} kind))]
-     ]  
+
+     [:fn {:error/message "Imcompatible parameters"
+            :error/path [:kind :vendor_uuid]}
+         (fn [{:keys [kind vendor_uuid]}]
+           (if (not (= kind "web*")) (if (nil? vendor_uuid) false true) true) 
+          )]
+     ] 
      )
 
 (def device-description
