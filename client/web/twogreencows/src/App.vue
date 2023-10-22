@@ -1,17 +1,23 @@
 <template>
     <div class="app-container">
-    <main-page></main-page>
+        <router-view></router-view>
     </div>
 </template>
 
-<script >
+<script setup>
 import MainPage from './components/MainPage.vue'
+import LoginPage from './components/LoginPage.vue'
+import { useRouter, useRoute } from 'vue-router' 
 
-export default {
-  components: {
-    MainPage,
-  },
-};
+const router = useRouter()
+const route = useRoute()
+
+
+if (false) {
+    router.push("login")
+} else {
+    router.push("main/users")
+}
 
 </script>
 

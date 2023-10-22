@@ -63,6 +63,7 @@ table {
 th,
 td {
   border: 1px solid black;
+  color:black;
   padding: 8px;
 }
 </style>

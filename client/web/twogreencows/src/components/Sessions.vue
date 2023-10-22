@@ -68,5 +68,6 @@ th,
 td {
   border: 1px solid black;
   padding: 8px;
+  color:black;
 }
 </style>
