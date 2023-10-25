@@ -140,6 +140,7 @@
       }
       :post
       {:summary "Create a session"
+       :parameters {:body tgc-session/session-post-description }
        :response {200 {:body (tgc-util/tgc-httpanswer-metadescription tgc-session/session-description)}
                   401 {:body (tgc-util/tgc-httpanswer-metadescription tgc-error/error-description) }
                   }
@@ -318,7 +319,9 @@
         :responses {200 {:body (tgc-util/tgc-httpanswer-metadescription [:vector tgc-device/device-description]) }
                    401 {:body (tgc-util/tgc-httpanswer-metadescription tgc-error/error-description) }
                    }
-       :handler (fn [_] (let [r (tgc-device/device-list [])] (response/ok r)) ) 
+       :handler (fn [{qparams :query-params}] (let [subobjects (if (= (qparams "withSubObjects") "token") [:token] [])
+                                                    r (tgc-device/device-list subobjects)] (response/ok r)) ) 
+
       }
       :post
       {:summary "Create a device"
@@ -328,19 +331,16 @@
                   }
        :handler (fn [{params :body-params qparams :query-params}]
                  (let [subobjects (if (= (qparams "withSubObjects") "token") [:token] [])]
-                      (let [newdevice (tgc-device/new-device! params subobjects)] (response/created (str "/api/V1/devices/" (newdevice :uuid)) newdevice))
-
-                          ;;tmpuser (tgc-user/check-for-user params subobjects )]
-                        ;;(cond 
-                            ;;(nil? tmpuser)  
-                            ;;(let [newxuser (tgc-user/new-user! params subobjects)] (response/created (str "/api/V1/users/" (newuser :uuid)) newuser))
-                            ;;(false? tmpuser)  (response/conflict (tgc-error/create-error 409 "tgc.error.conflict.user_already_exists"))
-                            ;;:else (response/ok tmpuser))
-                        ))
+                      (let [tmpdevice (tgc-device/check-for-device params subobjects )]
+                        (cond 
+                            (nil? tmpdevice) (let [newdevice (tgc-device/new-device! params subobjects)] (response/created (str "/api/V1/device/" (newdevice :uuid)) newdevice))
+                            (false? tmpdevice)  (response/conflict (tgc-error/create-error 409 "tgc.error.conflict.device_already_exists"))
+                            :else (response/ok tmpdevice))
+                        )))
             }
                                      
      }
-    ] ; devicess
+    ] ; devices
     ["/devices/:uuid"
      {:get
       {:summary "Get a specific device"
@@ -348,7 +348,16 @@
                    401 {:body (tgc-util/tgc-httpanswer-metadescription tgc-error/error-description) }
                    404 {:body (tgc-util/tgc-httpanswer-metadescription tgc-error/error-description) }
                 }
-       :handler (fn [_] (response/ok {})) 
+       :handler  (fn [{{:keys [uuid]} :path-params qparams :query-params}]
+                       (let [subobjects (if (= (qparams "withSubObjects") "token") [:token] [])
+                             tmpdevice (tgc-device/get-device  uuid subobjects)]
+                           (if (nil?  tmpdevice)
+                              (response/not-found (tgc-error/create-error 404 "tgc.error.notfound.device_notexists"))
+                              (response/ok tmpdevice)
+                           )))
+
+
+
        }
       :delete
       {:summary "Ddelete a specific device"

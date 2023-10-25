@@ -14,16 +14,17 @@
 
 (def device-object-version 1)
 (def device-prefix "dev")
-(def devices-subobjects {})
+(def devices-subobjects {:token "devices_tokens"})
 
 (def device-post-description
   [:and 
    [:map 
               [:kind {:min 4 :max 4} :string]
               [:platform {:min 1} :string]
-              [:vendor_uuid {:optional true}:string]
-              [:os_version :string]
+              [:vendor_uuid {:optional true} :string]
+              [:os_version {:optional true} :string]
               [:display_name :string]
+              [:owner_uuid {:optional true} :string]
               ]
         
       [:fn {:error/message "Unknown kind"
@@ -31,7 +32,7 @@
          (fn [{:keys [kind]}]
           (contains? #{"desk" "mobi" "web*" "embd"} kind))]
 
-     [:fn {:error/message "Imcompatible parameters"
+     [:fn {:error/message "Incompatible parameters"
             :error/path [:kind :vendor_uuid]}
          (fn [{:keys [kind vendor_uuid]}]
            (if (not (= kind "web*")) (if (nil? vendor_uuid) false true) true) 
@@ -42,9 +43,9 @@
 (def device-description
     (mu/merge tgc-util/tgc-entity-description (m/schema [:map 
                                                          [:kind :string] 
-                                                         [:vendor_uuid :string] 
+                                                         [:vendor_uuid {:optional true} :string] 
                                                          [:display_name :string] 
-                                                         [:os_version :string]
+                                                         [:os_version {:optional true} :string]
                                                          [:platform :string]
                                                          [:last_connection_date :time/instant]
                                                          [:token {:optional true} tgc-token/token-description]                                          
@@ -61,7 +62,9 @@
   ([device] (format-with-subobjects device  []))
   ([device subobjects]
   (let [real_subobjects (filter #(contains? devices-subobjects %) subobjects)]
-    (merge (into {} (remove (fn [[k v]] (nil? v)) device)) (reduce conj {} (zipmap real_subobjects (map (fn [u] (get-device-subobjects (device :uuid) u)) real_subobjects))))
+    (do    
+     (print real_subobjects) 
+    (merge (into {} (remove (fn [[k v]] (nil? v)) device)) (reduce conj {} (zipmap real_subobjects (map (fn [u] (get-device-subobjects (device :uuid) u)) real_subobjects)))))
   ))
 )
 
@@ -99,24 +102,18 @@
   (db/execute-query ["delete from devices where uuid=? returning *" uuid]))
 
 
-;(defn check-for-device [params subobjects]
-; (let [userquerykey (if (some? (params :phone_number)) :phone_number (if (some? (params :email)) :email :display_name ))
-;       userquery  (str "select * from users where " (name userquerykey)  "= ?")
-;       existing-users (db/execute-query [userquery (params userquerykey)])]
-;      (if (not-empty existing-users)
-;          (let [tmpuser (get existing-users 0)
-;                proposed-hashed-password (nth (tgc-util/tgc-hash-password (params :password) (tmpuser :salt)) 1)]
-;                   (if (= 0 (compare proposed-hashed-password (tmpuser :password)))
-;                        (format-with-subobjects tmpuser subobjects)                        
-;                        false )) 
-;           nil)))
+(defn check-for-device [params subobjects]
+ (let [devicequerykey :vendor_uuid 
+       devicequery  (str "select * from devices where " (name devicequerykey)  "= ?")
+       existing-devices (db/execute-query [devicequery (params devicequerykey)])]
+      (if (not-empty existing-devices)
+          (let [tmpdevice (get existing-devices 0)]       
+                   (if (and (= 0 (compare (params :owner_uuid) (tmpdevice :owner_uuid))) (= 0 (compare (params :kind) (tmpdevice :kind))))
+
+                        (format-with-subobjects tmpdevice subobjects)                        
+                        false )) 
+           nil)))
 
 
 
-;;   owner_uuid CHAR(36),
-    
-;;    kind VARCHAR(8),
-;;    vendor_uuid CHAR(36),
-;;    platform VARCHAR(8),  
-;;    os_version VARCHAR(16),
 

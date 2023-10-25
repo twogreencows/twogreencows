@@ -16,7 +16,7 @@ h = {"Content-Type":"application/json"}
 
 def test_v1_sessions_post_existinguser(endpoint="/sessions", context=context) -> None:
     json= {"user":{"display_name":"paul", "password":"yesterday","confirm_password":"yesterday"},
-           "device": {}}
+           "device": {"kind":"mobi"}}
 
     pp.pprint("== Test POST one session")
     r= requests.post( core_url+ endpoint )
