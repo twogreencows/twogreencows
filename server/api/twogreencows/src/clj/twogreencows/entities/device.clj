@@ -48,23 +48,23 @@
                                                          [:os_version {:optional true} :string]
                                                          [:platform :string]
                                                          [:last_connection_date :time/instant]
-                                                         [:token {:optional true} tgc-token/token-description]                                          
+                                                         [:token {:optional true} [:or tgc-token/token-description :nil]]                                          
                                                          [:owner_uuid :string] 
                                                          ])))
 
 (defn get-device-subobjects [device_uuid subobjectkeyword]
-  (let [query (str "select * from " (name subobjectkeyword) " where " (str (devices-subobjects subobjectkeyword)) "=?") 
+  ;; we make the assumption there will be only :token for now. TO be refactored
+  (let [query "select * from tokens t inner join devices_tokens dt on dt.token_uuid = t.uuid where dt.device_uuid=?" 
         subobjects (db/execute-query [query device_uuid])]
-      (identity subobjects)
-  ))
+      (nth subobjects 0 nil))
+  )
 
 (defn format-with-subobjects 
   ([device] (format-with-subobjects device  []))
   ([device subobjects]
   (let [real_subobjects (filter #(contains? devices-subobjects %) subobjects)]
     (do    
-     (print real_subobjects) 
-    (merge (into {} (remove (fn [[k v]] (nil? v)) device)) (reduce conj {} (zipmap real_subobjects (map (fn [u] (get-device-subobjects (device :uuid) u)) real_subobjects)))))
+      (merge (into {} (remove (fn [[k v]] (nil? v)) device)) (reduce conj {} (zipmap real_subobjects (map (fn [u] (get-device-subobjects (device :uuid) u)) real_subobjects)))))
   ))
 )
 

@@ -69,6 +69,16 @@ CREATE TABLE IF NOT EXISTS devices (
 CREATE INDEX IF NOT EXISTS idx_devices_uuid ON devices(uuid);
 
 
+CREATE TABLE IF NOT EXISTS devices_tokens (
+
+    device_uuid CHAR(36),
+    token_uuid CHAR(36),
+    PRIMARY KEY(device_uuid, token_uuid),
+
+    CONSTRAINT fk_device FOREIGN KEY(device_uuid) REFERENCES devices(uuid),   
+    CONSTRAINT fk_token  FOREIGN KEY(token_uuid) REFERENCES tokens(uuid)   
+);
+
 CREATE TABLE IF NOT EXISTS sessions (
     uuid CHAR(36) UNIQUE NOT NULL PRIMARY KEY,
     object_version SMALLINT,
