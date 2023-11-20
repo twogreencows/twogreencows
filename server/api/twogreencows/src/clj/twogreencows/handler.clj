@@ -33,7 +33,7 @@
     (reitit/ring-handler
       (reitit/router
         [(home-routes) (service-routes)] ;(websockets-routes)]
-        ;{:reitit.middleware/transform dev/print-request-diffs} 
+        {:reitit.middleware/transform dev/print-request-diffs} 
         )
       (reitit/routes
         (reitit/create-resource-handler

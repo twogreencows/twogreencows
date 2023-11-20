@@ -13,8 +13,8 @@ const router = useRouter()
 const route = useRoute()
 
 
-if (false) {
-    router.push("login")
+if (true) {
+   router.push("login")
 } else {
     router.push("main/users")
 }

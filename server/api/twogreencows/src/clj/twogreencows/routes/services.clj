@@ -52,25 +52,6 @@
 (defn service-routes []
   ["/api"
    {
-    ;;:middleware [
-    ;;             ;;query-params & form-params
-     ;;            ;;parameters/parameters-middleware
-     ;;            ;;content negotiation
-     ;;            muuntaja/format-negotiate-middleware
-     ;;            ;;encoding respond body
-     ;;            muuntaja/format-response-middleware
-     ;;            ;;exception handling
-     ;;            exception/exception-middleware
-     ;;            ;;decoding request bodys
-     ;;            muuntaja/format-request-middleware
-     ;;            ;;coercing response bodys
-     ;;            coercion/coerce-response-middleware
-     ;;            ;;coercing request parameters
-     ;;            coercion/coerce-request-middleware
-     ;;            ;;multipart params
-      ;;           multipart/multipart-middleware
-      ;;           ]
-
     :muuntaja formats/instance
     :coercion  malli-coercion/coercion
     :swagger {:id ::api}}
@@ -142,9 +123,10 @@
       {:summary "Create a session"
        :parameters {:body tgc-session/session-post-description }
        :response {200 {:body (tgc-util/tgc-httpanswer-metadescription tgc-session/session-description)}
+                  400 {:body (tgc-util/tgc-httpanswer-metadescription tgc-error/error-description) }
                   401 {:body (tgc-util/tgc-httpanswer-metadescription tgc-error/error-description) }
                   }
-       :handler (fn [_] (response/ok {})) 
+       :handler (fn [{params :body-params qparams :query-params}] (response/ok {})) 
       }
      }
     ] ; sessions
