@@ -5,6 +5,6 @@
     ))
 
 (def sensor-data-version 1)
-(def sensor-prefix "ses")
+(def sensor-prefix "sen")
 
 

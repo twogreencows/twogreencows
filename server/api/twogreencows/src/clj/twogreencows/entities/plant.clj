@@ -1,2 +1,2 @@
-(ns twogreencoes.entities.plant)
+(ns twogreencows.entities.plant)
 

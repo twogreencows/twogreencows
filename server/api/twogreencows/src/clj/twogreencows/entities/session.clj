@@ -8,6 +8,9 @@
     [malli.experimental.time :as mt]
     [twogreencows.middleware :as middleware]
     [twogreencows.entities.util :as tgc-util]
+    [twogreencows.entities.user :as tgc-user]
+    [twogreencows.entities.token :as tgc-token]
+    [twogreencows.entities.device :as tgc-device]
     ))
 
 (def session-data-version 1)
@@ -19,7 +22,7 @@
   [:and 
     [:map   
          [:user 
-            [:map
+           [:map
               [:display_name {:min 1 :optional true} :string]
               [:password {:min 8} :string]
               [:confirm_password {:optional true} :string]
@@ -28,34 +31,44 @@
           [:device
             [:map
               [:kind {:min 4 :max 4} :string]
-              [:platform {:min 1} :string]
-              [:vendor_uuid :string]
-              [:os_version :string]
-              [:display_name :string] ]]]
+              [:platform {:min 1 :optional true} :string]
+              [:vendor_uuid {:optional true} :string]
+              [:os_version {:optional true} :string]
+              [:display_name {:optional true} :string] ]]
+          ]
  
-        
       [:fn {:error/message "Missing one of the needed identifier"
-            :error/path [:email :display_name :phone_number]}
-         (fn [{:keys [email phone_number display_name]}]
+            :error/path [:user :email]}
+         (fn [{{:keys [email phone_number display_name]} :user}]
+          (or (some? email) (some? phone_number) (some? display_name)))]
+
+      [:fn {:error/message "Missing one of the needed identifier"
+            :error/path [:user :phone_number]}
+         (fn [{{:keys [email phone_number display_name]} :user}]
+          (or (some? email) (some? phone_number) (some? display_name)))]
+     
+      [:fn {:error/message "Missing one of the needed identifier"
+            :error/path [:user :display_name]}
+         (fn [{{:keys [email phone_number display_name]} :user}]
           (or (some? email) (some? phone_number) (some? display_name)))]
  ] 
 )
 
 (def session-description
-    (mu/merge tgc-util/tgc-entity-description (m/schema [:map 
-                                                         [:user string?] 
-                                                         [:terminated_at string?] 
-                                                         [:deviceh string?] 
-                                                         [:token_uuid string?] 
-                                                         [:is_new_user boolean?]
-                                                         [:is_new_device boolean?]
+    (mu/merge tgc-util/tgc-entity-description (m/schema [:map
+                                                         [:user tgc-user/user-description] 
+                                                         [:terminated_at :string] 
+                                                         [:device tgc-device/device-description] 
+                                                         [:token_uuid :string] 
+                                                         [:is_new_user :boolean]
+                                                         [:is_new_device :boolean]
                                                          ])))
 
 
-(def session-subobjects {:user "user_uuid" :device "device_uuid"})
+(def session-subobjects {:user "user" :device "device"})
 
 (defn get-session-subobjects [session_uuid subobjectkeyword]
-  (let [query (str "select * from " (name subobjectkeyword) " where " (str (session-subobjects subobjectkeyword)) "=?") 
+  (let [query (str "select * from " (name subobjectkeyword) " where " (str (session-subobjects subobjectkeyword) "_uuid") "=?") 
         subobjects (db/execute-query [query session_uuid])]
       (identity subobjects)
   ))
@@ -78,14 +91,29 @@
 
 
 (defn new-session! [params subobjects]
-     (let [newuuid (str session-prefix "-" (clojure.string/replace (.toString (java.util.UUID/randomUUID)) #"-" "")) 
+     (let [tmpuser (if-let [tmpuser (tgc-user/check-for-user (params :user) [:tokens])] (identity tmpuser) (tgc-user/new-user! (params :user) [:tokens]))
+           tmpdevice (if-let [tmpdevice (tgc-device/check-for-device (params :device) [:token])] (identity tmpdevice) (tgc-device/new-device! (assoc (params :device) :owner_uuid (tmpuser :uuid))[:token]))]
+       (do
+         (println "LALALA")
+         (println tmpuser)
+         (println tmpdevice)
+         (println "LALALA")
+       (let
+           [tmptoken (tgc-token/new-token! {:owner_uuid (tmpuser :uuid) :kind "sess"})
+           newuuid (str session-prefix "-" (clojure.string/replace (.toString (java.util.UUID/randomUUID)) #"-" "")) 
            tnow (java.time.LocalDateTime/now)
            newsession (db/execute-query ["insert into sessions (uuid, created_at, updated_at, data_version, object_version, user_uuid, device_uuid, token_uuid, is_new_user, is_new_device) 
-                  values (?,?,?,?,?,?,?,?,?,?)", newuuid tnow tnow session-data-version 1 "usr-kkkkk" "dev-llll" "tok-jjjjj" false false])
+                  values (?,?,?,?,?,?,?,?,?,?)", newuuid tnow tnow session-data-version 1 (tmpuser :uuid) (tmpdevice :uuid) (tmptoken :uuid)  false false])
            s (get newsession 0)
            ]
+       
+                (do  
+                  (println "lololo")
                 (format-with-subobjects s subobjects)
-                ))
+                
+                )
+
+                ))))
 
 
 (defn get-session [uuid subobjects]

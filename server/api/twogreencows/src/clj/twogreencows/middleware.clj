@@ -64,9 +64,10 @@
 (defn wrap-server-allowcors [handler]
   (fn [request]
     (let [w (handler request)]
-      (assoc-in  w [:headers "Access-Control-Allow-Origin"] (str  "http://" (request :server-name) ":5173"))
-      
-    ;;(-> request handler) ;(assoc-in [:headers "Access-Control-Allow-Origin"] "http://127.0.0.1:5173"))
+      (-> w (assoc-in   [:headers "Access-Control-Allow-Origin"] (str  "http://" (request :server-name) ":5173"))
+            (assoc-in [:headers "Access-Control-Allow-Methods"] "GET, POST, PUT, DELETE")
+            (assoc-in [:headers "Access-Control-Allow-Headers"] "Content-Type, Authorization")
+            )
     )))  
               
 

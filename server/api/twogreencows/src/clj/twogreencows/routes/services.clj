@@ -30,7 +30,7 @@
 
 (defn handler-param-error [message exception request]
   {:status 400
-   :body (tgc-error/create-error 400 "tgc.error.conflict.parameter_error")})
+   :body (tgc-error/create-error 400 "tgc.error.parameter_error")})
 
 (def tgc-exception-middleware
   (exception/create-exception-middleware
@@ -43,8 +43,9 @@
         (let [xt-in (System/currentTimeMillis) w (handler request) xt-out (System/currentTimeMillis)] 
               (let [data (get w :body) server {:server_duration (- xt-out xt-in) :status (get w :status)}]
                 (if (= 400 (server :status))
+                    (do
                     (let [desc (apply str (map  (fn [[k v]] (str (name k) ": " (apply str (interpose ", " v)))) (data :humanized)))]
-                      (merge w {:body  (assoc {} :data (tgc-error/create-error 400 "tgc.error.parameter" desc) :server server)}) )
+                      (merge w {:body  (assoc {} :data (tgc-error/create-error 400 "tgc.error.parameter" desc) :server server)}) ))
                   (identity w)
                   )))))
  
@@ -126,7 +127,10 @@
                   400 {:body (tgc-util/tgc-httpanswer-metadescription tgc-error/error-description) }
                   401 {:body (tgc-util/tgc-httpanswer-metadescription tgc-error/error-description) }
                   }
-       :handler (fn [{params :body-params qparams :query-params}] (response/ok {})) 
+       :handler (fn [{params :body-params qparams :query-params}]
+                  (let [subobjects [:user :device]
+                        newsession (tgc-session/new-session! params subobjects)] 
+                    ( response/created (str "/api/V1/session/" (newsession :uuid)) newsession)))
       }
      }
     ] ; sessions

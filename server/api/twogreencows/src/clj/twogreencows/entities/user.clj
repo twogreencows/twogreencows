@@ -39,10 +39,20 @@
               [:email {:optional true} :string]]
         
       [:fn {:error/message "Missing one of the needed identifier"
-            :error/path [:email :display_name :phone_number]}
+            :error/path [:email]}
          (fn [{:keys [email phone_number display_name]}]
           (or (some? email) (some? phone_number) (some? display_name)))]
-       
+      
+      [:fn {:error/message "Missing one of the needed identifier"
+            :error/path [:display_name]}
+         (fn [{:keys [email phone_number display_name]}]
+          (or (some? email) (some? phone_number) (some? display_name)))]
+     
+      [:fn {:error/message "Missing one of the needed identifier"
+            :error/path [:phone_number]}
+         (fn [{:keys [email phone_number display_name]}]
+          (or (some? email) (some? phone_number) (some? display_name)))]
+ 
       [:fn {:error/message "password is too short"
               :error/path [:password]}
          (fn [{:keys [password]}]

@@ -28,7 +28,7 @@
   ([query_array] (execute-query query_array false))
   ([query_array with_transaction]
   (do
-   (log/info (apply str query_array))
+   ;(log/info (apply str query_array))
    (jdbc/execute! *db* query_array {:return-keys true :builder-fn rs/as-unqualified-lower-maps}))))
 
 (jdt/read-as-instant)
