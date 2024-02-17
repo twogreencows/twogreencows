@@ -16,7 +16,7 @@ const route = useRoute()
 if (true) {
    router.push("login")
 } else {
-    router.push("main/users")
+   router.push("main/users")
 }
 
 </script>
