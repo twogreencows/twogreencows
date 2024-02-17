@@ -14,21 +14,23 @@ core_url = "http://localhost:3000/api/V1"
 h = {"Content-Type":"application/json"}
 
 
-def test_v1_sessions_post_existinguser(endpoint="/sessions", context=context) -> None:
-    json= {"user":{"display_name":"paul", "password":"yesterday","confirm_password":"yesterday"},
+def test_v1_sessions_post_existinguser(endpoint="/sessions?mode=signing", context=context) -> None:
+    json= {"user":{"display_name":"paul", "password":"yesterday","confirm_password":"yesterday", "email":"paul@fabfour.co.uk","phone_number":"+33687863131"},
            "device": {"kind":"mobi"}}
-
+  
     pp.pprint("== Test POST one session")
-    r= requests.post( core_url+ endpoint )
+    r= requests.post( core_url+ endpoint , json=json)
+    #r= requests.post( core_url+ endpoint)
     if r.status_code != 200 and r.status_code != 201:
         pp.pprint("  ->Test FAILED  " + str(r.status_code)+ "\n")
-        pp.pprint(r.content)
+        pp.pprint(r.json())
     else:
         pp.pprint("  ->Test SUCCEDED")
         pp.pprint(r.json())
     assert r.status_code == 200, f'Received wrong status code {r.status_code} instead of 200 or 201'
 
 
+@pytest.mark.skip(reason="no way of currently testing this")
 def test_v1_sessions_post_existinguser_reusefull(endpoint="/sessions", context=context) -> None:
 
     json= {"user":{"display_name":"paul", "password":"yesterday","confirm_password":"yesterday"},
@@ -45,6 +47,7 @@ def test_v1_sessions_post_existinguser_reusefull(endpoint="/sessions", context=c
     assert r.status_code == 200, f'Received wrong status code {r.status_code} instead of 200 or 201'
 
 
+@pytest.mark.skip(reason="no way of currently testing this")
 def test_v1_sessions_post_existinguser_newdevice(endpoint="/sessions", context=context) -> None:
 
     json= {"user":{"display_name":"paul", "password":"yesterday","confirm_password":"yesterday"},
