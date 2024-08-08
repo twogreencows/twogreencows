@@ -224,9 +224,9 @@
                     (let [subobjects (if (= (qparams "withSubObjects") "tokens") [:tokens] [])
                           [userstatus tmpuser] (tgc-user/check-for-user params subobjects )]
                         (cond 
-                            (= userstatus)  (let [newuser (tgc-user/new-user! params subobjects)] (response/created (str "/api/V1/users/" (newuser :uuid)) newuser))
-                            (false? tmpuser)  (response/conflict (tgc-error/create-error 409 "tgc.error.conflict.user_already_exists"))
-                            :else (response/ok tmpuser))
+                            (= :absent userstatus)  (let [newuser (tgc-user/new-user! params subobjects)] (response/created (str "/api/V1/users/" (newuser :uuid)) newuser))
+                            (= :conflict userstatus)  (response/conflict (tgc-error/create-error 409 "tgc.error.conflict.user_already_exists"))
+                            (= :exist userstatus)  (response/ok tmpuser))
                         ))
             }
         }
