@@ -25,7 +25,7 @@
            [:map
               [:display_name {:min 1 :optional true} :string]
               [:password {:min 8} :string]
-              [:confirm_password {:optional true} :string]
+              [:confirm_password {:optional true} [:maybe :string]]
               [:phone_number {:optional true} :string]
               [:email {:optional true} :string]]]
           [:device
@@ -90,31 +90,21 @@
     sessions))
 
 
-(defn new-session! [params subobjects]
-     (let [tmpuser (if-let [tmpuser (tgc-user/check-for-user (params :user) [:tokens])] (identity tmpuser) (tgc-user/new-user! (params :user) [:tokens]))
-           tmpdevice (if-let [tmpdevice (tgc-device/check-for-device (params :device) [:token])] (identity tmpdevice) (tgc-device/new-device! (assoc (params :device) :owner_uuid (tmpuser :uuid))[:token]))]
-       (do
-         (println "LALALA")
-         (println tmpuser)
-         (println tmpdevice)
-         (println "LALALA")
-       (let
-           [tmptoken (tgc-token/new-token! {:owner_uuid (tmpuser :uuid) :kind "sess"})
-           newuuid (str session-prefix "-" (clojure.string/replace (.toString (java.util.UUID/randomUUID)) #"-" "")) 
+(defn new-session! [session_params subobjects]
+  (let [newuuid (str session-prefix "-" (clojure.string/replace (.toString (java.util.UUID/randomUUID)) #"-" "")) 
            tnow (java.time.LocalDateTime/now)
-           newsession (db/execute-query ["insert into sessions (uuid, created_at, updated_at, data_version, object_version, user_uuid, device_uuid, token_uuid, is_new_user, is_new_device) 
-                  values (?,?,?,?,?,?,?,?,?,?)", newuuid tnow tnow session-data-version 1 (tmpuser :uuid) (tmpdevice :uuid) (tmptoken :uuid)  false false])
-           s (get newsession 0)
-           ]
-       
-                (do  
-                  (println "lololo")
-                (format-with-subobjects s subobjects)
-                
-                )
+           user_uuid (get session_params :user_uuid)
+           owner_uuid (get session_params :user_uuid)
+           device_uuid (get session_params :device_uuid)
+           is_new_user (get session_params :is_new_user)
+           is_new_device (get session_params :is_new_device)
+           tmptoken (tgc-token/new-token! {:owner_uuid newuuid :kind "sess"})]
 
-                ))))
-
+        (let [newsession (db/execute-query ["insert into sessions (uuid, created_at, updated_at, data_version, object_version, user_uuid, device_uuid, token_uuid, is_new_user, is_new_device) values (?,?,?,?,?,?,?,?,?,?)", newuuid tnow tnow session-data-version 1 user_uuid device_uuid (tmptoken :uuid) is_new_user is_new_device])
+                                           
+                s (get newsession 0)]
+                  (format-with-subobjects s subobjects)
+                )))
 
 (defn get-session [uuid subobjects]
   (let [sessionquery "select * from sessions where uuid= ?"

@@ -100,7 +100,7 @@ else:
 print()
 
 pp.pprint("Test POST one user - mismatch password on existing user")
-r=requests.post( core_url+"/users", headers = {"Content-Type: application/json"}, json= {"display_name":"paul", "password":"yerblues","confirm_password":"yerblues","phone_number":"+33687853132"})
+r=requests.post( core_url+"/users", headers = h , json= {"display_name":"paul", "password":"yerblues","confirm_password":"yerblues","phone_number":"+33687853132"})
 if r.status_code != 409:
     pp.pprint("  ->Test FAILED")
 else:

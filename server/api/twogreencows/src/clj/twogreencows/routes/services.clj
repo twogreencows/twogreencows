@@ -128,9 +128,46 @@
                   401 {:body (tgc-util/tgc-httpanswer-metadescription tgc-error/error-description) }
                   }
        :handler (fn [{params :body-params qparams :query-params}]
-                  (let [subobjects [:user :device]
-                        newsession (tgc-session/new-session! params subobjects)] 
-                    ( response/created (str "/api/V1/session/" (newsession :uuid)) newsession)))
+            (do    
+            (println (tgc-user/check-for-user (params :user) [:devices :tokens])) 
+            (println (qparams "mode")) 
+            (println (tgc-device/check-for-device (params :device)))
+            (let [[tmpuserstatus tmpuser] (tgc-user/check-for-user (params :user) [:devices :tokens])
+                    mode (qparams "mode")]
+                (cond
+                  (= :absent tmpuserstatus) 
+                    (if (= "signin" mode) 
+                      (response/unauthorized (tgc-error/create-error 401 "tgc.error.unauthorized.user_notexists")) 
+                      (if (m/validate (tgc-user/user-post-description) (params :user)) 
+                            (let [newuser (tgc-user/new-user! params [:devices])] 
+                                                  (response/created (str "/api/V1/users/" (newuser :uuid)) newuser))
+                            (response/bad-request (tgc-error/create-error 400 "tgc.error.badrequest.parameter_error")
+                    )))
+
+                  (= :conflict tmpuserstatus) 
+                    (if (= "signin" mode) 
+                      (response/unauthorized (tgc-error/create-error 401 "tgc.error.unauthorized.user_notexists"))
+                      (response/conflict (tgc-error/create-error 409 "tgc.error.conflict.user_already_exists")))
+ 
+                  (= :exist tmpuserstatus) 
+                    (let [device_params (assoc (params :device) :owner_uuid (tmpuser :uuid))
+                          [tmpdevicestatus tmpdevice] (tgc-device/check-for-device device_params)]
+                        (cond 
+                          (= :absent tmpdevicestatus) 
+                            (let [newdevice (tgc-device/new-device! device_params [:tokens])]
+                              (let[subobjects [:user :device]
+                                   session_params {:user_uuid (tmpuser :uuid) :device_uuid (newdevice :uuid) :is_new_user true :is_new_device false} 
+                                   newsession (tgc-session/new-session! session_params subobjects)] 
+                                      (response/created (str "/api/V1/session/" (newsession :uuid)) newsession)))
+                          (= :conflict tmpdevicestatus) ()
+
+                          (= :exist tmpdevicestatus) 
+                              (let[subobjects [:user :device]
+                                   session_params {:user_uuid (tmpuser :uuid) :device_uuid (tmpdevice :uuid) :is_new_user true :is_new_device false} 
+                                   newsession (tgc-session/new-session! session_params subobjects)] 
+                                      (response/created (str "/api/V1/session/" (newsession :uuid)) newsession))
+                        ))
+                    ))))
       }
      }
     ] ; sessions
@@ -185,9 +222,9 @@
            500 {:body (tgc-util/tgc-httpanswer-metadescription tgc-error/error-description) }}
          :handler (fn [{params :body-params qparams :query-params}]
                     (let [subobjects (if (= (qparams "withSubObjects") "tokens") [:tokens] [])
-                          tmpuser (tgc-user/check-for-user params subobjects )]
+                          [userstatus tmpuser] (tgc-user/check-for-user params subobjects )]
                         (cond 
-                            (nil? tmpuser)  (let [newuser (tgc-user/new-user! params subobjects)] (response/created (str "/api/V1/users/" (newuser :uuid)) newuser))
+                            (= userstatus)  (let [newuser (tgc-user/new-user! params subobjects)] (response/created (str "/api/V1/users/" (newuser :uuid)) newuser))
                             (false? tmpuser)  (response/conflict (tgc-error/create-error 409 "tgc.error.conflict.user_already_exists"))
                             :else (response/ok tmpuser))
                         ))

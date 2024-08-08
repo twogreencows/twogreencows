@@ -34,7 +34,7 @@
    [:map 
               [:display_name {:min 1 :optional true} :string]
               [:password {:min 8} :string]
-              [:confirm_password :string]
+              [:confirm_password {:optional true} [:maybe :string]]
               [:phone_number {:optional true} :string]
               [:email {:optional true} :string]]
         
@@ -95,25 +95,23 @@
 
 (defn user-list [subobjects] 
   (let [users (db/execute-query ["select * from users"])]
-    (do
-      (prn subobjects)
       (map (fn [u] (format-with-subobjects u subobjects)) users) 
-    )))
+    ))
 
-(defn new-user! [params subobjects]
+(defn new-user! [userparams subobjects]
      (let [newuuid (str user-prefix "-" (clojure.string/replace (.toString (java.util.UUID/randomUUID)) #"-" "")) 
            tnow (java.time.LocalDateTime/now)
-           display_name (get params :display_name (generate-user-name))
-           phone_number (get params :phone_number)
-           email (get params :email)
-           user_level (get params :user_level user-level-none)
-           [hsalt hpassword] (tgc-util/tgc-hash-password (params :password)) 
-           newuser (db/execute-query ["insert into users (uuid, created_at, updated_at, data_version, object_version, country, phone_number, display_name, email, user_level, salt, password) 
-                  values (?,?,?,?,?,?,?,?,?,?,?,?)", newuuid tnow tnow user-data-version 1 "FRA" phone_number display_name email user_level hsalt hpassword])
+           display_name (get userparams :display_name (generate-user-name))
+           phone_number (get userparams :phone_number)
+           email (get userparams :email)
+           user_level (get userparams :user_level user-level-none)
+           [hsalt hpassword] (tgc-util/tgc-hash-password (userparams :password))]
+
+        (let [newuser (db/execute-query ["insert into users (uuid, created_at, updated_at, data_version, object_version, country, phone_number, display_name, email, user_level, salt, password) values (?,?,?,?,?,?,?,?,?,?,?,?)", newuuid tnow tnow user-data-version 1 "FRA" phone_number display_name email user_level hsalt hpassword])
            u (get newuser 0)
            tmptoken (tgc-token/new-token! {:owner_uuid newuuid :kind "devc"})]
                 (format-with-subobjects u subobjects)
-                ))
+                )))
 
 
 (defn get-user [uuid subobjects]
@@ -128,15 +126,19 @@
   (db/execute-query ["delete from users where uuid=? returning *" uuid]))
 
 
-(defn check-for-user [params subobjects]
- (let [userquerykey (if (some? (params :phone_number)) :phone_number (if (some? (params :email)) :email :display_name ))
+
+(defn check-for-user 
+  ([params] (check-for-user [:tokens :devices]))
+  ([params subobjects]
+    (let [userquerykey (if (some? (params :phone_number)) :phone_number (if (some? (params :email)) :email :display_name ))
        userquery  (str "select * from users where " (name userquerykey)  "= ?")
        existing-users (db/execute-query [userquery (params userquerykey)])]
       (if (not-empty existing-users)
           (let [tmpuser (get existing-users 0)
                 proposed-hashed-password (nth (tgc-util/tgc-hash-password (params :password) (tmpuser :salt)) 1)]
                    (if (= 0 (compare proposed-hashed-password (tmpuser :password)))
-                        (format-with-subobjects tmpuser subobjects)                        
-                        false )) 
-           nil)))
+                        [:exist (format-with-subobjects tmpuser subobjects)]                        
+                        [:conflict tmpuser])) 
+           (identity [:absent nil]) )))
+)
 

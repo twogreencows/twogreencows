@@ -102,18 +102,22 @@
   (db/execute-query ["delete from devices where uuid=? returning *" uuid]))
 
 
-(defn check-for-device [params subobjects]
- (let [devicequerykey :vendor_uuid 
+(defn check-for-device 
+  ([device_params ] (check-for-device device_params [:tokens]))
+  ([device_params subobjects]
+   (do
+     (println device_params)
+    (let [devicequerykey :vendor_uuid 
        devicequery  (str "select * from devices where " (name devicequerykey)  "= ?")
-       existing-devices (db/execute-query [devicequery (params devicequerykey)])]
+       existing-devices (db/execute-query [devicequery (device_params devicequerykey)])]
       (if (not-empty existing-devices)
           (let [tmpdevice (get existing-devices 0)]       
-                   (if (and (= 0 (compare (params :owner_uuid) (tmpdevice :owner_uuid))) (= 0 (compare (params :kind) (tmpdevice :kind))))
+            (if (and (= 0 (compare (device_params :owner_uuid) (tmpdevice :owner_uuid))) (= 0 (compare (device_params :kind) (tmpdevice :kind))))
 
                         (format-with-subobjects tmpdevice subobjects)                        
                         false )) 
-           nil)))
-
-
-
+       (identity [:absent nil])))
+)
+    )
+)
 

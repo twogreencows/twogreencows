@@ -97,15 +97,43 @@ function doSwitchMode() {
     insigninmode.value = !(insigninmode.value);
 }
 
+function generateUUID() {
+    return ([1e7] + -1e3 + -4e3 + -8e3 + -1e11).replace(/[018]/g, c =>
+        (c ^ crypto.getRandomValues(new Uint8Array(1))[0] & 15 >> c / 4).toString(16)
+    );
+}
+
 function doLogin() {
     var mode =  insigninmode.value  ? 'signin' :  'signup';
     const doLoginRequest = async () => {
       try {
         var parser = new UAParser();
         var result = parser.getResult();
-        let  bdict = {"user":{ "password":password.value, "confirm_password":confirmpassword.value },
-                 "device":{"kind":"web*", "platform":result.os.name, "display_name": result.browser.name, "os_version": result.os.version  }}
+        let cookiename = "tgcdvc"+"=";
+        let cookies = document.cookie.split(';');
+
+        var cookievalue = undefined;
+        for (let idx = 0; idx < cookies.length; idx++) {
+            let c = cookies[idx].trim();
+            if (c.indexOf(cookiename) == 0) {
+                cookievalue = c.substring(cookiename.length, c.length);
+            }
+        }
+        console.log(cookievalue);
+        if (cookievalue === undefined) {
+            
+            console.log("generating cookie");
+            cookievalue = generateUUID();
+            document.cookie = cookiename+cookievalue;
+        }
+
+        let  bdict = {"user":{ "password":password.value },
+                 "device":{"kind":"web*", "platform":result.os.name, "display_name": result.browser.name, "os_version": result.os.version, "vendor_uuid":cookievalue}}
+        
         bdict["user"][loginType.value] = username.value;         
+        if (mode === "issignin") {
+            bdict["user"]["confirm_password"] = confirm_password.value;        
+        }
         const settings = {
             method: 'POST',
             body: JSON.stringify(bdict),
@@ -117,7 +145,11 @@ function doLogin() {
 
         const response = await fetch('http://localhost:3000/api/V1/sessions?mode='+mode, settings); // Replace with your API endpoint
         const data = await response.json();
-        console.log(data);
+        if (response.status >=400) {
+            alert(response.status+ " " + response.statusText)
+        } else {
+            //this is OK
+        }
       } catch (error) {
         console.error('Error posting session', error);
         alert(error);
