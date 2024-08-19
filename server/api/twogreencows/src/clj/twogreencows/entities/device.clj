@@ -107,15 +107,15 @@
   ([device_params subobjects]
    (do
      (println device_params)
+     (println "popop") 
     (let [devicequerykey :vendor_uuid 
        devicequery  (str "select * from devices where " (name devicequerykey)  "= ?")
        existing-devices (db/execute-query [devicequery (device_params devicequerykey)])]
       (if (not-empty existing-devices)
           (let [tmpdevice (get existing-devices 0)]       
             (if (and (= 0 (compare (device_params :owner_uuid) (tmpdevice :owner_uuid))) (= 0 (compare (device_params :kind) (tmpdevice :kind))))
-
-                        (format-with-subobjects tmpdevice subobjects)                        
-                        false )) 
+                        [:exist (format-with-subobjects tmpdevice subobjects)]                        
+                        [:conflict tmpdevice] )) 
        (identity [:absent nil])))
 )
     )

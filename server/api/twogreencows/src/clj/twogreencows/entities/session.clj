@@ -59,18 +59,25 @@
                                                          [:user tgc-user/user-description] 
                                                          [:terminated_at :string] 
                                                          [:device tgc-device/device-description] 
+                                                         [:token tgc-token/token-description] 
                                                          [:token_uuid :string] 
                                                          [:is_new_user :boolean]
                                                          [:is_new_device :boolean]
                                                          ])))
 
 
-(def session-subobjects {:user "user" :device "device"})
+(def session-subobjects {:user "users" :device "devices" :token "tokens"})
 
 (defn get-session-subobjects [session_uuid subobjectkeyword]
-  (let [query (str "select * from " (name subobjectkeyword) " where " (str (session-subobjects subobjectkeyword) "_uuid") "=?") 
+
+  (let [query (str "select * from " (str (name subobjectkeyword) "s") " where uuid" "=?") 
         subobjects (db/execute-query [query session_uuid])]
+      (do
+        (println "sub")
+        (println query)
+        (println subobjects)
       (identity subobjects)
+      )
   ))
 
 
@@ -79,7 +86,11 @@
   ([session] (format-with-subobjects session []))
   ([session subobjects]
   (let [real_subobjects (filter #(contains? session-subobjects %) subobjects)]
+    (do
+      (println "real_subobjects")
+      (println real_subobjects)
     (merge (into {} (remove (fn [[k v]] (nil? v)) session )) (reduce conj {} (zipmap real_subobjects (map (fn [s] (get-session-subobjects (session :uuid) s)) real_subobjects))))
+    )
   ))
 )
 
@@ -91,6 +102,10 @@
 
 
 (defn new-session! [session_params subobjects]
+  (do
+    (println "newsession")
+    (println session_params)
+    (println subobjects)
   (let [newuuid (str session-prefix "-" (clojure.string/replace (.toString (java.util.UUID/randomUUID)) #"-" "")) 
            tnow (java.time.LocalDateTime/now)
            user_uuid (get session_params :user_uuid)
@@ -98,13 +113,21 @@
            device_uuid (get session_params :device_uuid)
            is_new_user (get session_params :is_new_user)
            is_new_device (get session_params :is_new_device)
-           tmptoken (tgc-token/new-token! {:owner_uuid newuuid :kind "sess"})]
+           tmptoken (tgc-token/new-token! {:owner_uuid user_uuid :kind "sess"})]
 
         (let [newsession (db/execute-query ["insert into sessions (uuid, created_at, updated_at, data_version, object_version, user_uuid, device_uuid, token_uuid, is_new_user, is_new_device) values (?,?,?,?,?,?,?,?,?,?)", newuuid tnow tnow session-data-version 1 user_uuid device_uuid (tmptoken :uuid) is_new_user is_new_device])
                                            
                 s (get newsession 0)]
+                (do
+                  (println "lio")
+                  (println s)
+                  (println subobjects)
                   (format-with-subobjects s subobjects)
-                )))
+                  
+                  )
+                ))
+
+  ))
 
 (defn get-session [uuid subobjects]
   (let [sessionquery "select * from sessions where uuid= ?"

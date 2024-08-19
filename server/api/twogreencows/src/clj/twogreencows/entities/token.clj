@@ -24,6 +24,9 @@
 
 
 (defn new-token! [params]
+  (do
+    (println "token")
+    (println params)
      (let [newuuid (str token-prefix "-" (clojure.string/replace (.toString (java.util.UUID/randomUUID)) #"-" "")) 
            tnow (java.time.LocalDateTime/now)
            texpiration (.plusDays tnow 182)
@@ -32,7 +35,7 @@
            newtoken (db/execute-query ["insert into tokens (uuid, created_at, updated_at, data_version, object_version, expires_at, is_valid, value, owner_uuid,kind ) 
                   values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)" newuuid tnow tnow token-data-version 1 texpiration true token_value (params :owner_uuid) kind])]
              (get newtoken 0) 
-          )) 
+          ))) 
       
 
 (defn token-list [subobjects] 

@@ -37,12 +37,14 @@ import { ref, computed } from "vue";
 import * as libphonenumber from "libphonenumber-js";
 import UAParser from 'ua-parser-js';
 import { useRouter, useRoute } from 'vue-router' 
+import { getCurrentInstance } from 'vue';
 
 const props = defineProps(['username', 'password', 'confirmpassword'])
 const emit = defineEmits(['update:username', 'update:password', 'update:confirmpassword'])
 
 const router = useRouter()
 
+const instance = getCurrentInstance();
 const username=ref(null)
 const password=ref(null)
 const confirmpassword=ref(null)
@@ -121,8 +123,6 @@ function doLogin() {
         }
         console.log(cookievalue);
         if (cookievalue === undefined) {
-            
-            console.log("generating cookie");
             cookievalue = generateUUID();
             document.cookie = cookiename+cookievalue;
         }
@@ -149,6 +149,8 @@ function doLogin() {
             alert(response.status+ " " + response.statusText)
         } else {
             //this is OK
+            console.log("Response OK");
+            router.push("/main/users");
         }
       } catch (error) {
         console.error('Error posting session', error);

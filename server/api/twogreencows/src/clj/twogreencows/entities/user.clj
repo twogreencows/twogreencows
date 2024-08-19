@@ -53,10 +53,10 @@
          (fn [{:keys [email phone_number display_name]}]
           (or (some? email) (some? phone_number) (some? display_name)))]
  
-      [:fn {:error/message "password is too short"
+      [:fn {:error/message "password is too short or is not having a digit"
               :error/path [:password]}
          (fn [{:keys [password]}]
-          (>= (count password) 8 ))]
+          (and (boolean (re-find #"\d" password)) (>= (count password) 8 )))]
  
       [:fn {:error/message "confirmation password does not match"
               :error/path [:confirm_password]}

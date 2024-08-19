@@ -94,7 +94,23 @@ def test_v1_users_postone_unmatchparams(endpoint="/users", context=context) -> N
 def test_v1_users_postone_tooshortpassword(endpoint="/users", context=context) -> None:
     pp.pprint(" == Test POST one user - short password")
     
-    r = requests.post(core_url+"/users",  headers=h , json={"display_name":"paul", "password":"rocky","confirm_password":"rocky", "phone_number":"+442012346789"}) 
+    r = requests.post(core_url+"/users",  headers=h , json={"display_name":"paul", "password":"rockyi8","confirm_password":"rockyi8", "phone_number":"+442012346789"}) 
+    if r.status_code != 400:
+        pp.pprint("  ->Test FAILED")
+        pp.pprint(r.json())
+        pp.pprint(r.status_code)
+    else:
+        pp.pprint(r.json())
+
+    assert r.status_code == 400, f'Received wrong status code {r.status_code} instead of 400' 
+    err_uuid = r.json()["data"]["uuid"]
+    assert err_uuid.startswith("err") == True, f'Received an object which is not a error UUID' 
+
+
+def test_v1_users_postone_tooshortpassword(endpoint="/users", context=context) -> None:
+    pp.pprint(" == Test POST one user - long password no digit")
+    
+    r = requests.post(core_url+"/users",  headers=h , json={"display_name":"paul", "password":"rockyracoon","confirm_password":"rockyracoon", "phone_number":"+442012346789"}) 
     if r.status_code != 400:
         pp.pprint("  ->Test FAILED")
         pp.pprint(r.json())
@@ -110,7 +126,7 @@ def test_v1_users_postone_tooshortpassword(endpoint="/users", context=context) -
 
 def test_v1_users_postone_plain_allparams(endpoint="/users", context=context) -> None:
     pp.pprint("== Test POST one user - good parameters")
-    r=requests.post(core_url + endpoint, headers = h, json= {"display_name":"paul", "password":"yesterday","confirm_password":"yesterday","email":"paul@fabfour.co.uk" ,"phone_number":"+442012346789"})
+    r=requests.post(core_url + endpoint, headers = h, json= {"display_name":"paul", "password":"yesterday2","confirm_password":"yesterday2","email":"paul@fabfour.co.uk" ,"phone_number":"+442012346789"})
     if r.status_code != 201 and  r.status_code != 200:
         pp.pprint("  ->Test FAILED  " + str(r.status_code)+ "\n")
         pp.pprint(r.content)
@@ -129,7 +145,7 @@ def test_v1_users_postone_plain_allparams(endpoint="/users", context=context) ->
 def test_v1_users_postone_plain_twoparams(endpoint="/users", context=context) -> None:
 
     pp.pprint("== Test POST one user - good parameters but some missing")
-    r=requests.post(core_url + endpoint, headers = h, json= {"display_name":"george", "password":"something","confirm_password":"something","email":"george@fabfour.co.uk" })
+    r=requests.post(core_url + endpoint, headers = h, json= {"display_name":"george", "password":"something3","confirm_password":"something3","email":"george@fabfour.co.uk" })
     if r.status_code != 201 and  r.status_code != 200:
         pp.pprint("  ->Test FAILED  " + str(r.status_code)+ "\n")
         pp.pprint(r.content)
@@ -150,7 +166,7 @@ def test_v1_users_postone_plain_twoparams(endpoint="/users", context=context) ->
 def test_v1_users_postone_plain_nousernameparams(endpoint="/users", context=context) -> None:
 
     pp.pprint("== Test POST one user - good parameters but username missing")
-    r=requests.post(core_url + endpoint, headers = h, json= { "password":"submarine","confirm_password":"submarine","email":"ringo@fabfour.co.uk" })
+    r=requests.post(core_url + endpoint, headers = h, json= { "password":"submarine4","confirm_password":"submarine4","email":"ringo@fabfour.co.uk" })
     if r.status_code != 201 and  r.status_code != 200:
         pp.pprint("  ->Test FAILED  " + str(r.status_code)+ "\n")
         pp.pprint(r.content)
@@ -168,7 +184,7 @@ def test_v1_users_postone_plain_nousernameparams(endpoint="/users", context=cont
 
 def test_v1_users_postone_withtokens_allparams(endpoint="/users", context=context) -> None:
     pp.pprint("== Test POST one user - good parameters with tokens")
-    r= requests.post(core_url+ "/users?withSubObjects=tokens", headers = h, json={"display_name":"john", "password":"yerblues","confirm_password":"yerblues","email":"john@fabfour.co.uk", "phone_number":"+442098764321"})
+    r= requests.post(core_url+ "/users?withSubObjects=tokens", headers = h, json={"display_name":"john", "password":"yerblues1","confirm_password":"yerblues1","email":"john@fabfour.co.uk", "phone_number":"+442098764321"})
     
     if r.status_code != 201 and r.status_code != 200:
         pp.pprint("  ->Test FAILED  " + str(r.status_code)+ "\n")
@@ -191,7 +207,7 @@ def test_v1_users_postone_withtokens_allparams(endpoint="/users", context=contex
 
 def test_v1_users_postone_conflictonexisting(endpoint="/users", context=context) -> None:
     pp.pprint("== Test POST one user - conflicting passwords")
-    r=requests.post(core_url+endpoint, headers = h, json= {"display_name":"paul", "password":"sergeantpepper","confirm_password":"sergeantpepper","phone_number":"+442012346789"})
+    r=requests.post(core_url+endpoint, headers = h, json= {"display_name":"paul", "password":"sergeantpepper2","confirm_password":"sergeantpepper2","phone_number":"+442012346789"})
     
     if r.status_code != 409:
         pp.pprint("  ->Test FAILED  " + str(r.status_code)+ "\n")

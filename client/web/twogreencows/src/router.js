@@ -20,10 +20,6 @@ const routes = [
 		path: '/main',
 		name: 'Main',
 		component: MainPage,
-                //components: {
-                //    default: MainPage,
-                //    maincontent:Users 
-                //}
                 children:[
                     {
                         path:'users',
