@@ -42,6 +42,7 @@
         const response = await fetch('http://localhost:3000/api/V1/sessions'); // Replace with your API endpoint
           
         const data = await response.json();
+          debugger;
         console.log(data["data"])
         objects.value = data["data"];
       } catch (error) {

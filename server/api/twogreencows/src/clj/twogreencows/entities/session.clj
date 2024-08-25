@@ -56,10 +56,10 @@
 
 (def session-description
     (mu/merge tgc-util/tgc-entity-description (m/schema [:map
-                                                         [:user tgc-user/user-description] 
-                                                         [:terminated_at :string] 
-                                                         [:device tgc-device/device-description] 
-                                                         [:token tgc-token/token-description] 
+                                                         [:user {:optional true} tgc-user/user-description] 
+                                                         [:terminated_at [:maybe :time/instant]] 
+                                                         [:device {:optional true} tgc-device/device-description] 
+                                                         [:token {:optional true} tgc-token/token-description] 
                                                          [:token_uuid :string] 
                                                          [:is_new_user :boolean]
                                                          [:is_new_device :boolean]
@@ -98,7 +98,10 @@
 
 (defn session-list [subobjects] 
   (let [sessions (db/execute-query ["select * from sessions"])]
-    sessions))
+    (do
+      (println sessions)
+      (println "POP")
+    (identity sessions))))
 
 
 (defn new-session! [session_params subobjects]

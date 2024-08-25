@@ -155,17 +155,20 @@
                         (cond 
                           (= :absent tmpdevicestatus) 
                             (let [newdevice (tgc-device/new-device! device_params [:tokens])]
-                              (let[subobjects [:user :device]
+                              (let[subobjects [:user :device :token]
                                    session_params {:user_uuid (tmpuser :uuid) :device_uuid (newdevice :uuid) :is_new_user true :is_new_device false} 
                                    newsession (tgc-session/new-session! session_params subobjects)] 
                                       (response/created (str "/api/V1/session/" (newsession :uuid)) newsession)))
                           (= :conflict tmpdevicestatus) ()
 
-                          (= :exist tmpdevicestatus) 
-                              (let[subobjects [:user :device]
+                          (= :exist tmpdevicestatus)
+                             (do 
+                               (println "lalala")
+                              (let[subobjects [:user :device :token]
                                    session_params {:user_uuid (tmpuser :uuid) :device_uuid (tmpdevice :uuid) :is_new_user true :is_new_device false} 
                                    newsession (tgc-session/new-session! session_params subobjects)] 
                                       (response/created (str "/api/V1/session/" (newsession :uuid)) newsession))
+                              )
                         ))
                     ))))
       }
@@ -350,15 +353,22 @@
       {:summary "Create a device"
        :parameters {:body tgc-device/device-post-description }
        :response {200 {:body (tgc-util/tgc-httpanswer-metadescription tgc-device/device-description)}
+                  201 {:body (tgc-util/tgc-httpanswer-metadescription tgc-device/device-description)}
                   401 {:body (tgc-util/tgc-httpanswer-metadescription tgc-error/error-description) }
+                  400 {:body (tgc-util/tgc-httpanswer-metadescription tgc-error/error-description) }
+                  409 {:body (tgc-util/tgc-httpanswer-metadescription tgc-error/error-description) }
+                  500 {:body (tgc-util/tgc-httpanswer-metadescription tgc-error/error-description) }
                   }
        :handler (fn [{params :body-params qparams :query-params}]
-                 (let [subobjects (if (= (qparams "withSubObjects") "token") [:token] [])]
-                      (let [tmpdevice (tgc-device/check-for-device params subobjects )]
+                 (let [subobjects (if (= (qparams "withSubObjects") "token") [:tokens] [])]
+                      (let [[tmpdevicestatus tmpdevice] (tgc-device/check-for-device params)]
                         (cond 
-                            (nil? tmpdevice) (let [newdevice (tgc-device/new-device! params subobjects)] (response/created (str "/api/V1/device/" (newdevice :uuid)) newdevice))
-                            (false? tmpdevice)  (response/conflict (tgc-error/create-error 409 "tgc.error.conflict.device_already_exists"))
-                            :else (response/ok tmpdevice))
+                            (= :absent tmpdevicestatus) 
+                              (let [newdevice (tgc-device/new-device! params [:tokens])] (response/created (str "/api/V1/device/" (newdevice :uuid)) newdevice))
+                            (= :conflict tmpdevicestatus) 
+                              (response/conflict (tgc-error/create-error 409 "tgc.error.conflict.device_already_exists"))
+                            (= :exist tmpdevicestatus) 
+                              (response/ok tmpdevice))
                         )))
             }
                                      

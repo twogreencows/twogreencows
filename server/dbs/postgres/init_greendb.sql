@@ -87,6 +87,7 @@ CREATE TABLE IF NOT EXISTS sessions (
     updated_at TIMESTAMPTZ,
     
     terminated_at TIMESTAMPTZ,
+    expires_at TIMESTAMPTZ,
     owner_uuid CHAR(36),
     user_uuid CHAR(36),
     device_uuid CHAR(36),

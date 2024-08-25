@@ -149,7 +149,6 @@ function doLogin() {
             alert(response.status+ " " + response.statusText)
         } else {
             //this is OK
-            console.log("Response OK");
             router.push("/main/users");
         }
       } catch (error) {
