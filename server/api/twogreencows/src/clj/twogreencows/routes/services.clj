@@ -44,6 +44,10 @@
               (let [data (get w :body) server {:server_duration (- xt-out xt-in) :status (get w :status)}]
                 (if (= 400 (server :status))
                     (do
+                    (println "UAUAUA")  
+                    (println data)  
+                    (println (data :humanized))
+                    (println "UAUAUA")  
                     (let [desc (apply str (map  (fn [[k v]] (str (name k) ": " (apply str (interpose ", " v)))) (data :humanized)))]
                       (merge w {:body  (assoc {} :data (tgc-error/create-error 400 "tgc.error.parameter" desc) :server server)}) ))
                   (identity w)
@@ -128,21 +132,32 @@
                   401 {:body (tgc-util/tgc-httpanswer-metadescription tgc-error/error-description) }
                   }
        :handler (fn [{params :body-params qparams :query-params}]
-            (do    
+            (do   
+             (println "USR") 
+             (println (params :user)) 
             (println (tgc-user/check-for-user (params :user) [:devices :tokens])) 
-            (println (qparams "mode")) 
             (println (tgc-device/check-for-device (params :device)))
             (let [[tmpuserstatus tmpuser] (tgc-user/check-for-user (params :user) [:devices :tokens])
                     mode (qparams "mode")]
+
                 (cond
-                  (= :absent tmpuserstatus) 
-                    (if (= "signin" mode) 
-                      (response/unauthorized (tgc-error/create-error 401 "tgc.error.unauthorized.user_notexists")) 
-                      (if (m/validate (tgc-user/user-post-description) (params :user)) 
-                            (let [newuser (tgc-user/new-user! params [:devices])] 
-                                                  (response/created (str "/api/V1/users/" (newuser :uuid)) newuser))
-                            (response/bad-request (tgc-error/create-error 400 "tgc.error.badrequest.parameter_error")
-                    )))
+                  (= :absent tmpuserstatus)
+                    (cond  
+                      (= "signin" mode) 
+                        (response/unauthorized (tgc-error/create-error 401 "tgc.error.unauthorized.user_notexists"))
+                      (= "signup" mode)                          
+                        (if (m/validate tgc-user/user-post-description (params :user))
+                            (let [newuser (tgc-user/new-user! (params :user) [:devices])
+                                  newdevice (tgc-device/new-device! (assoc (params :device) (newuser :uuid))  [:tokens])]
+                                  (let[subobjects [:user :device :token]
+                                   session_params {:user_uuid (tmpuser :uuid) :device_uuid (newdevice :uuid) :is_new_user true :is_new_device false} 
+                                   newsession (tgc-session/new-session! session_params subobjects)] 
+                                      (response/created (str "/api/V1/session/" (newsession :uuid)) newsession)))
+
+                            (response/bad-request (tgc-error/create-error 400 "tgc.error.badrequest.parameter_error")))
+                      :else 
+                          (response/bad-request (tgc-error/create-error 400 "tgc.error.badrequest.parameter_error"))
+                    )
 
                   (= :conflict tmpuserstatus) 
                     (if (= "signin" mode) 
@@ -258,7 +273,7 @@
                            (if (empty? (seq tmpusers))
                               (response/not-found (tgc-error/create-error 404 "tgc.error.notfound.user_notexists"))
                               ;; we have to do things ourselves as ring no-content sends back no content and we decide to senfd the user
-                              {:status 200 :headers {} :body (nth tmpusers 0)}
+                              {:status 204 :headers {} :body (nth tmpusers 0)}
                            )))
             }
          }

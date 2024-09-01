@@ -62,7 +62,7 @@ def test_v1_users_getall_withtokens(endpoint="/users", context=context) -> None:
 def test_v1_users_postone_missingparams(endpoint="/users", context=context) -> None:
     pp.pprint(" == Test POST one user - missing parameters")
     
-    r = requests.post(core_url+"/users",  headers=h , json={"display_name":"paul", "password":"yesterday","phone_number":"+442012346789"}) 
+    r = requests.post(core_url+"/users",  headers=h , json={"display_name":"paul", "password":"yesterday2","phone_number":"+442012346789"}) 
     if r.status_code != 400:
         pp.pprint("  ->Test FAILED")
         pp.pprint(r.json())
@@ -78,7 +78,7 @@ def test_v1_users_postone_missingparams(endpoint="/users", context=context) -> N
 
 def test_v1_users_postone_unmatchparams(endpoint="/users", context=context) -> None:
     pp.pprint( "== Test POST one user - unmatched parameters")
-    r=requests.post(core_url+"/users", headers=h , json={"display_name":"paul", "password":"yesterday","confirm_password":"yerblues","phone_number":"+442012346789"}) 
+    r=requests.post(core_url+"/users", headers=h , json={"display_name":"paul", "password":"yesterday2","confirm_password":"yerblues1","phone_number":"+442012346789"}) 
     if r.status_code != 400:
         pp.pprint("  ->Test FAILED")
         pp.pprint(r.json())

@@ -26,15 +26,15 @@
               [:display_name {:min 1 :optional true} :string]
               [:password {:min 8} :string]
               [:confirm_password {:optional true} [:maybe :string]]
-              [:phone_number {:optional true} :string]
-              [:email {:optional true} :string]]]
+              [:phone_number {:optional true} [:maybe :string]]
+              [:email {:optional true} [:maybe :string]]]]
           [:device
             [:map
               [:kind {:min 4 :max 4} :string]
-              [:platform {:min 1 :optional true} :string]
+              [:platform {:min 1} :string]
               [:vendor_uuid {:optional true} :string]
               [:os_version {:optional true} :string]
-              [:display_name {:optional true} :string] ]]
+              [:display_name :string]]]
           ]
  
       [:fn {:error/message "Missing one of the needed identifier"
@@ -58,6 +58,7 @@
     (mu/merge tgc-util/tgc-entity-description (m/schema [:map
                                                          [:user {:optional true} tgc-user/user-description] 
                                                          [:terminated_at [:maybe :time/instant]] 
+                                                         [:expires_at [:maybe :time/instant]] 
                                                          [:device {:optional true} tgc-device/device-description] 
                                                          [:token {:optional true} tgc-token/token-description] 
                                                          [:token_uuid :string] 
@@ -111,6 +112,7 @@
     (println subobjects)
   (let [newuuid (str session-prefix "-" (clojure.string/replace (.toString (java.util.UUID/randomUUID)) #"-" "")) 
            tnow (java.time.LocalDateTime/now)
+           texpires (.plusHours tnow 1)
            user_uuid (get session_params :user_uuid)
            owner_uuid (get session_params :user_uuid)
            device_uuid (get session_params :device_uuid)
@@ -118,7 +120,9 @@
            is_new_device (get session_params :is_new_device)
            tmptoken (tgc-token/new-token! {:owner_uuid user_uuid :kind "sess"})]
 
-        (let [newsession (db/execute-query ["insert into sessions (uuid, created_at, updated_at, data_version, object_version, user_uuid, device_uuid, token_uuid, is_new_user, is_new_device) values (?,?,?,?,?,?,?,?,?,?)", newuuid tnow tnow session-data-version 1 user_uuid device_uuid (tmptoken :uuid) is_new_user is_new_device])
+        (let [newsession (db/execute-query ["insert into sessions (uuid, created_at, updated_at, terminated_at, expires_at,  
+                                            data_version, object_version, user_uuid, device_uuid, token_uuid, is_new_user, is_new_device) values (?,?,?,?,?,?,?,?,?,?,?,?)", 
+                                            newuuid tnow tnow texpires texpires session-data-version 1 user_uuid device_uuid (tmptoken :uuid) is_new_user is_new_device])
                                            
                 s (get newsession 0)]
                 (do
