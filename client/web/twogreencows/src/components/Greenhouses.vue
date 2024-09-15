@@ -7,11 +7,21 @@
       <thead>
         <tr>
           <th>UUID</th>
+          <th>Display Name</th>
+          <th>Description</th>
+          <th>Latitude</th>
+          <th>Longitude</th>
+          <th>Owner UUID</th>
         </tr>
       </thead>
       <tbody>
         <tr v-for="object in objects" :key="object.id">
           <td>{{ object.uuid }}</td>
+          <td>{{ object.display_name}}</td>
+          <td>{{ object.description}}</td>
+          <td>{{ object.latitude}}</td>
+          <td>{{ object.longitude}}</td>
+          <td>{{ object.ownder_uuid }}</td>
         </tr>
       </tbody>
     </table>

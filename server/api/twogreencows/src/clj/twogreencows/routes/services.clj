@@ -44,10 +44,6 @@
               (let [data (get w :body) server {:server_duration (- xt-out xt-in) :status (get w :status)}]
                 (if (= 400 (server :status))
                     (do
-                    (println "UAUAUA")  
-                    (println data)  
-                    (println (data :humanized))
-                    (println "UAUAUA")  
                     (let [desc (apply str (map  (fn [[k v]] (str (name k) ": " (apply str (interpose ", " v)))) (data :humanized)))]
                       (merge w {:body  (assoc {} :data (tgc-error/create-error 400 "tgc.error.parameter" desc) :server server)}) ))
                   (identity w)
@@ -132,11 +128,6 @@
                   401 {:body (tgc-util/tgc-httpanswer-metadescription tgc-error/error-description) }
                   }
        :handler (fn [{params :body-params qparams :query-params}]
-            (do   
-             (println "USR") 
-             (println (params :user)) 
-            (println (tgc-user/check-for-user (params :user) [:devices :tokens])) 
-            (println (tgc-device/check-for-device (params :device)))
             (let [[tmpuserstatus tmpuser] (tgc-user/check-for-user (params :user) [:devices :tokens])
                     mode (qparams "mode")]
 
@@ -177,15 +168,12 @@
                           (= :conflict tmpdevicestatus) ()
 
                           (= :exist tmpdevicestatus)
-                             (do 
-                               (println "lalala")
                               (let[subobjects [:user :device :token]
                                    session_params {:user_uuid (tmpuser :uuid) :device_uuid (tmpdevice :uuid) :is_new_user true :is_new_device false} 
                                    newsession (tgc-session/new-session! session_params subobjects)] 
                                       (response/created (str "/api/V1/session/" (newsession :uuid)) newsession))
-                              )
                         ))
-                    ))))
+                    )))
       }
      }
     ] ; sessions
@@ -403,9 +391,6 @@
                               (response/not-found (tgc-error/create-error 404 "tgc.error.notfound.device_notexists"))
                               (response/ok tmpdevice)
                            )))
-
-
-
        }
       :delete
       {:summary "Ddelete a specific device"
@@ -417,6 +402,26 @@
       }
      }
     ]
+    ["/greenhouses"
+     {:get  
+      {:summary "Get all greenhouses"
+       :responses {200 {:body (tgc-util/tgc-httpanswer-metadescription [:vector tgc-greenhouse/greenhouse-description]) }
+                   401 {:body (tgc-util/tgc-httpanswer-metadescription tgc-error/error-description) }
+                   }
+       :handler (fn [_] (let [r (tgc-greenhouse/greenhouse-list [])] (response/ok r)) ) 
+      }
+      :post
+      {:summary "Create a greenhouse"
+       :parameters {:body tgc-session/session-post-description }
+       :response {200 {:body (tgc-util/tgc-httpanswer-metadescription tgc-greenhouse/greenhouse-description)}
+                  400 {:body (tgc-util/tgc-httpanswer-metadescription tgc-error/error-description) }
+                  401 {:body (tgc-util/tgc-httpanswer-metadescription tgc-error/error-description) }
+                  }
+       :handler (fn [{params :body-params qparams :query-params}]
+            )
+      }
+     }
+    ] ;greenhouse
 
     ];v1
    ];api
