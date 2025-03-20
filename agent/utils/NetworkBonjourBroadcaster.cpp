@@ -56,7 +56,7 @@ namespace twogreencows_core
     {
         this->ServiceName = "_twogreencowsagent";
         this->ServicePort = 27512;
-        
+       
 
         //We get the name without local
         struct utsname infoName;

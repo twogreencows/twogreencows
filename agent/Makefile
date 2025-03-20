@@ -1,7 +1,7 @@
 #declare variables
 CC=g++
 CFLAGS=-c -Wall -std=c++17 
-LDFLAGS= $(libs) -luv -lsqlite3
+LDFLAGS= $(libs) -lsqlite3
 LDFLAGSPOST = $(libsposts)
 HEADER_PATH_RJSON="./third_parties/rapidjson-master/include"
 HEADER_PATH_MDNS="./third_parties/mdns/include"
@@ -10,10 +10,13 @@ HEADER_PATH_LIBUV="./third_parties/libuv/include"
 ifeq ($(shell uname -s), Darwin)
     libs = 
     libsposts = 
-    PLATFORM_HEADER_PATH =
+    staticlib="./third_parties/libuv/build/libuv_a.a" 
+    PLATFORM_HEADER_PATH = 
+    PLATFORM_LIB_PATH="" 
 else
-    libs = -luuid -lmmal -lmmal_core -lmmal_util 
+    libs = -luuid -lmmal -lmmal_core -lmmal_util -luv 
     libsposts = -lstdc++fs
+    staticlib=
     PLATFORM_HEADER_PATH = "/opt/vc/include/"
     PLATFORM_LIB_PATH = "/opt/vc/lib/"
 endif
@@ -37,13 +40,16 @@ OBJ_FILES = $(patsubst %cpp, %o,$(SRC))
 #this target will create the software
 
 all:compile
-	$(CC)  $(LDFLAGS) -v $(OBJ_DIR)/*.o  -L$(PLATFORM_LIB_PATH) -o twogreencows_agent $(LDFLAGSPOST) 
+ifeq ($(shell uname -s), Darwin)
+	  $(CC)  $(LDFLAGS) -v $(OBJ_DIR)*.o $(staticlib) -o twogreencows_agent $(LDFLAGSPOST) 
+else   
+	  $(CC)  $(LDFLAGS) -v $(OBJ_DIR)*.o $(staticlib) -L$(PLATFORM_LIB_PATH) -o twogreencows_agent $(LDFLAGSPOST) 
+endif
 
 #this target will compile only
 
 compile:buildstructure
-	$(CC) $(CFLAGS) -I$(COREDIR) -I$(MODULEDIR) -I$(UTILDIR) -I$(HEADER_PATH_RJSON) -I$(HEADER_PATH_MDNS) -I$(HEADER_PATH_LIBUV) -I$(PLATFORM_HEADER_PATH) $(SRC) 
-	mv *.o $(OBJ_DIR)
+
 
 buildstructure:
 	mkdir -p $(OBJ_DIR)
@@ -51,5 +57,5 @@ buildstructure:
 
 #this target will clean everything
 .PHONY:clean
-clean:
+clean:g++   -lsqlite3 -v /Users/lcerveau/Code/twogreencows/agent/build/obj/*.o  -L -o twogreencows_agent
 	rm -rf *.o twogreencows_agent $(BUILD_DIR)

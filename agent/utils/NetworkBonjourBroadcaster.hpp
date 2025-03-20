@@ -4,6 +4,8 @@
 #include "mdns.h"
 #include "vector"
 
+#include <uv.h>
+
 namespace twogreencows_core
 {
     class  NetworkBonjourBroadcaster
@@ -22,6 +24,9 @@ namespace twogreencows_core
 
             struct sockaddr_in service_address_ipv4;
             struct sockaddr_in6 service_address_ipv6;
+
+            uv_udp_t send_socket;
+            uv_udp_t recv_socket;
 
             int has_ipv4;
             int has_ipv6;

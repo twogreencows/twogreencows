@@ -45,8 +45,9 @@ namespace twogreencows_core
 
     Event::~Event()
     {
-        cout << "Destructir even" <<endl;
+        cout << "Destructor event" <<endl;
     }
+
     long Event::GetSecondsInDay() const
     {   
         return this->secondsInDay;
