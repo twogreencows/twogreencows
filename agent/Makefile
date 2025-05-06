@@ -49,7 +49,10 @@ endif
 #this target will compile only
 
 compile:buildstructure
-
+	@echo "compiling"
+	@echo $(HEADER_PATH) 
+	$(CC) $(CFLAGS) -I$(COREDIR) -I$(MODULEDIR) -I$(UTILDIR) -I$(HEADER_PATH_RJSON) -I$(HEADER_PATH_MDNS) -I$(HEADER_PATH_LIBUV) $(SRC) 
+	mv *.o $(OBJ_DIR)
 
 buildstructure:
 	mkdir -p $(OBJ_DIR)
@@ -57,5 +60,6 @@ buildstructure:
 
 #this target will clean everything
 .PHONY:clean
-clean:g++   -lsqlite3 -v /Users/lcerveau/Code/twogreencows/agent/build/obj/*.o  -L -o twogreencows_agent
+clean:
 	rm -rf *.o twogreencows_agent $(BUILD_DIR)
+	#g++   -lsqlite3 -v /Users/lcerveau/Code/twogreencows/agent/build/obj/*.o  -L -o twogreencows_agent
