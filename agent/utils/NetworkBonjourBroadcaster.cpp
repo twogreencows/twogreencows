@@ -10,6 +10,7 @@
 #include <ifaddrs.h>
 #include "mdns.h"
 #include <vector>
+#include <uv.h>
 
 typedef struct {
 	mdns_string_t service;
@@ -54,6 +55,7 @@ namespace twogreencows_core
     
     NetworkBonjourBroadcaster::NetworkBonjourBroadcaster()
     {
+        std::cerr << "Bonjour broadcasting creator " << std::endl;
         this->ServiceName = "_twogreencowsagent";
         this->ServicePort = 27512;
        
@@ -69,10 +71,13 @@ namespace twogreencows_core
             }
         }  
         this->HostNameQualified = this->HostName +  localString + ".";
+
+        std::cerr << this->HostNameQualified <<'\n';
         this->ServiceInstanceFullName  = this->HostName+ "."  +this->ServiceName + "._tcp.local.";
 
         this->service_address_ipv4s = new std::vector<struct sockaddr_in>();
         this->service_address_ipv6s = new std::vector<struct sockaddr_in6>();
+
     }
 
     NetworkBonjourBroadcaster* NetworkBonjourBroadcaster::GetSharedBroadcaster()
@@ -86,8 +91,11 @@ namespace twogreencows_core
     void NetworkBonjourBroadcaster::StartBonjourService()
     {
         int sockets[32];
+
+        std::cerr << "Start Bonjour Service" << std::endl;
         int num_sockets = this->OpenServiceSockets(sockets, sizeof(sockets) / sizeof(sockets[0]));
 
+        std::cerr << "Start Bonjour Service" << std::endl;
         if (num_sockets <= 0) {
 		printf("Failed to open any client sockets\n");
 		return ;
@@ -240,6 +248,8 @@ namespace twogreencows_core
                         
     int NetworkBonjourBroadcaster::OpenClientSockets(int* sockets, int max_sockets, int port) 
     {
+
+        std::cerr << " >> OpenClientSockets" << std::endl;
 	// When sending, each socket can only send to one network interface
 	// Thus we need to open one socket for each interface and address family
 	int num_sockets = 0;
@@ -251,22 +261,25 @@ namespace twogreencows_core
 	if (getifaddrs(&ifaddr) < 0)
 		printf("Unable to get interface addresses\n");
 
-        std::cerr << "Enumerating Interfaces for port:" << port << std::endl;
+        std::cerr << "  == Enumerating Interfaces for port:" << port << std::endl;
 	int first_ipv4 = 1;
 	int first_ipv6 = 1;
 	for (ifa = ifaddr; ifa; ifa = ifa->ifa_next) {
 		if (!ifa->ifa_addr)
 			continue;
 
+                std::cerr << "  == Check  Interface: " << ifa->ifa_name << ", family :  " << int{ifa->ifa_addr->sa_family } << std::endl;
                 if (0 != ::strncmp(ifa->ifa_name, "en", 2)) 
                         continue;
-                std::cerr << " + Interface: " << ifa->ifa_name << ", family :  " << int{ifa->ifa_addr->sa_family } << std::endl;
+                std::cerr << "   + Interface: " << ifa->ifa_name << ", family :  " << int{ifa->ifa_addr->sa_family } << std::endl;
 		if (ifa->ifa_addr->sa_family == AF_INET) {
-			struct sockaddr_in* saddr = (struct sockaddr_in*)ifa->ifa_addr;
-			if (saddr->sin_addr.s_addr != htonl(INADDR_LOOPBACK)) {
+
+                    std::cerr << "   + this is a AF_INET family we don't ignore it"  << std::endl;
+	            struct sockaddr_in* saddr = (struct sockaddr_in*)ifa->ifa_addr;
+	            if (saddr->sin_addr.s_addr != htonl(INADDR_LOOPBACK)) {
                          
                                 this->service_address_ipv4s->push_back(*saddr);
-                                std::cerr << ifa->ifa_name << "  --> IPV4" <<std::endl;
+                                std::cerr << ifa->ifa_name << "   + IPV4" <<std::endl;
 				int log_addr = 0;
 				if (first_ipv4) {
 					service_address_ipv4 = *saddr;
@@ -276,7 +289,7 @@ namespace twogreencows_core
 				has_ipv4 = 1;
 				if (num_sockets < max_sockets) {
 					saddr->sin_port = htons(port);
-                                        std::cerr << "OPEN IPV4" << port << std::endl;
+                                        std::cerr << "   + OPEN IPV4" << port << std::endl;
 					int sock = mdns_socket_open_ipv4(saddr);
 					if (sock >= 0) {
 						sockets[num_sockets++] = sock;
@@ -336,6 +349,7 @@ namespace twogreencows_core
 
 	freeifaddrs(ifaddr);
 
+        std::cerr << " <-  OpenClientSockets" << std::endl;
 
 	return num_sockets;
     }
@@ -343,7 +357,10 @@ namespace twogreencows_core
     int NetworkBonjourBroadcaster::OpenServiceSockets(int* sockets, int max_sockets)
     {
         int num_sockets = 0;
+        std::cerr << "> OpenServiceSockets" << std::endl;
+        std::cerr << " == MDNS_PORT is " << MDNS_PORT << std::endl;
 
+        uv_loop_t *loop = uv_default_loop();    
 	// Call the client socket function to enumerate and get local addresses,
 	// but not open the actual sockets
 	this->OpenClientSockets(NULL, 0, 0);
@@ -357,6 +374,12 @@ namespace twogreencows_core
 #ifdef __APPLE__
 		sock_addr.sin_len = sizeof(struct sockaddr_in);
 #endif
+
+	        //int sock = (int)socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP);
+	        //if (sock < 0)
+		//    return ;
+                
+                std::cerr << "OPEN IPV4" << std::endl;
 		int sock = mdns_socket_open_ipv4(&sock_addr);
 		if (sock >= 0)
 			sockets[num_sockets++] = sock;
@@ -376,6 +399,7 @@ namespace twogreencows_core
 			sockets[num_sockets++] = sock;
 	}
 
+        std::cerr << "< OpenServiceSockets " << num_sockets << std::endl;
 	return num_sockets;    
     }
     

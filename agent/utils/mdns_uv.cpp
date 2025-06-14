@@ -359,6 +359,7 @@ mdns_htonl(void* data, uint32_t val) {
 
 static int
 mdns_socket_open_ipv4(const struct sockaddr_in* saddr) {
+    printf("mdns_socket_open_ipv4");
 	int sock = (int)socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP);
 	if (sock < 0)
 		return -1;
@@ -376,6 +377,7 @@ mdns_socket_setup_ipv4(int sock, const struct sockaddr_in* saddr) {
 	unsigned int reuseaddr = 1;
 	struct ip_mreq req;
 
+    printf("mdns_socket_setup_ipv4");
 	setsockopt(sock, SOL_SOCKET, SO_REUSEADDR, (const char*)&reuseaddr, sizeof(reuseaddr));
 #ifdef SO_REUSEPORT
 	setsockopt(sock, SOL_SOCKET, SO_REUSEPORT, (const char*)&reuseaddr, sizeof(reuseaddr));

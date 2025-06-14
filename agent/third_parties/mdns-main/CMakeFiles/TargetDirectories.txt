@@ -1,0 +1,7 @@
+/Users/lcerveau/Downloads/mdns-main/CMakeFiles/mdns_example.dir
+/Users/lcerveau/Downloads/mdns-main/CMakeFiles/edit_cache.dir
+/Users/lcerveau/Downloads/mdns-main/CMakeFiles/rebuild_cache.dir
+/Users/lcerveau/Downloads/mdns-main/CMakeFiles/list_install_components.dir
+/Users/lcerveau/Downloads/mdns-main/CMakeFiles/install.dir
+/Users/lcerveau/Downloads/mdns-main/CMakeFiles/install/local.dir
+/Users/lcerveau/Downloads/mdns-main/CMakeFiles/install/strip.dir
